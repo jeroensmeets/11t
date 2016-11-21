@@ -1,0 +1,24 @@
+<Page ux:Class="SplashPage">
+  <Router ux:Dependency="router" />
+  <JavaScript File="SplashView.js" />
+
+  <Panel>
+    <StackPanel Orientation="Vertical">
+      <Image File="assets/images/logo-mastodon.png" Width="140" Height="140" Margin="0,60,0,80"></Image>
+      <!-- <Text Value="{msg}" Color="#ffffff" Alignment="Center" Font="Italic" /> -->
+      <Button Text="Login" Background="#fff" Color="#009bff" Margin="60" Padding="12">
+        <Clicked>
+          <Callback Handler="{startOAuth}" />
+        </Clicked>
+      </Button>
+    </StackPanel>
+
+    <Panel Alignment="BottomLeft" Padding="12,0,0,24">
+      <StackPanel Orientation="Vertical">
+        <Text Color="#ffffff" FontSize="11" Font="Regular">This app is built with FuseTools and uses the Noto font.</Text>
+        <Text Color="#ffffff" FontSize="11" Font="Regular">This is version 0.9.17</Text>
+        <Text Color="#ffffff" FontSize="11" Font="Regular">suggestions? bugs? contact me at @jeroensmeets</Text>
+      </StackPanel>
+    </Panel>
+  </Panel>
+</Page>

@@ -1,0 +1,48 @@
+<App Background="#282b37">
+
+  <Font File="assets/fonts/NotoSans-Regular.ttf" ux:Global="Regular" />
+  <Font File="assets/fonts/NotoSans-Bold.ttf" ux:Global="Bold" />
+  <Font File="assets/fonts/NotoSans-Italic.ttf" ux:Global="Italic" />
+  <Font File="assets/fonts/NotoSans-BoldItalic.ttf" ux:Global="BoldItalic" />
+
+  <Font File="assets/fonts/fontawesome-webfont.ttf" ux:Global="fa" />
+  <!-- tabs at top of screen -->
+  <Text ux:Class="FaClock" Font="fa">&#xf017;</Text>
+  <Text ux:Class="FaBell" Font="fa">&#xf0a2;</Text>
+  <!-- icons for actions per post -->
+  <Text ux:Class="FaReply" Font="fa">&#xf112;</Text>
+  <Text ux:Class="FaStar" Font="fa">&#xf005;</Text>
+  <Text ux:Class="FaRepost" Font="fa">&#xf079;</Text>
+  <Text ux:Class="FaMore" Font="fa">&#xf141;</Text>
+
+  <Android.StatusBarConfig IsVisible="false" />
+
+  <Router ux:Name="router" />
+  <JavaScript File="MainView.js" />
+
+  <DockPanel>
+
+    <StackPanel Dock="Top" Orientation="Horizontal" Visibility="{menuVisible}" Padding="0,8,0,6" Background="#484b57">
+      <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="20,4,24,4"></Image>
+      <Grid Columns="1*,1*" Margin="0,3,0,0">
+        <StackPanel Orientation="Horizontal" Margin="2,0,4,0" Clicked="{goHome}">
+          <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+          <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Clicked="{goMentions}">
+          <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+          <Text Value="Mentions" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+        </StackPanel>
+      </Grid>
+    </StackPanel>
+
+    <Navigator DefaultPath="splash">
+      <SplashPage ux:Template="splash" router="router" />
+      <LoginPage ux:Template="login" router="router" />
+      <TimelinePage ux:Template="timeline" router="router" />
+      <MentionsPage ux:Template="mentions" router="router" />
+    </Navigator>
+
+  </DockPanel>
+
+</App>

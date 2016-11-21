@@ -1,0 +1,40 @@
+{
+  "RootNamespace":"",
+  "Packages": [
+  	"Fuse",
+  	"FuseJS",
+    "Fuse.Launcher"
+  ],
+  "Includes": [
+    "*",
+    "*.js:Bundle"
+  ],
+  "Title": "Matodor",
+  "Description": "An app to tame the Mastodon",
+  "Copyright": "Copyright ©2016 someone & me",
+  "Version": "0.9",
+  "VersionCode": 17,
+  "RootNamespace": "com.jeroensmeets",
+  "Mobile": {
+    "Orientations": "Portrait",
+		"ShowStatusbar": false
+  },
+  "iOS": {
+    "BundleIdentifier": "com.jeroensmeets.mastodon",
+    "PreviewBundleIdentifier": "com.jeroensmeets.mastodon.preview",
+		"Icons": {
+			"iPhone_29_2x": "assets/images/logo-mastodon.png",
+			"iPhone_29_3x": "assets/images/logo-mastodon.png",
+			"iPhone_40_2x": "assets/images/logo-mastodon.png",
+			"iPhone_40_3x": "assets/images/logo-mastodon.png",
+			"iPhone_60_2x": "assets/images/logo-mastodon.png",
+			"iPhone_60_3x": "assets/images/logo-mastodon.png",
+			"iPad_29_1x": "assets/images/logo-mastodon.png",
+			"iPad_29_2x": "assets/images/logo-mastodon.png",
+			"iPad_40_1x": "assets/images/logo-mastodon.png",
+			"iPad_40_2x": "assets/images/logo-mastodon.png",
+			"iPad_76_1x": "assets/images/logo-mastodon.png",
+			"iPad_76_2x": "assets/images/logo-mastodon.png"
+		},
+	}
+}
