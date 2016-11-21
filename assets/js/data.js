@@ -59,18 +59,25 @@ function loadTimeline( _type ) {
 
   // console.log( 'loading public timeline with code ' + AccessToken.value );
 
-  api.loadPosts( _type, AccessToken.value ).then( function( data ) {
+  api.loadPosts( _type, AccessToken.value ).then(
 
-    console.log( 'data loaded, count ' + data.length );
-    for (var i in data ) {
-      posts[ _type ].add( new MastodonPost( data[i] ) );
+    function( data ) {
+
+      console.log( 'data loaded, count ' + data.length );
+      for (var i in data ) {
+        posts[ _type ].add( new MastodonPost( data[i] ) );
+      }
+
+      msg.value = 'Timeline loaded';
+
+    }
+  ).catch(
+
+    function( error ) {
+      console.log( JSON.parse( error ) );
     }
 
-    msg.value = 'Timeline loaded';
-
-  });
-
-
+  );
 
 }
 

@@ -43,13 +43,23 @@ function webViewUrlChanged( ) {
   if ( error ) {
     router.goto( 'splash' );
   } else {
-    // save code
-    var data = require( 'assets/js/data' );
-    if ( data.saveAccessToken( code ) ) {
-      router.goto( 'timeline' );
-    } else {
+
+    // ok, we have an auth token, now ask for the acces token
+    api.getAccessToken( code ).then(
+      function( access_token ) {
+
+        var data = require( 'assets/js/data' );
+        if ( data.saveAccessToken( code ) ) {
+          router.goto( 'timeline' );
+        } else {
+          router.goto( 'splash' );
+        }
+
+      }
+    ).catch( function( error ) {
       router.goto( 'splash' );
-    }
+    })
+
   }
 
 }

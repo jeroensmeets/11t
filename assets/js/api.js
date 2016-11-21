@@ -1,5 +1,7 @@
 var Observable      = require("FuseJS/Observable");
 
+var auth            = require("assets/js/auth");
+
 var BASE_URL        = 'https://mastodon.social/';
 
 function loadPosts( posttype, access_token ) {
@@ -7,7 +9,7 @@ function loadPosts( posttype, access_token ) {
   var endpoint = '';
   switch ( posttype ) {
     case 'home':
-      endpoint = '/api/v1/timelines/home';
+      endpoint = 'api/v1/timelines/home';
       break;
     case 'public':
     default:
@@ -52,52 +54,47 @@ function loadPosts( posttype, access_token ) {
 
 }
 
-// function getAccessToken( callback_succes, callback_error ) {
-//
-//   console.log( 'AT1' );
-//
-//   var promise = new Promise( function( resolve, reject ) {
-//
-//     // TODO check validity
-//     if ( hasAccessToken() ) {
-//       console.log( 'AT1B');
-//       callback_succes;
-//     }
-//
-//     console.log( 'AT2' );
-//
-//     fetch( BASE_URL + 'oauth/token', {
-//         method: 'POST',
-//         headers: { 'Content-type': 'application/json' },
-//         body: JSON.stringify({ grant_type: 'client_credentials', client_id: auth.client_id, client_secret: auth.client_secret })
-//     })
-//     .then( function( resp ) {
-//         console.log( 'AT3' );
-//         if ( 200 == resp.status ) {
-//           console.log( 'AT3A' );
-//           return resp.json();
-//         } else {
-//             console.log( 'AT3B' );
-//             callback_error( Error( 'Netwerk error: cannot fetch posts (1001)' ) );
-//         }
-//     })
-//     .then( function( json ) {
-//       console.log( 'AT4' );
-//       // console.log( '-----' + json.access_token );
-//       access_token.value = json.access_token;
-//       callback_succes();
-//     })
-//     .catch( function( err ) {
-//       console.log( 'AT5' );
-//       callback_error( Error( 'Netwerk error: cannot fetch posts (1002)' ) );
-//     });
-//   });
-//
-//   console.log( 'AT6' );
-//
-//   return promise;
-//
-// }
+function getAccessToken( auth_token ) {
+
+  var promise = new Promise( function( resolve, reject ) {
+
+    console.log( 'posting request for access_token' );
+
+    fetch( BASE_URL + 'oauth/token', {
+        method: 'POST',
+        headers: {
+            'Content-type'  : 'application/json',
+            'grant_type'    : 'authorization_code',
+            'code'          : auth_token,
+            'redirect_uri'  : encodeURIComponent( auth.redirect_uri ),
+            'client_id'     : auth.client_id,
+            'client_secret' : auth.client_secret
+        }
+    })
+    .then( function( resp ) {
+        console.log( 'AT3: ' + resp.status );
+        if ( 200 == resp.status ) {
+            console.log( 'AT3A' );
+            return resp.json();
+        } else {
+            console.log( 'AT3B' );
+            reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+        }
+    })
+    .then( function( json ) {
+      console.log( 'AT4' );
+      resolve( json );
+    })
+    .catch( function( err ) {
+      console.log( 'AT5' );
+      reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+    });
+
+  });
+
+  return promise;
+
+}
 
 // parseUri 1.2.2
 // (c) Steven Levithan <stevenlevithan.com>
@@ -136,5 +133,6 @@ parseUri.options = {
 
 module.exports = {
   loadPosts: loadPosts,
-  parseUri: parseUri
+  parseUri: parseUri,
+  getAccessToken: getAccessToken
 }
