@@ -15,13 +15,20 @@ function loadAccessToken( ) {
     return true;
   }
 
-  var token = Storage.readSync( at_file );
-  if ( '' != token ) {
-    AccessToken.value = token;
-    return true;
-  } else {
+  try {
+    var token = Storage.readSync( at_file );
+  }
+  catch( e ) {
     return false;
   }
+
+  if ( '' == token ) {
+    return false;
+  } else {
+    AccessToken.value = token;
+    return true;
+  }
+
 }
 
 var Storage = require("FuseJS/Storage");

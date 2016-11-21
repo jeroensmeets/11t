@@ -3,14 +3,14 @@ var Observable = require("FuseJS/Observable");
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Collapsed';
 
-var webviewVisible = Observable( 'Visible' );
+var webviewVisible = Observable( 'Collapsed' );
 
 var auth = require("assets/js/auth");
 
 var oAuthUri = Observable( "https://mastodon.social/oauth/authorize?client_id=" + auth.client_id
         + "&redirect_uri=" + encodeURIComponent( auth.redirect_uri )
         + "&response_type=code"
-        + "&scope=read+follow" );
+        + "&scope=read+write+follow" );
 
 function webViewUrlChanged( ) {
 
@@ -45,7 +45,7 @@ function webViewUrlChanged( ) {
   } else {
     // save code
     var data = require( 'assets/js/data' );
-    if data.saveAccessToken( code ) {
+    if ( data.saveAccessToken( code ) ) {
       router.goto( 'timeline' );
     } else {
       router.goto( 'splash' );

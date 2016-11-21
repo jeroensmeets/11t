@@ -15,11 +15,11 @@ function loadPosts( posttype, access_token ) {
       break;
   }
 
-  console.log( 'LD1' );
+  console.log( 'LD1: ' + endpoint );
 
   var promise = new Promise( function( resolve, reject ) {
 
-    console.log( 'LD2' );
+    console.log( 'LD2: ' + access_token );
 
     fetch( BASE_URL + endpoint, {
         method: 'GET',
@@ -29,7 +29,7 @@ function loadPosts( posttype, access_token ) {
         }
     })
     .then( function( resp ) {
-        console.log( 'LD3' );
+        console.log( 'LD3: ' + resp.status );
         if ( 200 == resp.status ) {
             console.log( 'LD3A' );
             return resp.json();
