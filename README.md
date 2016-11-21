@@ -6,12 +6,16 @@ Matodor is an iOs and Android app for [Mastodon](https://matodor.social), writte
 
 The app needs client credentials to connect to Mastodon. Place them in assets/js/auth.js like this:
 
+```
+#!javascript
+
 module.exports = {
-  id             : 217,
   redirect_uri   : "http://mastodon.jeroensmeets.net/",
   client_id      : CLIENT_ID,
   client_secret  : CLIENT_SECRET
 }
+```
+
 
 For obtaining an client_id and client_secret see [this page](https://github.com/Gargron/mastodon/wiki/API#oauth-apps). As the WebView in FuseTools needs an existing redirect_uri, I have configured the subdomain above. Feel free to use it, but be aware that it could go away at any time.
 
