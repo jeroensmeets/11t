@@ -4,7 +4,7 @@ Matodor is an iOs and Android app for [Mastodon](https://matodor.social), writte
 
 ### Authentication ###
 
-The app needs client credentials to connect to Mastodon. Place them in assets/js/auth.js -- for info how contact me at Mastodon.
+The app needs client credentials to connect to Mastodon. Place them in assets/js/auth.js -- for info how, contact me at Mastodon.
 
 ### Contact ###
 
