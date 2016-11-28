@@ -1,4 +1,4 @@
-<DockPanel ux:Class="PostCard" ux:Name="pc" Padding="0,0,0,16">
+<StackPanel ux:Class="PostCard" ux:Name="pc" Margin="6,0,6,12">
   <int ux:Property="id" />
   <string ux:Property="timesince" />
   <int ux:Property="in_reply_to_id" />
@@ -10,30 +10,64 @@
   <string ux:Property="content" />
   <int ux:Property="reblogs_count" />
   <int ux:Property="favourites_count" />
+  <bool ux:Property="favourited" />
+  <bool ux:Property="reblogged" />
+  <bool ux:Property="isReblog" />
+  <string ux:Property="reblogname" />
+  <bool ux:Property="show_actions" />
+  <bool ux:Property="show_dimmed" />
 
-  <Panel Dock="Left" Alignment="TopLeft" Padding="0,0,10,0">
-    <Image Url="{Property pc.account_avatar}" Width="54" />
-  </Panel>
-  <StackPanel Orientation="Vertical">
-    <Grid Columns="8*,1*">
-      <StackPanel Orientation="Horizontal">
-        <Text Value="{Property pc.account_display_name}" FontSize="12" Font="Bold" TextColor="#fff" />
-        <!-- <Text Value="{Property pc.account_username}" FontSize="12" TextColor="#ddd" Font="Regular" Margin="8,0,0,0" /> -->
+  <WhileTrue Value="{isReblog}">
+    <DockPanel Margin="0,8,0,0">
+      <FaRepost Color="#777" FontSize="16" Margin="36,0,0,0" Dock="Left" />
+      <StackPanel Orientation="Horizontal" Margin="8,1,0,0">
+        <ParagraphText FontSize="14" Value="{Property pc.reblogname}" Margin="0,0,5,0" />
+        <ParagraphText FontSize="14">reblogged this post</ParagraphText>
       </StackPanel>
-      <Text Value="{Property pc.timesince}" FontSize="12" TextColor="#ddd" Font="Regular" Alignment="Right" />
-    </Grid>
-    <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff"
-     Font="Regular" Margin="0,4,8,4" LineSpacing="-.7" />
-    <Each Items="{Property pc.media_attachments}">
-      <Panel ClipToBounds="true" Margin="0,4,0,4">
-        <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" ContentAlignment="Center"></Image>
-      </Panel>
-    </Each>
-    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-      <FaReply Color="#777" FontSize="16" Margin="0,0,12,0" />
-      <FaRepost Color="#777" FontSize="16" Margin="0,0,12,0" />
-      <FaStar Color="#777" FontSize="16" Margin="0,0,12,0" />
-      <FaMore Color="#777" FontSize="16" />
+    </DockPanel>
+  </WhileTrue>
+
+  <DockPanel>
+    <Image Url="{Property pc.account_avatar}" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" />
+
+    <StackPanel ux:Name="postcontent" Orientation="Vertical" Padding="8,6,8,0">
+      <Grid Columns="8*,1*">
+        <StackPanel Orientation="Horizontal" ClipToBounds="True">
+          <Text Value="{Property pc.account_display_name}" FontSize="13" Font="Bold" TextColor="#fff" />
+          <Text Value="{Property pc.account_username}" FontSize="13" TextColor="#ddd" Font="Regular" Margin="8,0,0,0" />
+        </StackPanel>
+        <Text Value="{Property pc.timesince}" FontSize="13" TextColor="#ddd" Font="Regular" Alignment="Right" />
+      </Grid>
+      <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,0,4" />
+      <Each Items="{Property pc.media_attachments}">
+        <Panel ClipToBounds="true" Margin="0,4,0,4">
+          <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" ContentAlignment="Center"></Image>
+        </Panel>
+      </Each>
+
+      <WhileTrue Value="{Property pc.show_actions}">
+        <StackPanel Orientation="Horizontal">
+          <FaReply Color="#777" FontSize="16" Margin="0,0,12,0" />
+          <FaRepost ux:Name="icoreblogged" Color="#777" FontSize="16" Margin="0,0,12,0">
+            <Clicked Handler="{rePost}" />
+            <WhileTrue Value="{reblogged}">
+              <Change icoreblogged.Color="#2b90d9" />
+            </WhileTrue>
+          </FaRepost>
+          <FaStar ux:Name="icostar" Color="#777" FontSize="16" Margin="0,0,12,0">
+            <Clicked Handler="{favouritePost}" />
+            <WhileTrue Value="{favourited}">
+              <Change icostar.Color="#2b90d9" />
+            </WhileTrue>
+          </FaStar>
+          <!-- <FaMore Color="#777" FontSize="16" /> -->
+        </StackPanel>
+      </WhileTrue>
+
+      <WhileTrue Value="{Property pc.show_dimmed}">
+        <Change postcontent.Opacity=".3" />
+      </WhileTrue>
     </StackPanel>
-  </StackPanel>
-</DockPanel>
+
+  </DockPanel>
+</StackPanel>

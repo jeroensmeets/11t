@@ -1,0 +1,22 @@
+<Page ux:Class="WritePage">
+  <Router ux:Dependency="router" />
+  <JavaScript File="WritePage.js" />
+
+  <Panel>
+    <StackPanel Orientation="Vertical" Margin="8,16,8,32">
+      <TextView Value="{txtToToot}" Height="165" Background="#ddd" TextWrapping="Wrap" Padding="4">
+        <WhileString Test="IsEmpty">
+          <Text TextWrapping="Wrap" Margin="4">What's on your mind?</Text>
+        </WhileString>
+      </TextView>
+      <DockPanel Margin="0,24,0,0">
+        <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{doToot}">
+          <Text Value="Toot" Color="#fff" />
+        </Button>
+        <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{selectImage}">
+          <Text Value="Upload image" Color="#fff" />
+        </Button>
+      </DockPanel>
+    </StackPanel>
+  </Panel>
+</Page>

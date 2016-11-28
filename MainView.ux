@@ -5,15 +5,21 @@
   <Font File="assets/fonts/NotoSans-Italic.ttf" ux:Global="Italic" />
   <Font File="assets/fonts/NotoSans-BoldItalic.ttf" ux:Global="BoldItalic" />
 
+  <Text ux:Class="ParagraphText" Font="Regular" FontSize="14" />
+  <Text ux:Class="HeaderText" Font="Bold" FontSize="14" />
+
   <Font File="assets/fonts/fontawesome-webfont.ttf" ux:Global="fa" />
   <!-- tabs at top of screen -->
+  <Text ux:Class="FaWrite" Font="fa">&#xf044;</Text>
   <Text ux:Class="FaClock" Font="fa">&#xf017;</Text>
   <Text ux:Class="FaBell" Font="fa">&#xf0a2;</Text>
   <!-- icons for actions per post -->
-  <Text ux:Class="FaReply" Font="fa">&#xf112;</Text>
-  <Text ux:Class="FaStar" Font="fa">&#xf005;</Text>
-  <Text ux:Class="FaRepost" Font="fa">&#xf079;</Text>
-  <Text ux:Class="FaMore" Font="fa">&#xf141;</Text>
+  <Text ux:Class="FaReply" Font="fa" FontSize="16">&#xf112;</Text>
+  <Text ux:Class="FaStar" Font="fa" FontSize="16">&#xf005;</Text>
+  <Text ux:Class="FaRepost" Font="fa" FontSize="16">&#xf079;</Text>
+  <Text ux:Class="FaMore" Font="fa" FontSize="16">&#xf141;</Text>
+
+  <Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 
   <Android.StatusBarConfig IsVisible="false" />
 
@@ -23,24 +29,29 @@
   <DockPanel>
 
     <StackPanel Dock="Top" Orientation="Horizontal" Visibility="{menuVisible}" Padding="0,8,0,6" Background="#484b57">
-      <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="20,4,24,4"></Image>
-      <Grid Columns="1*,1*" Margin="0,3,0,0">
-        <StackPanel Orientation="Horizontal" Margin="2,0,4,0" Clicked="{goHome}">
+      <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,20,4" />
+      <Grid Columns="1*,1*,1*" Margin="0,0,0,0">
+        <StackPanel Orientation="Horizontal" Margin="2,0,4,0" Clicked="{goWrite}">
+          <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+          <Text Value="Toot" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,4,0" Clicked="{goHome}">
           <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Clicked="{goMentions}">
+        <StackPanel Orientation="Horizontal" Clicked="{goNotifications}">
           <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-          <Text Value="Mentions" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+          <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
       </Grid>
     </StackPanel>
 
-    <Navigator DefaultPath="splash">
+    <Navigator DefaultPath="write">
       <SplashPage ux:Template="splash" router="router" />
       <LoginPage ux:Template="login" router="router" />
+      <WritePage ux:Template="write" router="router" />
       <TimelinePage ux:Template="timeline" router="router" />
-      <MentionsPage ux:Template="mentions" router="router" />
+      <NotificationsPage ux:Template="notifications" router="router" />
     </Navigator>
 
   </DockPanel>

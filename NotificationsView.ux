@@ -1,0 +1,58 @@
+<Page ux:Class="NotificationsPage">
+
+  <Router ux:Dependency="router" />
+  <JavaScript File="NotificationsView.js" />
+
+  <ScrollView>
+    <StackPanel Orientation="Vertical">
+      <Each Items="{posts}">
+
+        <StackPanel Orientation="Horizontal" Margin="8,8,0,0">
+
+        <WhileTrue Value="{isReblog}">
+          <FaRepost Color="#fff" FontSize="16" />
+          <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
+          <ParagraphText FontSize="14" Color="#fff">reblogged your post</ParagraphText>
+        </WhileTrue>
+
+        <WhileTrue Value="{isMention}">
+          <FaReply Color="#fff" FontSize="16" />
+          <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
+          <WhileString Value="{account.display_name}" MaxLength="0">
+            <ParagraphText FontSize="14" Color="#fff" Value="{account.acct}" Margin="6,0,4,0" />
+          </WhileString>
+          <ParagraphText FontSize="14" Color="#fff">mentioned you</ParagraphText>
+        </WhileTrue>
+
+        <WhileTrue Value="{isFavourite}">
+          <FaStar Color="#fff" FontSize="16" />
+          <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
+          <ParagraphText FontSize="14" Color="#fff">favourited your post</ParagraphText>
+        </WhileTrue>
+
+        </StackPanel>
+
+        <WhileTrue Value="{isFollow}">
+          <StackPanel Orientation="Horizontal" Margin="8,8,0,0">
+            <FaFollow Color="#fff" FontSize="16" />
+            <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
+            <ParagraphText FontSize="14" Color="#fff">joins you on your Mastodon travels</ParagraphText>
+          </StackPanel>
+          <DockPanel Margin="0,8,0,8">
+            <Image Url="{account.avatar}" Width="54" Margin="0,0,8,0" Alignment="TopLeft" Dock="Left" />
+            <ParagraphText FontSize="14" Color="#fff" Value="{account.note}" TextWrapping="Wrap" />
+          </DockPanel>
+        </WhileTrue>
+
+        <WhileFalse Value="{isFollow}">
+          <PostCard id="{id}" timesince="{timesince}" in_reply_to_id="{in_reply_to_id}" account_username="{account.username}" account_acct="{account.acct}" account_display_name="{account.display_name}" account_avatar="{account.avatar}" media_attachments="{media_attachments}" content="{content}" reblogs_count="{reblogs_count}" favourites_count="{favourites_count}" favourited="{favourited}" reblogged="{reblogged}" reblogname="{reblogname}" show_actions="False" show_dimmed="True" />
+        </WhileFalse>
+
+      </Each>
+      <WhileEmpty Items="{posts}">
+        <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No notifications found.</Text>
+      </WhileEmpty>
+    </StackPanel>
+  </ScrollView>
+
+</Page>

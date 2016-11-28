@@ -6,12 +6,17 @@ function goHome() {
   router.goto( 'timeline' );
 }
 
-function goMentions() {
-  router.goto( 'mentions' );
+function goNotifications() {
+  router.goto( 'notifications' );
+}
+
+function goWrite() {
+  router.goto( 'write' );
 }
 
 module.exports = {
   menuVisible: nav.menuVisible,
   goHome: goHome,
-  goMentions: goMentions
+  goNotifications: goNotifications,
+  goWrite: goWrite
 }

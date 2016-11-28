@@ -4,12 +4,64 @@ var auth            = require("assets/js/auth");
 
 var BASE_URL        = 'https://mastodon.social/';
 
+function sendPost( _txt, access_token ) {
+
+  // POST /api/v1/statuses
+  // Form data:
+  //
+  // status: The text of the status
+  // in_reply_to_id (optional): local ID of the status you want to reply to
+  // media_ids (optional): array of media IDs to attach to the status (maximum 4)
+
+  return new Promise( function( resolve, reject ) {
+
+    if ( '' == _txt ) {
+      reject( Error( 'Post content empty (P001)' ) );
+    }
+
+    var _bodyArgs = {
+        'status' : _txt
+    };
+
+    fetch( BASE_URL + 'api/v1/statuses', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+            'Authorization': 'Bearer ' + access_token
+        },
+        body: JSON.stringify( _bodyArgs )
+    })
+    .then( function( resp ) {
+        console.log( 'P2: ' + resp.status );
+        if ( 200 == resp.status ) {
+            console.log( 'P3A' );
+            return resp.json();
+        } else {
+            console.log( 'P3B' );
+            reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+        }
+    })
+    .then( function( json ) {
+      console.log( 'P4' );
+      resolve( json );
+    })
+    .catch( function( err ) {
+      console.log( 'P5' );
+      reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+    });
+  });
+
+}
+
 function loadPosts( posttype, access_token ) {
 
   var endpoint = '';
   switch ( posttype ) {
     case 'home':
       endpoint = 'api/v1/timelines/home';
+      break;
+    case 'notifications':
+      endpoint = '/api/v1/notifications';
       break;
     case 'public':
     default:
@@ -19,7 +71,7 @@ function loadPosts( posttype, access_token ) {
 
   console.log( 'LD1: ' + endpoint );
 
-  var promise = new Promise( function( resolve, reject ) {
+  return new Promise( function( resolve, reject ) {
 
     console.log( 'LD2: ' + access_token );
 
@@ -50,26 +102,115 @@ function loadPosts( posttype, access_token ) {
     });
   });
 
-  return promise;
+}
+
+function rePost( _postId, access_token, unRepost ) {
+
+  if ( arguments.length < 3 ) {
+    var unRepost = false;
+  }
+
+  var _apiAction = ( unRepost ) ? 'unreblog' : 'reblog';
+
+  return new Promise( function( resolve, reject ) {
+
+    fetch( BASE_URL + 'api/v1/statuses/' + _postId + '/' + _apiAction, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+            'Authorization': 'Bearer ' + access_token
+        }
+    })
+    .then( function( resp ) {
+        console.log( 'LD3: ' + resp.status );
+        if ( 200 == resp.status ) {
+            console.log( 'LD3A' );
+            return resp.json();
+        } else {
+            console.log( 'LD3B' );
+            reject( Error( 'Netwerk error (R003)' ) );
+        }
+    })
+    .then( function( json ) {
+      console.log( 'LD4' );
+      resolve( json );
+    })
+    .catch( function( err ) {
+      console.log( 'LD5' );
+      reject( Error( 'Netwerk error (R004)' ) );
+    });
+  });
+
+}
+
+function favouritePost( _postId, access_token, unFavourite ) {
+
+  console.log( 'favourite post in api.js' );
+
+  if ( arguments.length < 3 ) {
+    var unFavourite = false;
+  }
+
+  var _apiAction = ( unFavourite ) ? 'unfavourite' : 'favourite';
+
+  return new Promise( function( resolve, reject ) {
+
+    fetch( BASE_URL + 'api/v1/statuses/' + _postId + '/' + _apiAction, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+            'Authorization': 'Bearer ' + access_token
+        }
+    })
+    .then( function( resp ) {
+        console.log( 'LD3: ' + resp.status );
+        if ( 200 == resp.status ) {
+            console.log( 'LD3A' );
+            return resp.json();
+        } else {
+            console.log( 'LD3B' );
+            reject( Error( 'Netwerk error (F003)' ) );
+        }
+    })
+    .then( function( json ) {
+      console.log( 'LD4' );
+      resolve( json );
+    })
+    .catch( function( err ) {
+      console.log( 'LD5' );
+      reject( Error( 'Netwerk error (F004)' ) );
+    });
+  });
 
 }
 
 function getAccessToken( auth_token ) {
 
-  var promise = new Promise( function( resolve, reject ) {
+  return new Promise( function( resolve, reject ) {
 
-    console.log( 'posting request for access_token' );
+    console.log( 'posting request for access_token with auth_token ' + auth_token );
+
+    var _headerArgs = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+
+    var _bodyArgs = {
+        'grant_type'    : 'authorization_code',
+        // 'redirect_uri'  : encodeURIComponent( auth.redirect_uri ),
+        'redirect_uri'  : auth.redirect_uri,
+        'code'          : auth_token,
+        'client_id'     : auth.client_id,
+        'client_secret' : auth.client_secret
+    };
+
+    console.log( JSON.stringify( _bodyArgs ) );
 
     fetch( BASE_URL + 'oauth/token', {
         method: 'POST',
-        headers: {
-            'Content-type'  : 'application/json',
-            'grant_type'    : 'authorization_code',
-            'code'          : auth_token,
-            'redirect_uri'  : encodeURIComponent( auth.redirect_uri ),
-            'client_id'     : auth.client_id,
-            'client_secret' : auth.client_secret
-        }
+        headers: _headerArgs,
+        body: JSON.stringify( _bodyArgs ),
+        // body: _args
     })
     .then( function( resp ) {
         console.log( 'AT3: ' + resp.status );
@@ -78,11 +219,13 @@ function getAccessToken( auth_token ) {
             return resp.json();
         } else {
             console.log( 'AT3B' );
+            console.log( JSON.stringify( resp ) );
             reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
         }
     })
     .then( function( json ) {
       console.log( 'AT4' );
+      console.log( json );
       resolve( json );
     })
     .catch( function( err ) {
@@ -91,8 +234,6 @@ function getAccessToken( auth_token ) {
     });
 
   });
-
-  return promise;
 
 }
 
@@ -133,6 +274,9 @@ parseUri.options = {
 
 module.exports = {
   loadPosts: loadPosts,
+  sendPost: sendPost,
+  rePost: rePost,
+  favouritePost: favouritePost,
   parseUri: parseUri,
   getAccessToken: getAccessToken
 }
