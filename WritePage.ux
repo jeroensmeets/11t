@@ -13,9 +13,9 @@
         <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{doToot}">
           <Text Value="Toot" Color="#fff" />
         </Button>
-        <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{selectImage}">
+        <!-- <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{selectImage}">
           <Text Value="Upload image" Color="#fff" />
-        </Button>
+        </Button> -->
       </DockPanel>
     </StackPanel>
   </Panel>

@@ -14,7 +14,7 @@
   "Description": "An app to tame the Mastodon",
   "Copyright": "Copyright ©2016 someone & me",
   "Version": "1.0",
-  "VersionCode": 1,
+  "VersionCode": 2,
   "RootNamespace": "com.jeroensmeets",
   "Mobile": {
     "Orientations": "Portrait",
@@ -37,5 +37,15 @@
 			"iPad_76_1x": "assets/images/logo-mastodon-square.png",
 			"iPad_76_2x": "assets/images/logo-mastodon-square.png"
 		},
-	}
+	},
+  "Android": {
+    "Package": "com.jeroensmeets.mastodon",
+    "PreviewPackage": "com.jeroensmeets.mastodon.preview",
+    "Key": {
+        "Alias": "application",
+        "AliasPassword": "CMn4HoppGNffxWR6f92oQ$HG",
+        "Store": "release.keystore",
+        "StorePassword": "CMn4HoppGNffxWR6f92oQ$HG"
+    }
+  }
 }
