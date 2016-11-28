@@ -4,7 +4,7 @@ var auth            = require("assets/js/auth");
 
 var BASE_URL        = 'https://mastodon.social/';
 
-function sendPost( _txt, access_token ) {
+function sendPost( _txt, _inreplyto, access_token ) {
 
   // POST /api/v1/statuses
   // Form data:
@@ -22,6 +22,10 @@ function sendPost( _txt, access_token ) {
     var _bodyArgs = {
         'status' : _txt
     };
+
+    if ( _inreplyto > 0 )  {
+      _bodyArgs.in_reply_to_id = _inreplyto;
+    }
 
     fetch( BASE_URL + 'api/v1/statuses', {
         method: 'POST',

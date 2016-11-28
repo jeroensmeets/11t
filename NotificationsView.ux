@@ -25,7 +25,7 @@
             </WhileString>
             <ParagraphText FontSize="14" Color="#fff">mentioned you</ParagraphText>
           </StackPanel>
-          <PostCard id="{id}" timesince="{timesince}" in_reply_to_id="{in_reply_to_id}" account_username="{account.username}" account_acct="{account.acct}" account_display_name="{account.display_name}" account_avatar="{account.avatar}" media_attachments="{media_attachments}" content="{content}" reblogs_count="{reblogs_count}" favourites_count="{favourites_count}" favourited="{favourited}" reblogged="{reblogged}" reblogname="{reblogname}" show_actions="False" />
+          <PostCard id="{id}" timesince="{timesince}" in_reply_to_id="{in_reply_to_id}" account_username="{account.username}" account_acct="{account.acct}" account_display_name="{account.display_name}" account_avatar="{account.avatar}" media_attachments="{media_attachments}" content="{content}" reblogs_count="{reblogs_count}" favourites_count="{favourites_count}" favourited="{favourited}" reblogged="{reblogged}" reblogname="{reblogname}" show_actions="True" />
         </WhileTrue>
 
         <WhileTrue Value="{isFavourite}">

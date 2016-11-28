@@ -125,9 +125,13 @@ function loadTimeline( _type ) {
 
 }
 
-function sendPost( _txt ) {
+function sendPost( _txt, _inreplyto ) {
 
-  api.sendPost( _txt, AccessToken.value ).then(
+  if ( arguments.length < 2 ) {
+    _inreplyto = 0;
+  }
+
+  api.sendPost( _txt, _inreplyto, AccessToken.value ).then(
 
     function( data ) {
 

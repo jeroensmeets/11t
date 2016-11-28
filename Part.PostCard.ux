@@ -36,9 +36,9 @@
           <Text Value="{Property pc.account_display_name}" FontSize="13" Font="Bold" TextColor="#fff" />
           <Text Value="{Property pc.account_username}" FontSize="13" TextColor="#ddd" Font="Regular" Margin="8,0,0,0" />
         </StackPanel>
-        <Text Value="{Property pc.timesince}" FontSize="13" TextColor="#ddd" Font="Regular" Alignment="Right" />
+        <Text Value="{Property pc.timesince}" FontSize="15" TextColor="#ddd" Font="Regular" Alignment="Right" />
       </Grid>
-      <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,0,4" Clicked="{contentClicked}" />
+      <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,0,8" Clicked="{contentClicked}" />
       <Each Items="{Property pc.media_attachments}">
         <Panel ClipToBounds="true" Margin="0,4,0,4">
           <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" ContentAlignment="Center"></Image>
@@ -47,14 +47,16 @@
 
       <WhileTrue Value="{Property pc.show_actions}">
         <StackPanel Orientation="Horizontal">
-          <FaReply Color="#777" FontSize="16" Margin="0,0,12,0" />
-          <FaRepost ux:Name="icoreblogged" Color="#777" FontSize="16" Margin="0,0,12,0">
+          <FaReply Color="#777" FontSize="18" Margin="0,0,12,0">
+            <Clicked Handler="{replyToPost}" />
+          </FaReply>
+          <FaRepost ux:Name="icoreblogged" Color="#777" FontSize="18" Margin="0,0,12,0">
             <Clicked Handler="{rePost}" />
             <WhileTrue Value="{reblogged}">
               <Change icoreblogged.Color="#2b90d9" />
             </WhileTrue>
           </FaRepost>
-          <FaStar ux:Name="icostar" Color="#777" FontSize="16" Margin="0,0,12,0">
+          <FaStar ux:Name="icostar" Color="#777" FontSize="18" Margin="0,0,12,0">
             <Clicked Handler="{favouritePost}" />
             <WhileTrue Value="{favourited}">
               <Change icostar.Color="#2b90d9" />

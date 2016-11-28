@@ -4,6 +4,15 @@ nav.menuVisible.value = 'Visible';
 var data = require( 'assets/js/data' );
 data.loadHomeTimeLine();
 
+function replyToPost( args ) {
+
+  // console.log( ' <<<<<<<<<<<<<< ' );
+  // console.log( JSON.stringify( args.data.id ) );
+  // console.log( ' >>>>>>>>>>>>>> ' );
+  router.push( "write", { postid: args.data.id, account: args.data.account.username } );
+
+}
+
 function rePost( args ) {
   // console.log( JSON.stringify( args ) );
   data.rePost( args.data );
@@ -14,17 +23,10 @@ function favouritePost( args ) {
   data.favouritePost( args.data );
 }
 
-function contentClicked( args ) {
-  for (var i in args) {
-    console.log( i );
-    console.log( JSON.stringify( args[i] ) );
-  }
-}
-
 module.exports = {
   posts: data.posts.home,
   menuVisible: nav.menuVisible,
+  replyToPost: replyToPost,
   rePost: rePost,
-  favouritePost: favouritePost,
-  contentClicked: contentClicked
+  favouritePost: favouritePost
 };

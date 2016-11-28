@@ -2,15 +2,29 @@ var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Visible';
 
 var Observable = require("FuseJS/Observable");
-var txtToToot = Observable('');
+
+// get arguments passed by router
+var inReplyToPostId = this.Parameter.map( function( param ) {
+    return param.postid;
+});
+var inReplyToAccount = this.Parameter.map( function( param ) {
+    return param.postid;
+});
+
+var txtToToot = this.Parameter.map( function( param ) {
+    return param.account ? '@' + param.account + ' ' : '';
+});
 
 var cameraRoll = require("FuseJS/CameraRoll");
 
 function doToot() {
 
   var data = require( 'assets/js/data' );
-  data.sendPost( txtToToot.value );
+  data.sendPost( txtToToot.value, inReplyToPostId.value );
 
+  if ( inReplyToPostId.value > 0 ) {
+    router.goBack();
+  }
 }
 
 function selectImage() {
@@ -25,6 +39,7 @@ function selectImage() {
 }
 
 module.exports = {
+  inReplyToPostId: inReplyToPostId,
   txtToToot: txtToToot,
   doToot: doToot,
   selectImage: selectImage
