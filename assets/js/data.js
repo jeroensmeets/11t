@@ -1,7 +1,6 @@
 var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
-
-var Storage = require("FuseJS/Storage");
+var FILE_DATACACHE  = 'data.cache.json';
 
 // api credentials
 var api = require( 'assets/js/api' );
@@ -11,13 +10,35 @@ var posts = {
   home          : Observable(),
   notifications : Observable()
 }
+
 var msg = Observable('');
 
 var AccessToken     = Observable( false );
 var at_file         = "access_code.json";
 
+function loadFromCache( _type ) {
+
+  Storage.read( _type + '.' + FILE_DATACACHE )
+    .then(function(contents) {
+      if ( '' != contents ) {
+        var _json = JSON.parse( contents );
+        if ( ( 'object' == typeof _json ) && ( _json.length > 0 ) ) {
+          posts[ _type ] = _json;
+        }
+      }
+    }, function(error) {
+      console.log(error);
+    });
+}
+
+function saveToCache() {
+  for ( var _type in posts ) {
+    Storage.write( _type + '.' + FILE_DATACACHE, JSON.stringify( posts[ _type ] ) );
+  }
+}
+
 function saveAccessToken( token ) {
-  AccessToken.value = token;
+  AccessToken.value = token.access_token;
   return Storage.writeSync( at_file, token );
 }
 
@@ -62,6 +83,8 @@ function loadNotificationsTimeLine() {
 
 function loadTimeline( _type ) {
 
+  loadFromCache( _type );
+
   if ( !loadAccessToken() ) {
     console.log( 'error loading access token' );
     return false;
@@ -88,6 +111,8 @@ function loadTimeline( _type ) {
           return ( 'notifications' == _type ) ? new MastodonNotification( newItem ) : new MastodonPost( newItem );
         }
       );
+
+      saveToCache();
 
     }
   ).catch(
@@ -166,7 +191,7 @@ function favouritePost( _post ) {
 
 function MastodonNotification( info ) {
 
-  console.log( JSON.stringify( info ) );
+  // console.log( JSON.stringify( info ) );
 
   this.isReblog           = ( 'reblog' == info.type );
   this.isMention          = ( 'mention' == info.type );
@@ -235,6 +260,7 @@ function timeSince(date) {
 }
 
 module.exports = {
+  loadFromCache: loadFromCache,
   loadAccessToken: loadAccessToken,
   saveAccessToken: saveAccessToken,
   loadPublicTimeline: loadPublicTimeline,

@@ -17,7 +17,7 @@
   <bool ux:Property="show_actions" />
   <bool ux:Property="show_dimmed" />
 
-  <WhileTrue Value="{isReblog}">
+  <WhileTrue Value="{isReblog}"><WhileTrue Value="{show_actions}">
     <DockPanel Margin="0,8,0,0">
       <FaRepost Color="#777" FontSize="16" Margin="36,0,0,0" Dock="Left" />
       <StackPanel Orientation="Horizontal" Margin="8,1,0,0">
@@ -25,7 +25,7 @@
         <ParagraphText FontSize="14">reblogged this post</ParagraphText>
       </StackPanel>
     </DockPanel>
-  </WhileTrue>
+  </WhileTrue></WhileTrue>
 
   <DockPanel>
     <Image Url="{Property pc.account_avatar}" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" />
@@ -38,7 +38,7 @@
         </StackPanel>
         <Text Value="{Property pc.timesince}" FontSize="13" TextColor="#ddd" Font="Regular" Alignment="Right" />
       </Grid>
-      <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,0,4" />
+      <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,0,4" Clicked="{contentClicked}" />
       <Each Items="{Property pc.media_attachments}">
         <Panel ClipToBounds="true" Margin="0,4,0,4">
           <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" ContentAlignment="Center"></Image>

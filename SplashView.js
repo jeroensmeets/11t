@@ -2,6 +2,8 @@ var data = require( 'assets/js/data' );
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Collapsed';
 
+data.loadFromCache();
+
 if ( data.loadAccessToken() ) {
   router.goto( 'timeline' );
 } else {

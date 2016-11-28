@@ -30,23 +30,26 @@
 
     <StackPanel Dock="Top" Orientation="Horizontal" Visibility="{menuVisible}" Padding="0,8,0,6" Background="#484b57">
       <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,20,4" />
-      <Grid Columns="1*,1*,1*" Margin="0,0,0,0">
-        <StackPanel Orientation="Horizontal" Margin="2,0,4,0" Clicked="{goWrite}">
+      <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" Margin="2,0,12,0" Clicked="{goWrite}">
           <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Toot" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,4,0" Clicked="{goHome}">
+        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Clicked="{goHome}">
           <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Clicked="{goNotifications}">
+        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Clicked="{goNotifications}">
           <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-      </Grid>
+        <!-- <StackPanel Orientation="Horizontal" Clicked="{goFavorites}">
+          <FaStar Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+        </StackPanel> -->
+      </StackPanel>
     </StackPanel>
 
-    <Navigator DefaultPath="write">
+    <Navigator DefaultPath="splash">
       <SplashPage ux:Template="splash" router="router" />
       <LoginPage ux:Template="login" router="router" />
       <WritePage ux:Template="write" router="router" />

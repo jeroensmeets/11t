@@ -14,9 +14,17 @@ function favouritePost( args ) {
   data.favouritePost( args.data );
 }
 
+function contentClicked( args ) {
+  for (var i in args) {
+    console.log( i );
+    console.log( JSON.stringify( args[i] ) );
+  }
+}
+
 module.exports = {
   posts: data.posts.home,
   menuVisible: nav.menuVisible,
   rePost: rePost,
-  favouritePost: favouritePost
+  favouritePost: favouritePost,
+  contentClicked: contentClicked
 };
