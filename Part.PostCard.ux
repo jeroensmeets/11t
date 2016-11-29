@@ -1,4 +1,4 @@
-<StackPanel ux:Class="PostCard" ux:Name="pc" Margin="6,0,6,12">
+<StackPanel ux:Class="PostCard" ux:Name="pc" Margin="0,0,0,12">
   <int ux:Property="id" />
   <string ux:Property="timesince" />
   <int ux:Property="in_reply_to_id" />
@@ -30,13 +30,13 @@
   <DockPanel>
     <Image Url="{Property pc.account_avatar}" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" />
 
-    <StackPanel ux:Name="postcontent" Orientation="Vertical" Padding="8,6,8,0">
+    <StackPanel ux:Name="postcontent" Orientation="Vertical" Padding="8,4,8,0">
       <Grid Columns="8*,1*">
-        <StackPanel Orientation="Horizontal" ClipToBounds="True">
-          <Text Value="{Property pc.account_display_name}" FontSize="13" Font="Bold" TextColor="#fff" />
-          <Text Value="{Property pc.account_username}" FontSize="13" TextColor="#ddd" Font="Regular" Margin="8,0,0,0" />
+        <StackPanel Orientation="Horizontal" ClipToBounds="True" Margin="0,0,0,2">
+          <Text Value="{Property pc.account_username}" FontSize="13" TextColor="#ddd" Font="Regular" />
+          <Text Value="{Property pc.account_display_name}" FontSize="13" Font="Bold" TextColor="#fff" Margin="8,0,0,0" />
         </StackPanel>
-        <Text Value="{Property pc.timesince}" FontSize="15" TextColor="#ddd" Font="Regular" Alignment="Right" />
+        <Text Value="{Property pc.timesince}" FontSize="13" TextColor="#ddd" Font="Regular" Alignment="Right" />
       </Grid>
       <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,0,8" Clicked="{contentClicked}" />
       <Each Items="{Property pc.media_attachments}">

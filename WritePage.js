@@ -15,7 +15,7 @@ var txtToToot = this.Parameter.map( function( param ) {
     return param.account ? '@' + param.account + ' ' : '';
 });
 
-var cameraRoll = require("FuseJS/CameraRoll");
+// var cameraRoll = require("FuseJS/CameraRoll");
 
 function doToot() {
 
@@ -42,5 +42,5 @@ module.exports = {
   inReplyToPostId: inReplyToPostId,
   txtToToot: txtToToot,
   doToot: doToot,
-  selectImage: selectImage
+  // selectImage: selectImage
 }

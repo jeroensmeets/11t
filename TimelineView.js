@@ -19,7 +19,7 @@ function rePost( args ) {
 }
 
 function favouritePost( args ) {
-  console.log( 'favourite post in TimelineView.js' );
+  // console.log( 'favourite post in TimelineView.js' );
   data.favouritePost( args.data );
 }
 

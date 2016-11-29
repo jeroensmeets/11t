@@ -12,6 +12,7 @@ var posts = {
 }
 
 var msg = Observable('');
+var loading = Observable( false );
 
 var AccessToken     = Observable( false );
 var at_file         = "access_code.json";
@@ -83,10 +84,13 @@ function loadNotificationsTimeLine() {
 
 function loadTimeline( _type ) {
 
+  loading.value = true;
+
   loadFromCache( _type );
 
   if ( !loadAccessToken() ) {
     console.log( 'error loading access token' );
+    loading.value = false;
     return false;
   }
 
@@ -113,12 +117,14 @@ function loadTimeline( _type ) {
       );
 
       saveToCache();
+      loading.value = false;
 
     }
   ).catch(
 
     function( error ) {
       console.log( JSON.parse( error ) );
+      loading.value = false;
     }
 
   );
@@ -126,6 +132,8 @@ function loadTimeline( _type ) {
 }
 
 function sendPost( _txt, _inreplyto ) {
+
+  loading.value = true;
 
   if ( arguments.length < 2 ) {
     _inreplyto = 0;
@@ -136,6 +144,7 @@ function sendPost( _txt, _inreplyto ) {
     function( data ) {
 
       console.log( JSON.stringify( data ) );
+      loading.value = false;
 
     }
 
@@ -143,6 +152,7 @@ function sendPost( _txt, _inreplyto ) {
 
     function( error ) {
       console.log( JSON.parse( error ) );
+      loading.value = false;
     }
 
   );
@@ -274,5 +284,6 @@ module.exports = {
   rePost: rePost,
   favouritePost: favouritePost,
   posts: posts,
-  msg: msg
+  msg: msg,
+  loading: loading
 }

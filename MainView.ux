@@ -1,4 +1,6 @@
 <App Background="#282b37">
+  <Android.StatusBarConfig Color="#0003" IsVisible="True" />
+  <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
 
   <Font File="assets/fonts/NotoSans-Regular.ttf" ux:Global="Regular" />
   <Font File="assets/fonts/NotoSans-Bold.ttf" ux:Global="Bold" />
@@ -21,15 +23,18 @@
 
   <Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 
-  <Android.StatusBarConfig IsVisible="false" />
-
   <Router ux:Name="router" />
   <JavaScript File="MainView.js" />
 
   <DockPanel>
+    <StatusBarBackground Dock="Top" />
 
     <StackPanel Dock="Top" Orientation="Horizontal" Visibility="{menuVisible}" Padding="0,8,0,6" Background="#484b57">
-      <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,20,4" />
+      <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,24,4">
+        <WhileTrue Value="{loading}">
+          <Spin Frequency="2" />
+        </WhileTrue>
+      </Image>
       <StackPanel Orientation="Horizontal">
         <StackPanel Orientation="Horizontal" Margin="2,0,12,0" Clicked="{goWrite}">
           <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />

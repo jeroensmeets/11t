@@ -1,6 +1,7 @@
 var nav = require("assets/js/navigation");
-
 nav.menuVisible.value = 'Collapsed';
+
+var data = require("assets/js/data");
 
 function goHome() {
   router.goto( 'timeline' );
@@ -18,5 +19,6 @@ module.exports = {
   menuVisible: nav.menuVisible,
   goHome: goHome,
   goNotifications: goNotifications,
-  goWrite: goWrite
+  goWrite: goWrite,
+  loading: data.loading
 }

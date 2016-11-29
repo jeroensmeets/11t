@@ -1,6 +1,10 @@
 # README #
 
-Matodor is an iOs and Android app for [Mastodon](https://matodor.social), written in FuseTools. Soon in beta.
+Matodor is an iOs and Android app for [Mastodon](https://mastodon.social), written in FuseTools. In beta for Android, waiting for review by Apple for iOS beta test.
+
+### What are your plans for Matodor? ###
+
+My todo list is [on Trello](https://trello.com/b/as4ROroX/mastodon-app).
 
 ### Authentication ###
 
@@ -15,7 +19,6 @@ module.exports = {
   client_secret  : CLIENT_SECRET
 }
 ```
-
 
 For obtaining an client_id and client_secret see [this page](https://github.com/Gargron/mastodon/wiki/API#oauth-apps). As the WebView in FuseTools needs an existing redirect_uri, I have configured the subdomain above. Feel free to use it, but be aware that it could go away at any time.
 
