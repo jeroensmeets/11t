@@ -10,8 +10,12 @@ My todo list is [on Trello](https://trello.com/b/as4ROroX/mastodon-app).
 
 You are absolutely right! I'm building this app from scratch, so please be patient. The current version can show your timeline and your notifications, and you can write a toot without images, you can repost and add a favourite. And that's it.
 
-If you use an Apple (ios) device, you can send me your e-mail address at jeroen at jeroensmeets dot net. As long there are spots open, I'll add you to the beta group. The app is waiting for review by Apple, so it can take a couple of days before you hear from me (writing this on the 28th).
+## iOS ##
+If you use an Apple device, send me an e-mail at jeroen at jeroensmeets dot net. Important: I need the address that you use for logging into the App Store.
 
+As long there are spots open for the iOS test group, I'll add you to the beta group. The app is waiting for review by Apple, so it can take a couple of days before you hear from me (writing this on the 28th).
+
+## Android ##
 For Android, you can [visit this link](https://play.google.com/apps/testing/com.jeroensmeets.mastodon) on your mobile.
 
 ### What's up with this name? ###
