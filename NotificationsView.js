@@ -23,10 +23,15 @@ function favouritePost( args ) {
   data.favouritePost( args.data );
 }
 
+function gotoUser( args ) {
+  router.push( "userprofile", { userprofile: args.data.account } );
+}
+
 module.exports = {
   posts: data.posts.notifications,
   menuVisible: nav.menuVisible,
   replyToPost: replyToPost,
   rePost: rePost,
-  favouritePost: favouritePost
+  favouritePost: favouritePost,
+  gotoUser: gotoUser
 };

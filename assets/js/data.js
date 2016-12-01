@@ -2,13 +2,16 @@ var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
 var FILE_DATACACHE  = 'data.cache.json';
 
+var HtmlEnt         = require( 'assets/js/he/he.js' );
+
 // api credentials
 var api = require( 'assets/js/api' );
 
 var posts = {
   public        : Observable(),
   home          : Observable(),
-  notifications : Observable()
+  notifications : Observable(),
+  user          : Observable()
 }
 
 var msg = Observable('');
@@ -82,11 +85,28 @@ function loadNotificationsTimeLine() {
   loadTimeline( 'notifications' );
 }
 
-function loadTimeline( _type ) {
+function loadUserTimeLine( userid ) {
+  // console.log( JSON.stringify( userid ) );
+  loadTimeline( 'user', userid );
+}
+
+function refreshAllTimelines() {
+  for ( var i in posts ) {
+    loadTimeline( i );
+  }
+}
+
+function loadTimeline( _type, _id ) {
 
   loading.value = true;
 
-  loadFromCache( _type );
+  if ( 'user' != _type ) {
+    loadFromCache( _type );
+  } else {
+    if ( 1 == arguments.length ) {
+      return false;
+    }
+  }
 
   if ( !loadAccessToken() ) {
     console.log( 'error loading access token' );
@@ -96,7 +116,7 @@ function loadTimeline( _type ) {
 
   // console.log( 'loading public timeline with code ' + AccessToken.value );
 
-  api.loadPosts( _type, AccessToken.value ).then(
+  api.loadPosts( _type, AccessToken.value, _id ).then(
 
     function( data ) {
 
@@ -139,23 +159,30 @@ function sendPost( _txt, _inreplyto ) {
     _inreplyto = 0;
   }
 
-  api.sendPost( _txt, _inreplyto, AccessToken.value ).then(
+  return new Promise( function( resolve, reject ) {
 
-    function( data ) {
+    var _resolve = resolve;
+    var _reject = reject;
 
-      console.log( JSON.stringify( data ) );
-      loading.value = false;
+    api.sendPost( _txt, _inreplyto, AccessToken.value ).then(
 
-    }
+      function( data ) {
 
-  ).catch(
+        loading.value = false;
+        _resolve();
+      }
 
-    function( error ) {
-      console.log( JSON.parse( error ) );
-      loading.value = false;
-    }
+    ).catch(
 
-  );
+      function( error ) {
+        console.log( JSON.parse( error ) );
+        loading.value = false;
+        _reject();
+      }
+
+    );
+
+  });
 
 }
 
@@ -165,7 +192,7 @@ function rePost( _post ) {
 
     function( data ) {
 
-      _post.reblogged = true;
+      _post.reblogged = !_post.reblogged;
 
     }
 
@@ -189,7 +216,7 @@ function favouritePost( _post ) {
 
     function( data ) {
 
-      _post.favourited = true;
+      _post.favourited = !_post.favourited;
 
     }
   ).catch(
@@ -223,6 +250,7 @@ function MastodonNotification( info ) {
   } else {
 
     this.content            = this.status.content.replace( /<[^>]+>/ig, '' );
+    this.content            = HtmlEnt.decode( this.content );
     this.timesince          = timeSince( this.status.created_at );
     this.media_attachments  = this.status.media_attachments.slice(0, 1);
 
@@ -232,13 +260,13 @@ function MastodonNotification( info ) {
 
 function MastodonPost( info ) {
 
+  // console.log( JSON.stringify( info ) );
+
   this.isReblog     = ( null !== info.reblog );
 
   if ( this.isReblog ) {
     this.reblogname =  info.account.display_name;
     info            = info.reblog;
-  } else {
-    this.reblogname = null;
   }
 
   for (var i in info ) {
@@ -246,6 +274,7 @@ function MastodonPost( info ) {
   }
 
   this.content            = this.content.replace( /<[^>]+>/ig, '' );
+  this.content            = HtmlEnt.decode( this.content );
   this.timesince          = timeSince( this.created_at );
   this.media_attachments  = this.media_attachments.slice(0, 1);
 
@@ -280,6 +309,8 @@ module.exports = {
   loadPublicTimeline: loadPublicTimeline,
   loadHomeTimeLine: loadHomeTimeLine,
   loadNotificationsTimeLine: loadNotificationsTimeLine,
+  loadUserTimeLine: loadUserTimeLine,
+  refreshAllTimelines: refreshAllTimelines,
   sendPost: sendPost,
   rePost: rePost,
   favouritePost: favouritePost,

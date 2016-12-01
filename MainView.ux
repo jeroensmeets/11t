@@ -2,6 +2,8 @@
   <Android.StatusBarConfig Color="#0003" IsVisible="True" />
   <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
 
+  <MemoryPolicy ux:Global="QuickUnload" UnloadInBackground="true" UnusedTimeout="10" UnpinInvisible="true"/>
+
   <Font File="assets/fonts/NotoSans-Regular.ttf" ux:Global="Regular" />
   <Font File="assets/fonts/NotoSans-Bold.ttf" ux:Global="Bold" />
   <Font File="assets/fonts/NotoSans-Italic.ttf" ux:Global="Italic" />
@@ -30,11 +32,20 @@
     <StatusBarBackground Dock="Top" />
 
     <StackPanel Dock="Top" Orientation="Horizontal" Visibility="{menuVisible}" Padding="0,8,0,6" Background="#484b57">
-      <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,24,4">
-        <WhileTrue Value="{loading}">
-          <Spin Frequency="2" />
-        </WhileTrue>
-      </Image>
+
+      <!-- logo or back button -->
+      <WhileFalse Value="{showBackButton}">
+        <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,24,4">
+          <WhileTrue Value="{loading}">
+            <Spin Frequency="2" />
+          </WhileTrue>
+        </Image>
+      </WhileFalse>
+      <WhileTrue Value="{showBackButton}">
+        <Text Value="B" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" Clicked="{goBack}" />
+      </WhileTrue>
+
+      <!-- topmenu items -->
       <StackPanel Orientation="Horizontal">
         <StackPanel Orientation="Horizontal" Margin="2,0,12,0" Clicked="{goWrite}">
           <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
@@ -60,8 +71,12 @@
       <WritePage ux:Template="write" router="router" />
       <TimelinePage ux:Template="timeline" router="router" />
       <NotificationsPage ux:Template="notifications" router="router" />
+      <UserProfilePage ux:Template="userprofile" router="router" />
     </Navigator>
 
+    <Android>
+      <BottomBarBackground Dock="Bottom" />
+    </Android>
   </DockPanel>
 
 </App>

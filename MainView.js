@@ -15,6 +15,13 @@ function goWrite() {
   router.goto( 'write' );
 }
 
+var Lifecycle = require('FuseJS/Lifecycle');
+Lifecycle.on("enteringInteractive", function() {
+  // app activated
+  console.log( 'refreshing all timelines' );
+  data.refreshAllTimelines();
+});
+
 module.exports = {
   menuVisible: nav.menuVisible,
   goHome: goHome,

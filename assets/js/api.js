@@ -57,7 +57,7 @@ function sendPost( _txt, _inreplyto, access_token ) {
 
 }
 
-function loadPosts( posttype, access_token ) {
+function loadPosts( posttype, access_token, id ) {
 
   var endpoint = '';
   switch ( posttype ) {
@@ -66,6 +66,9 @@ function loadPosts( posttype, access_token ) {
       break;
     case 'notifications':
       endpoint = '/api/v1/notifications';
+      break;
+    case 'user':
+      endpoint = '/api/v1/accounts/' + id + '/statuses';
       break;
     case 'public':
     default:

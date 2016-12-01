@@ -3,11 +3,10 @@ nav.menuVisible.value = 'Visible';
 
 var Observable = require("FuseJS/Observable");
 
+var errorInSending = Observable( false );
+
 // get arguments passed by router
 var inReplyToPostId = this.Parameter.map( function( param ) {
-    return param.postid;
-});
-var inReplyToAccount = this.Parameter.map( function( param ) {
     return param.postid;
 });
 
@@ -20,11 +19,21 @@ var txtToToot = this.Parameter.map( function( param ) {
 function doToot() {
 
   var data = require( 'assets/js/data' );
-  data.sendPost( txtToToot.value, inReplyToPostId.value );
+  data.sendPost( txtToToot.value, inReplyToPostId.value ).then( function( result ) {
 
-  if ( inReplyToPostId.value > 0 ) {
-    router.goBack();
-  }
+    txtToToot.value = '';
+    if ( inReplyToPostId > 0 ) {
+      router.goBack();
+    } else {
+      router.push( "timeline" );
+    }
+
+  } ).catch( function( error ) {
+
+    errorInSending.value = true;
+
+  } );
+
 }
 
 function selectImage() {
@@ -42,5 +51,6 @@ module.exports = {
   inReplyToPostId: inReplyToPostId,
   txtToToot: txtToToot,
   doToot: doToot,
+  errorInSending: errorInSending
   // selectImage: selectImage
 }
