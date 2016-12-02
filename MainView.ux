@@ -59,9 +59,10 @@
           <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <!-- <StackPanel Orientation="Horizontal" Clicked="{goFavorites}">
-          <FaStar Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-        </StackPanel> -->
+        <StackPanel Orientation="Horizontal" Clicked="{goPublic}">
+          <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+          <Text Value="Public" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+        </StackPanel>
       </StackPanel>
     </StackPanel>
 
@@ -72,6 +73,7 @@
       <TimelinePage ux:Template="timeline" router="router" />
       <NotificationsPage ux:Template="notifications" router="router" />
       <UserProfilePage ux:Template="userprofile" router="router" />
+      <PublicTimelinePage ux:Template="publictimeline" router="router" />
     </Navigator>
 
     <Android>

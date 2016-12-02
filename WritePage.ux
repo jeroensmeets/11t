@@ -14,7 +14,7 @@
       </WhileTrue>
       <DockPanel Margin="0,24,0,0">
         <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{doToot}">
-          <Text Value="Toot" Color="#fff" />
+          <Text Value="Share" Color="#fff" />
         </Button>
         <!-- <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{selectImage}">
           <Text Value="Upload image" Color="#fff" />

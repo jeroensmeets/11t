@@ -15,6 +15,10 @@ function goWrite() {
   router.goto( 'write' );
 }
 
+function goPublic() {
+  router.goto( 'publictimeline' );
+}
+
 var Lifecycle = require('FuseJS/Lifecycle');
 Lifecycle.on("enteringInteractive", function() {
   // app activated
@@ -27,5 +31,6 @@ module.exports = {
   goHome: goHome,
   goNotifications: goNotifications,
   goWrite: goWrite,
+  goPublic: goPublic,
   loading: data.loading
 }

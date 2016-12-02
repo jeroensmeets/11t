@@ -1,0 +1,15 @@
+<Page ux:Class="PublicTimelinePage">
+  <Router ux:Dependency="router" />
+  <JavaScript File="PublicTimelineView.js" />
+
+  <ScrollView LayoutMode="PreserveVisual">
+    <StackPanel Orientation="Vertical">
+      <Each Items="{posts}">
+        <PostCard id="{id}" timesince="{timesince}" in_reply_to_id="{in_reply_to_id}" account_username="{account.username}" account_acct="{account.acct}" account_display_name="{account.display_name}" account_avatar="{account.avatar}" media_attachments="{media_attachments}" content="{content}" reblogs_count="{reblogs_count}" favourites_count="{favourites_count}" favourited="{favourited}" reblogged="{reblogged}" reblogname="{reblogname}" show_actions="True" />
+      </Each>
+      <WhileEmpty Items="{posts}">
+        <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">What??? Public timeline is empty?</Text>
+      </WhileEmpty>
+    </StackPanel>
+  </ScrollView>
+</Page>

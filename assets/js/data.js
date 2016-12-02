@@ -1,6 +1,7 @@
 var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
 var FILE_DATACACHE  = 'data.cache.json';
+var FILE_FAVOCACHE  = 'favourites.data.cache.json';
 
 var HtmlEnt         = require( 'assets/js/he/he.js' );
 
@@ -11,7 +12,8 @@ var posts = {
   public        : Observable(),
   home          : Observable(),
   notifications : Observable(),
-  user          : Observable()
+  user          : Observable(),
+  favourites    : Observable()
 }
 
 var msg = Observable('');
@@ -88,6 +90,10 @@ function loadNotificationsTimeLine() {
 function loadUserTimeLine( userid ) {
   // console.log( JSON.stringify( userid ) );
   loadTimeline( 'user', userid );
+}
+
+function loadUserFavourites() {
+
 }
 
 function refreshAllTimelines() {
@@ -186,13 +192,17 @@ function sendPost( _txt, _inreplyto ) {
 
 }
 
-function rePost( _post ) {
+function rePost( _postid, _currentstatus ) {
 
-  api.rePost( _post.id, AccessToken.value, _post.reblogged ).then(
+  api.rePost( _postid, AccessToken.value, _currentstatus ).then(
 
-    function( data ) {
+    function( result ) {
 
-      _post.reblogged = !_post.reblogged;
+      if ( result.err ) {
+        // TODO show this has gone wrong
+      } else {
+        updateAllOccurences( result.post, 'reblogged', !_currentstatus );
+      }
 
     }
 
@@ -206,27 +216,74 @@ function rePost( _post ) {
 
 }
 
-function favouritePost( _post ) {
+function favouritePost( _postid, _currentstatus ) {
 
-  console.log( JSON.stringify( _post ) );
+  api.favouritePost( _postid, AccessToken.value, _currentstatus ).then(
 
-  console.log( 'favourite post in data.js, post id is ' + _post.id );
+    function( result ) {
 
-  api.favouritePost( _post.id, AccessToken.value, _post.favourited ).then(
-
-    function( data ) {
-
-      _post.favourited = !_post.favourited;
+      if ( result.err ) {
+        // TODO show this has gone wrong
+      } else {
+        updateAllOccurences( result.post, 'favourited', !_currentstatus );
+      }
 
     }
   ).catch(
 
     function( error ) {
-      console.log( JSON.parse( error ) );
+      console.log( 'favourited returned in catch()' );
+      console.log( JSON.stringify( error ) );
     }
 
   );
 
+
+}
+
+function updateAllOccurences( _post, _parameter, _value ) {
+
+  for ( var i in posts ) {
+
+    // todo: both solutions below are not perfect and both do not update the screen (which is the only purpose of this function)
+
+    // posts[ i ].refreshAll(
+    //   [ _post ],
+    //   // compare on ID
+    //   function(oldItem, newItem){
+    //     return oldItem.id == newItem.id;
+    //   },
+    //   // update value
+    //   function(oldItem, newItem){
+    //     oldItem[ _parameter ] = _value;
+    //   }
+    //
+    // );
+
+    // // TODO two for loops, really?
+    // posts[ i ].forEach(
+    //   function( p ) {
+    //     // notification?
+    //     if ( 'boolean' == typeof p.isMention ) {
+    //
+    //       // wait! if this is a follow notification, we have no data about a post
+    //       if ( true !== p.isFollow ) {
+    //         if ( _postid == p.status.id ) {
+    //           console.log( ' >>> notification! setting ' + _parameter + ' for post ' + _postid + ' to ' + _value.toString() );
+    //           p.status[ _parameter ] = _value;
+    //         }
+    //       }
+    //
+    //     } else {
+    //       if ( _postid == p.id ) {
+    //         console.log( ' >>> regular post! setting ' + _parameter + ' for post ' + _postid + ' to ' + _value.toString() );
+    //         p[ _parameter ] = _value;
+    //       }
+    //     }
+    //   }
+    // );
+
+  }
 
 }
 
@@ -259,8 +316,6 @@ function MastodonNotification( info ) {
 }
 
 function MastodonPost( info ) {
-
-  // console.log( JSON.stringify( info ) );
 
   this.isReblog     = ( null !== info.reblog );
 
@@ -310,6 +365,7 @@ module.exports = {
   loadHomeTimeLine: loadHomeTimeLine,
   loadNotificationsTimeLine: loadNotificationsTimeLine,
   loadUserTimeLine: loadUserTimeLine,
+  loadUserFavourites: loadUserFavourites,
   refreshAllTimelines: refreshAllTimelines,
   sendPost: sendPost,
   rePost: rePost,

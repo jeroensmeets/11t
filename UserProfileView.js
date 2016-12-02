@@ -1,5 +1,5 @@
 var nav = require("assets/js/navigation");
-nav.menuVisible.value = 'Collapsed';
+nav.menuVisible.value = 'Visible';
 nav.showBackButton.value = true;
 
 var Observable = require("FuseJS/Observable");
@@ -11,7 +11,7 @@ var account = this.Parameter.map( function( param ) {
 
 var data = require( 'assets/js/data' );
 account.addSubscriber( function() {
-  data.loadUserTimeLine( account.getAt( 'id' ) );
+  // data.loadUserTimeLine( account.getAt( 'id' ) );
 })
 
 function goBack() {

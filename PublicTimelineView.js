@@ -1,8 +1,11 @@
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Visible';
+nav.showBackButton.value = true;
+
+var Observable = require("FuseJS/Observable");
 
 var data = require( 'assets/js/data' );
-data.loadHomeTimeLine();
+data.loadPublicTimeline();
 
 function replyToPost( args ) {
   router.push( "write", { postid: args.data.id, account: args.data.account.username } );
@@ -23,11 +26,15 @@ function gotoUser( args ) {
   router.push( "userprofile", { userprofile: args.data.account } );
 }
 
+function goBack() {
+	router.goBack();
+}
+
 module.exports = {
-  posts: data.posts.home,
-  menuVisible: nav.menuVisible,
+  posts: data.posts.public,
+  goBack: goBack,
   replyToPost: replyToPost,
   rePost: rePost,
   favouritePost: favouritePost,
   gotoUser: gotoUser
-};
+}

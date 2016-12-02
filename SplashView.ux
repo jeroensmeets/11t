@@ -6,7 +6,7 @@
     <StackPanel Orientation="Vertical">
       <Image File="assets/images/logo-mastodon.png" Width="140" Height="140" Margin="0,60,0,80"></Image>
       <!-- <Text Value="{msg}" Color="#ffffff" Alignment="Center" Font="Italic" /> -->
-      <Button Text="Login" Background="#fff" Color="#009bff" Margin="60" Padding="12">
+      <Button Text="Login" Background="#fff" Color="#009bff" Margin="60" Padding="12" Visibility="{loginButtonVisible}">
         <Clicked>
           <Callback Handler="{startOAuth}" />
         </Clicked>
@@ -17,7 +17,7 @@
       <StackPanel Orientation="Vertical">
         <Text Color="#ffffff" FontSize="11" Font="Regular">Built with FuseTools, JSO library for oAuth.</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">It uses the Noto font.</Text>
-        <Text Color="#ffffff" FontSize="11" Font="Regular">This is version 0.9.17</Text>
+        <Text Color="#ffffff" FontSize="11" Font="Regular">This is version 1.0.5</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">Suggestions? bugs? contact me at @jeroensmeets</Text>
       </StackPanel>
     </Panel>
