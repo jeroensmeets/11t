@@ -1,6 +1,6 @@
 # README #
 
-Matodor is an iOs and Android app for [Mastodon](https://mastodon.social), written in FuseTools. In beta for both Android and iOS.
+Matodor is an iOS and Android app for [Mastodon](https://mastodon.social), written in FuseTools. In beta for both Android and iOS.
 
 ### What are your plans for Matodor? ###
 
