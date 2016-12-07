@@ -13,7 +13,7 @@
             <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
             <ParagraphText FontSize="14" Color="#fff">reblogged your post</ParagraphText>
           </StackPanel>
-          <PostCard id="{id}" timesince="{timesince}" in_reply_to_id="{in_reply_to_id}" account_username="{status.account.username}" account_acct="{status.account.acct}" account_display_name="{status.account.display_name}" account_avatar="{status.account.avatar}" media_attachments="{media_attachments}" content="{content}" reblogs_count="{reblogs_count}" favourites_count="{favourites_count}" favourited="{favourited}" isReblog="True" reblogged="{reblogged}" reblogname="{reblogname}" show_actions="False" show_dimmed="True" />
+          <PostCard id="{id}" timesince="{timesince}" in_reply_to_id="{in_reply_to_id}" sensitive="{sensitive}" account_username="{status.account.username}" account_acct="{status.account.acct}" account_display_name="{status.account.display_name}" account_avatar="{account.avatar}" media_attachments="{media_attachments}" content="{content}" reblogs_count="{reblogs_count}" favourites_count="{favourites_count}" favourited="{favourited}" isReblog="True" reblogged="{reblogged}" reblogname="{reblogname}" show_actions="False" show_dimmed="True" />
         </WhileTrue>
 
         <WhileTrue Value="{isMention}">

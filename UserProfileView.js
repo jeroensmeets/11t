@@ -4,14 +4,13 @@ nav.showBackButton.value = true;
 
 var Observable = require("FuseJS/Observable");
 
-var account = this.Parameter.map( function( param ) {
-  // console.log( JSON.stringify( param.userprofile ) );
-  return param.userprofile;
+var userid = this.Parameter.map( function( param ) {
+  return param.userid;
 });
 
 var data = require( 'assets/js/data' );
-account.addSubscriber( function() {
-  // data.loadUserTimeLine( account.getAt( 'id' ) );
+userid.addSubscriber( function() {
+  data.loadUserProfile( userid );
 })
 
 function goBack() {
@@ -19,7 +18,7 @@ function goBack() {
 }
 
 module.exports = {
-  account: account,
+  account: data.userprofile,
   posts: data.posts.user,
   goBack: goBack
 }

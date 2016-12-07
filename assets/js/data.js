@@ -16,6 +16,9 @@ var posts = {
   favourites    : Observable()
 }
 
+// for showing a userprofile on UserProfileView.ux
+var userprofile = Observable();
+
 var msg = Observable('');
 var loading = Observable( false );
 
@@ -93,6 +96,37 @@ function loadUserTimeLine( userid ) {
 }
 
 function loadUserFavourites() {
+
+}
+
+function loadUserProfile( _userid ) {
+
+  // console.log( 'getting user profile for user id ' + _userid.value );
+
+  api.loadUserProfile( _userid.value, AccessToken.value ).then(
+
+    function( result ) {
+
+      if ( result.err ) {
+        // TODO show this has gone wrong
+        console.log( 'error in loading user profile: ' + JSON.stringify( result ) );
+      } else {
+        console.log( 'loaded user profile: ' + JSON.stringify( result ) );
+        var _userprofile = result.userprofile;
+        _userprofile.note = HtmlEnt.decode( _userprofile.note );
+        _userprofile.note = _userprofile.note.replace( /<[^>]+>/ig, '' );
+        userprofile.value = _userprofile;
+      }
+
+    }
+  ).catch(
+
+    function( error ) {
+      console.log( 'favourited returned in catch()' );
+      console.log( JSON.stringify( error ) );
+    }
+
+  );
 
 }
 
@@ -306,8 +340,7 @@ function MastodonNotification( info ) {
 
   } else {
 
-    this.content            = this.status.content.replace( /<[^>]+>/ig, '' );
-    this.content            = HtmlEnt.decode( this.content );
+    this.content            = preparePostContent( this.status );
     this.timesince          = timeSince( this.status.created_at );
     this.media_attachments  = this.status.media_attachments.slice(0, 1);
 
@@ -328,12 +361,144 @@ function MastodonPost( info ) {
     this[ i ] = info[ i ];
   }
 
-  this.content            = this.content.replace( /<[^>]+>/ig, '' );
-  this.content            = HtmlEnt.decode( this.content );
+  this.content            = preparePostContent( info );
   this.timesince          = timeSince( this.created_at );
+
+  // TODO show all attachments
   this.media_attachments  = this.media_attachments.slice(0, 1);
 
 }
+
+function preparePostContent( postdata ) {
+
+  console.log( JSON.stringify( postdata ) );
+
+  // replace HTML codes like &amp; and &gt;
+  var _content = HtmlEnt.decode( postdata.content );
+
+  // temporary replace urls to prevent splitting on spaces in linktext
+  var regex = /<[aA].*?\s+href=["']([^"']*)["'][^>]*>(?:<.*?>)*(.*?)(?:<.*?>)?<\/[aA]>/igm ;
+  var _uris = _content.match( regex );
+  if ( _uris && ( _uris.length > 0 ) ) {
+    for ( var i in _uris ) {
+      _content = _content.replace( _uris[ i ], '[[[[' + i );
+    }
+  }
+
+  // now remove al HTML tags
+  _content = _content.replace( /<[^>]+>/ig, '' );
+
+  var result = Observable();
+
+  var _words = _content.split( /\s/g );
+
+  // to make this construction as responsive as possible,
+  // I string words together until a link is found.
+  // var _stringWordsTogether = '';
+  for ( var i in _words ) {
+    if ( '[[[[' == _words[ i ].substring( 0, 4 ) ) {
+      // we hit a link. Anything in plaintext yet?
+      // if ( '' != _stringWordsTogether ) {
+      //   result.add( { word: _stringWordsTogether } );
+      //   _stringWordsTogether = '';
+      // }
+
+      // now add the link
+      var _linkId = Number.parseInt( _words[ i ].replace( '[[[[', '' ) );
+      var _linkTxt = _uris[ _linkId ].replace( /<[^>]+>/ig, '' );
+      // console.log( _linkTxt );
+
+      var _mentioner = postdata.mentions.filter( function (obj) { return '@' + obj.acct === _linkTxt; });
+      if ( _mentioner.length > 0 ) {
+        result.add( { mention: true, word: _linkTxt, makeBold: true, userid: _mentioner[0].id } );
+      } else if ( postdata.tags.some( function (obj) { return '@' + obj.hashtag === _linkTxt; }) ) {
+        // TODO add hashtags
+      } else if ( postdata.media_attachments.some( function (obj) { return ( _linkTxt.indexOf( obj.id ) > -1 ); }) ) {
+        // do not show the urls for media_attachments in the content
+      } else {
+        // TODO add actual link to array
+        console.log( _uris[ _linkId ] );
+        var _linkstart = _uris[ _linkId ].indexOf( 'href="' ) + 6;
+        // console.log( _linkstart );
+        var _linkend = _uris[ _linkId ].indexOf( '"', _linkstart );
+        // console.log( _linkEnd );
+        var _linkUrl = _uris[ _linkId ].substring( _linkstart, _linkend );
+        console.log( _linkUrl );
+        result.add( { link: true, word: _linkTxt, uri: _linkUrl, makeBold: true } );
+      }
+    } else {
+      //_stringWordsTogether += ' ' + _words[ i ];
+      result.add( { word: _words[ i ], makeBold: false } );
+    }
+  }
+
+  // if ( '' != _stringWordsTogether ) {
+  //   result.add( { word: _stringWordsTogether } );
+  // }
+
+  return result;
+
+}
+
+// function preparePostContentOld( postdata ) {
+//
+//   var _placeholder = 'PLCHLDRAEOE';
+//
+//   // replace HTML codes like &amp; and &gt;
+//   var _content = HtmlEnt.decode( postdata.content );
+//
+//   // temporary replace urls to prevent splitting on spaces in linktext
+//   var regex = /<[aA].*?\s+href=["']([^"']*)["'][^>]*>(?:<.*?>)*(.*?)(?:<.*?>)?<\/[aA]>/igm ;
+//   var _uris = _content.match( regex );
+//   if ( _uris && ( _uris.length > 0 ) ) {
+//     for ( var i in _uris ) {
+//       _content = _content.replace( _uris[ i ], _placeholder + i );
+//     }
+//   }
+//
+//   // now remove al HTML tags
+//   _content = _content.replace( /<[^>]+>/ig, '' );
+//
+//   var result = Observable();
+//
+//   // _words = _content.split( /\b/g );
+//   _words = _content.split( /\s/g );
+//   for ( var i in _words ) {
+//
+//     // So take a look at me now Well there's just an empty space
+//     if ( ' ' == _words[ i ] ) {
+//       // TODO adjust regex to not report spaces
+//     } else if ( 0 == _words[ i ].indexOf( _placeholder ) ) {
+//       // we've got a link
+//       var _linkId = Number.parseInt( _words[ i ].replace( _placeholder, '' ) );
+//       var _linkTxt = _uris[ _linkId ].replace( /<[^>]+>/ig, '' );
+//       console.log( _linkTxt );
+//       if ( postdata.mentions.some( function (obj) { return '@' + obj.acct === _linkTxt; }) ) {
+//         result.add( { word: _linkTxt, makeBold: true, username: _linkTxt } );
+//       } else if ( postdata.media_attachments.some( function (obj) { return ( _linkTxt.indexOf( obj.id ) > -1 ); }) ) {
+//         // do not show the urls for media_attachments in the content
+//       }
+//     } else {
+//       result.add( { word: _words[ i ], makeBold: false } );
+//     }
+//     //
+//     //
+//     //
+//     //
+//     // if ( postdata.media_attachments.some( function (obj) { return ( _words[ i ].indexOf( obj.id ) > -1 ); }) ) {
+//     //   // do not show the urls for media_attachments in the content
+//     // } else if ( postdata.mentions.some( function (obj) { return '@' + obj.acct === _words[ i ]; }) ) {
+//     //   result.add( { word: _words[ i ], mention: true, username: _words[ i ], tag: false } );
+//     // } else if ( postdata.tags.some( function (obj) { return '#' + obj.name === _words[ i ]; }) ) {
+//     //   result.add( { word: _words[ i ], mention: false, tag: true, tagname: _words[ i ] } );
+//     // } else {
+//     //   result.add( { word: _words[ i ], mention: false, tag: false } );
+//     // }
+//
+//   }
+//
+//   return result;
+// }
 
 function timeSince(date) {
 
@@ -365,6 +530,7 @@ module.exports = {
   loadHomeTimeLine: loadHomeTimeLine,
   loadNotificationsTimeLine: loadNotificationsTimeLine,
   loadUserTimeLine: loadUserTimeLine,
+  loadUserProfile: loadUserProfile,
   loadUserFavourites: loadUserFavourites,
   refreshAllTimelines: refreshAllTimelines,
   sendPost: sendPost,
@@ -372,5 +538,6 @@ module.exports = {
   favouritePost: favouritePost,
   posts: posts,
   msg: msg,
-  loading: loading
+  loading: loading,
+  userprofile: userprofile
 }

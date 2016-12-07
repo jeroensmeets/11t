@@ -4,7 +4,10 @@
 
   <ScrollView LayoutMode="PreserveVisual">
     <StackPanel Orientation="Vertical">
-      <Image Url="{account.avatar}" Height="240" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center" Margin="0,0,0,16" Clicked="{goBack}" />
+      <StackPanel Margin="0,0,0,16" Clicked="{goBack}">
+        <Image Url="{account.header}" Height="280" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="TopCenter"  Layer="Background" />
+        <Image Url="{account.avatar}" Height="160" Width="160" Margin="0,60,0,60" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center" />
+      </StackPanel>
       <StackPanel Orientation="Horizontal" ClipToBounds="True" Margin="16,0,24,0">
         <Text Value="@" FontSize="13" TextColor="#ddd" Font="Regular" /><Text Value="{account.username}" FontSize="13" TextColor="#ddd" Font="Regular" />
         <Text Value="{account.display_name}" FontSize="13" Font="Bold" TextColor="#fff" Margin="8,0,0,0" />

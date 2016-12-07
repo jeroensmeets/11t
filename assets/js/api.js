@@ -194,6 +194,44 @@ function favouritePost( _postId, access_token, unFavourite ) {
 
 }
 
+function loadUserProfile( _userid, access_token ) {
+
+  // create promise
+  var upEmitter = new EventEmitter( 'loadUserProfileEnded' );
+
+  console.log( _userid );
+
+  fetch( BASE_URL + 'api/v1/accounts/' + _userid, {
+      method: 'GET',
+      headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer ' + access_token
+      }
+  })
+  .then( function( resp ) {
+      console.log( 'LUP3:' + resp.status );
+      if ( 200 == resp.status ) {
+          console.log( 'LUP3A' );
+          return resp.json();
+      } else {
+          console.log( 'LUP3B: ' + JSON.stringify( resp ) );
+          upEmitter.emit( 'loadUserProfileEnded', { err: true, status: resp.status, msg: resp.statusText } );
+      }
+  })
+  .then( function( json ) {
+    console.log( 'LUP4' );
+    upEmitter.emit( 'loadUserProfileEnded', { err: false, userprofile: json } );
+  })
+  .catch( function( err ) {
+    console.log( 'LUP5' );
+    console.log( JSON.stringify( err ) );
+    upEmitter.emit( 'loadUserProfileEnded', { err: true } );
+  });
+
+  return upEmitter.promiseOf( 'loadUserProfileEnded' );
+
+}
+
 function getAccessToken( auth_token ) {
 
   return new Promise( function( resolve, reject ) {
@@ -287,6 +325,7 @@ module.exports = {
   sendPost: sendPost,
   rePost: rePost,
   favouritePost: favouritePost,
+  loadUserProfile: loadUserProfile,
   parseUri: parseUri,
   getAccessToken: getAccessToken
 }

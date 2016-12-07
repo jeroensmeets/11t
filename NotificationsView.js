@@ -1,3 +1,5 @@
+var InterApp = require("FuseJS/InterApp");
+
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Visible';
 
@@ -21,11 +23,21 @@ function gotoUser( args ) {
   router.push( "userprofile", { userprofile: args.data.account } );
 }
 
+function wordClicked( args ) {
+  // console.log( JSON.stringify( args.data ) );
+  if ( args.data.mention ) {
+    router.push( "userprofile", { userid: args.data.userid } );
+  } else if ( args.data.link ) {
+    InterApp.launchUri( args.data.uri );
+  }
+}
+
 module.exports = {
   posts: data.posts.notifications,
   menuVisible: nav.menuVisible,
   replyToPost: replyToPost,
   rePost: rePost,
   favouritePost: favouritePost,
-  gotoUser: gotoUser
+  gotoUser: gotoUser,
+  wordClicked: wordClicked
 };

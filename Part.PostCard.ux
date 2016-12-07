@@ -2,12 +2,13 @@
   <int ux:Property="id" />
   <string ux:Property="timesince" />
   <int ux:Property="in_reply_to_id" />
+  <bool ux:Property="sensitive" />
   <string ux:Property="account_username" />
   <string ux:Property="account_acct" />
   <string ux:Property="account_display_name" />
   <string ux:Property="account_avatar" />
   <object ux:Property="media_attachments" />
-  <string ux:Property="content" />
+  <object ux:Property="content" />
   <int ux:Property="reblogs_count" />
   <int ux:Property="favourites_count" />
   <bool ux:Property="favourited" />
@@ -28,26 +29,58 @@
   </WhileTrue>
 
   <DockPanel>
-    <Image Url="{Property pc.account_avatar}" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" Clicked="{gotoUser}" />
+    <Panel Height="54" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" Clicked="{gotoUser}">
+      <Image ux:Name="avatarError" File="assets/images/logo-mastodon.png" Width="54" Height="54" ContentAlignment="Center" Visibility="Collapsed" Opacity="1" />
+      <Image Url="{Property pc.account_avatar}" Width="54" Height="54" StretchMode="UniformToFill" ContentAlignment="Center">
+        <WhileFailed>
+          <Change avatarError.Visibility="Visible" />
+        </WhileFailed>
+        <WhileLoading>
+          <Change avatarError.Visibility="Visible" />
+          <Change avatarError.Opacity=".3" />
+        </WhileLoading>
+      </Image>
+    </Panel>
 
     <StackPanel ux:Name="postcontent" Orientation="Vertical" Padding="8,4,8,0">
       <Grid Columns="8*,1*">
-        <StackPanel Orientation="Horizontal" ClipToBounds="True" Margin="0,0,0,2">
-          <Text Value="{Property pc.account_username}" FontSize="13" TextColor="#ddd" Font="Regular" />
+        <StackPanel Orientation="Horizontal" ClipToBounds="True" Margin="0,0,0,2" Clicked="{gotoUser}">
+          <Text Value="{Property pc.account_acct}" FontSize="13" TextColor="#ddd" Font="Regular" />
           <Text Value="{Property pc.account_display_name}" FontSize="13" Font="Bold" TextColor="#fff" Margin="8,0,0,0" />
         </StackPanel>
         <Text Value="{Property pc.timesince}" FontSize="13" TextColor="#ddd" Font="Regular" Alignment="Right" />
       </Grid>
-      <Text Value="{Property pc.content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,0,8" Clicked="{contentClicked}" />
-      <Each Items="{Property pc.media_attachments}">
-        <Panel ClipToBounds="true" Margin="0,4,0,4">
-          <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center"></Image>
-        </Panel>
-      </Each>
+      <WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,8,0,0">
+        <Each Items="{Property pc.content}">
+          <Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,2,2" LoadAsync="True">
+            <WhileTrue Value="{makeBold}">
+              <Change word.Font="Bold" />
+              <Clicked Handler="{wordClicked}" />
+            </WhileTrue>
+          </Text>
+        </Each>
+      </WrapPanel>
+
+      <WhileTrue Value="{sensitive}">
+        <TextView Value="This post has been marked as sensitive. This betaversion of Matodor hides the images attached." Margin="16" Font="Italic" FontSize="14" TextColor="#777" TextWrapping="Wrap" />
+      </WhileTrue>
+
+      <WhileFalse Value="{sensitive}">
+        <Each Items="{Property pc.media_attachments}">
+          <Panel ClipToBounds="true" Margin="0,12,0,0">
+            <Image ux:Name="error" File="assets/images/logo-mastodon.png" Height="160" ContentAlignment="Center" Visibility="Collapsed" />
+            <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center">
+              <WhileFailed>
+                <Change error.Visibility="Visible" />
+              </WhileFailed>
+            </Image>
+          </Panel>
+        </Each>
+      </WhileFalse>
 
       <WhileTrue Value="{Property pc.show_actions}">
-        <StackPanel Orientation="Horizontal">
-          <FaReply Color="#777" FontSize="18" Margin="0,0,12,0">
+        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+          <FaReply Color="#777" FontSize="18" Margin="4,0,12,0">
             <Clicked Handler="{replyToPost}" />
           </FaReply>
           <FaRepost ux:Name="icoreblogged" Color="#777" FontSize="18" Margin="0,0,4,0">

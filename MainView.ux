@@ -35,7 +35,7 @@
 
       <!-- logo or back button -->
       <WhileFalse Value="{showBackButton}">
-        <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,24,4">
+        <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,24,4" Clicked="{refreshData}">
           <WhileTrue Value="{loading}">
             <Spin Frequency="2" />
           </WhileTrue>
