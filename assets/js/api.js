@@ -4,7 +4,7 @@ var auth            = require("assets/js/auth");
 
 var BASE_URL        = 'https://mastodon.social/';
 
-function sendPost( _txt, _inreplyto, access_token ) {
+function sendPost( _txt, _inreplyto, _media_ids, access_token ) {
 
   // POST /api/v1/statuses
   // Form data:
@@ -19,12 +19,16 @@ function sendPost( _txt, _inreplyto, access_token ) {
       reject( Error( 'Post content empty (P001)' ) );
     }
 
-    var _bodyArgs = {
-        'status' : _txt
-    };
+    var _bodyArgs = {};
+
+    _bodyArgs.status = _txt;
 
     if ( _inreplyto > 0 )  {
       _bodyArgs.in_reply_to_id = _inreplyto;
+    }
+
+    if ( _media_ids.length > 0 ) {
+      _bodyArgs.media_ids = _media_ids;
     }
 
     fetch( BASE_URL + 'api/v1/statuses', {
@@ -80,7 +84,7 @@ function loadPosts( posttype, access_token, id ) {
 
   return new Promise( function( resolve, reject ) {
 
-    console.log( 'LD2: ' + access_token );
+    console.log( 'LD2' ); // + access_token );
 
     fetch( BASE_URL + endpoint, {
         method: 'GET',
@@ -95,17 +99,17 @@ function loadPosts( posttype, access_token, id ) {
             console.log( 'LD3A' );
             return resp.json();
         } else {
-            console.log( 'LD3B' );
-            reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+            console.log( 'api.loadPosts returned status ' + resp.status );
+            reject( 'Netwerk error: cannot fetch posts (1003)' );
         }
     })
     .then( function( json ) {
-      console.log( 'LD4' );
+      // console.log( 'LD4' );
       resolve( json );
     })
     .catch( function( err ) {
-      console.log( 'LD5' );
-      reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+      console.log( 'api.loadPosts caused error' );
+      reject( 'Netwerk error: cannot fetch posts (1004)' );
     });
   });
 
@@ -130,21 +134,21 @@ function rePost( _postId, access_token, unRepost ) {
     }
   })
   .then( function( resp ) {
-    console.log( 'LD3: ' + resp.status );
+    // console.log( 'LD3: ' + resp.status );
     if ( 200 == resp.status ) {
-      console.log( 'LD3A' );
+      // console.log( 'LD3A' );
       return resp.json();
     } else {
-      console.log( 'LD3B' );
+      // console.log( 'LD3B' );
       repostEmitter.emit( 'rePostEnded', { err: true } );
     }
   })
   .then( function( json ) {
-    console.log( 'LD4' );
+    // console.log( 'LD4' );
     repostEmitter.emit( 'rePostEnded', { err: false, post: json } );
   })
   .catch( function( err ) {
-    console.log( 'LD5' );
+    // console.log( 'LD5' );
     repostEmitter.emit( 'rePostEnded', { err: true } );
   });
 
@@ -172,21 +176,21 @@ function favouritePost( _postId, access_token, unFavourite ) {
       }
   })
   .then( function( resp ) {
-      console.log( 'LD3' );
+      // console.log( 'LD3' );
       if ( 200 == resp.status ) {
-          console.log( 'LD3A' );
+          // console.log( 'LD3A' );
           return resp.json();
       } else {
-          console.log( 'LD3B' );
+          // console.log( 'LD3B' );
           favEmitter.emit( 'favouritePostEnded', { err: true } );
       }
   })
   .then( function( json ) {
-    console.log( 'LD4' );
+    // console.log( 'LD4' );
     favEmitter.emit( 'favouritePostEnded', { err: false, post: json } );
   })
   .catch( function( err ) {
-    console.log( 'LD5' );
+    // console.log( 'LD5' );
     favEmitter.emit( 'favouritePostEnded', { err: true } );
   });
 
@@ -199,7 +203,7 @@ function loadUserProfile( _userid, access_token ) {
   // create promise
   var upEmitter = new EventEmitter( 'loadUserProfileEnded' );
 
-  console.log( _userid );
+  // console.log( _userid );
 
   fetch( BASE_URL + 'api/v1/accounts/' + _userid, {
       method: 'GET',
@@ -209,22 +213,22 @@ function loadUserProfile( _userid, access_token ) {
       }
   })
   .then( function( resp ) {
-      console.log( 'LUP3:' + resp.status );
+      // console.log( 'LUP3:' + resp.status );
       if ( 200 == resp.status ) {
-          console.log( 'LUP3A' );
+          // console.log( 'LUP3A' );
           return resp.json();
       } else {
-          console.log( 'LUP3B: ' + JSON.stringify( resp ) );
+          // console.log( 'LUP3B: ' + JSON.stringify( resp ) );
           upEmitter.emit( 'loadUserProfileEnded', { err: true, status: resp.status, msg: resp.statusText } );
       }
   })
   .then( function( json ) {
-    console.log( 'LUP4' );
+    // console.log( 'LUP4' );
     upEmitter.emit( 'loadUserProfileEnded', { err: false, userprofile: json } );
   })
   .catch( function( err ) {
-    console.log( 'LUP5' );
-    console.log( JSON.stringify( err ) );
+    // console.log( 'LUP5' );
+    // console.log( JSON.stringify( err ) );
     upEmitter.emit( 'loadUserProfileEnded', { err: true } );
   });
 
@@ -236,7 +240,7 @@ function getAccessToken( auth_token ) {
 
   return new Promise( function( resolve, reject ) {
 
-    console.log( 'posting request for access_token with auth_token ' + auth_token );
+    // console.log( 'posting request for access_token with auth_token ' + auth_token );
 
     var _headerArgs = {
       'Accept': 'application/json',
@@ -252,7 +256,7 @@ function getAccessToken( auth_token ) {
         'client_secret' : auth.client_secret
     };
 
-    console.log( JSON.stringify( _bodyArgs ) );
+    // console.log( JSON.stringify( _bodyArgs ) );
 
     fetch( BASE_URL + 'oauth/token', {
         method: 'POST',
@@ -261,23 +265,23 @@ function getAccessToken( auth_token ) {
         // body: _args
     })
     .then( function( resp ) {
-        console.log( 'AT3: ' + resp.status );
+        // console.log( 'AT3: ' + resp.status );
         if ( 200 == resp.status ) {
-            console.log( 'AT3A' );
+            // console.log( 'AT3A' );
             return resp.json();
         } else {
-            console.log( 'AT3B' );
-            console.log( JSON.stringify( resp ) );
+            // console.log( 'AT3B' );
+            // console.log( JSON.stringify( resp ) );
             reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
         }
     })
     .then( function( json ) {
-      console.log( 'AT4' );
-      console.log( json );
+      // console.log( 'AT4' );
+      // console.log( json );
       resolve( json );
     })
     .catch( function( err ) {
-      console.log( 'AT5' );
+      // console.log( 'AT5' );
       reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
     });
 

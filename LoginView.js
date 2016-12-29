@@ -55,7 +55,7 @@ function webViewUrlChanged( ) {
         // "scope":"public"}
         console.log( 'received access token ' + access_token.access_token );
         var data = require( 'assets/js/data' );
-        if ( data.saveAccessToken( JSON.stringify( access_token ) ) ) {
+        if ( data.saveAccessToken( access_token ) ) {
           console.log( 'saved access token to file' );
           router.goto( 'timeline' );
         } else {

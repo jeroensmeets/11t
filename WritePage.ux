@@ -1,5 +1,6 @@
 <Page ux:Class="WritePage">
   <Router ux:Dependency="router" />
+  <Uploader ux:Global="Uploader" />
   <JavaScript File="WritePage.js" />
 
   <Panel>
@@ -9,16 +10,24 @@
           <Text TextWrapping="Wrap" Margin="4">What's on your mind?</Text>
         </WhileString>
       </TextView>
+      <StackPanel Orientation="Horizontal">
+        <ColumnLayout ColumnCount="4" />
+        <Each Items="{attachments}">
+          <Panel Background="#333" Padding="3" MinHeight="100">
+            <Image ux:Name="uploadpreview" StretchMode="UniformToFill" Url="{preview_url}" />
+          </Panel>
+        </Each>
+      </StackPanel>
       <WhileTrue Value="{errorInSending}">
         <Text Value="Could not send your toot at this time. Sorry!" TextWrapping="Wrap" Color="#fff" Font="Italic" Margin="0,12,0,0" />
       </WhileTrue>
+      <WhileTrue Value="{errorTooManyImages}">
+        <Text Value="You can attach a maximum of 4 images to one post." TextWrapping="Wrap" Color="#fff" Font="Italic" Margin="0,12,0,0" />
+      </WhileTrue>
       <DockPanel Margin="0,24,0,0">
-        <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{doToot}">
-          <Text Value="Share" Color="#fff" />
-        </Button>
-        <!-- <Button Dock="Right" Padding="16" Color="#282b37" Clicked="{selectImage}">
-          <Text Value="Upload image" Color="#fff" />
-        </Button> -->
+        <MatodorButton Dock="Left" text="Cancel" Clicked="{emptyScreenAndReturn}" />
+        <MatodorButton Dock="Right" text="Share" Clicked="{doToot}" />
+        <MatodorButton Dock="Right" text="Upload image" Clicked="{selectImage}" />
       </DockPanel>
     </StackPanel>
   </Panel>

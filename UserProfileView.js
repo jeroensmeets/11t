@@ -11,6 +11,7 @@ var userid = this.Parameter.map( function( param ) {
 var data = require( 'assets/js/data' );
 userid.addSubscriber( function() {
   data.loadUserProfile( userid );
+  data.loadUserTimeLine( userid );
 })
 
 function goBack() {

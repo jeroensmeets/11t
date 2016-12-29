@@ -14,7 +14,7 @@
   "Description": "An app to tame the Mastodon",
   "Copyright": "Copyright ©2016 someone & me",
   "Version": "1.0",
-  "VersionCode": 6,
+  "VersionCode": 7,
   "RootNamespace": "com.jeroensmeets",
   "Mobile": {
     "Orientations": "Portrait"

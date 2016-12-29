@@ -5,25 +5,25 @@
   <ScrollView LayoutMode="PreserveVisual">
     <StackPanel Orientation="Vertical">
       <StackPanel Margin="0,0,0,16" Clicked="{goBack}">
-        <Image Url="{account.header}" Height="280" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="TopCenter"  Layer="Background" />
-        <Image Url="{account.avatar}" Height="160" Width="160" Margin="0,60,0,60" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center" />
+        <Image Url="{account.header}" Height="240" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="TopCenter" Layer="Background" />
+        <Image Url="{account.avatar}" Height="160" Width="160" Margin="0,40,0,40" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center" />
       </StackPanel>
       <StackPanel Orientation="Horizontal" ClipToBounds="True" Margin="16,0,24,0">
-        <Text Value="@" FontSize="13" TextColor="#ddd" Font="Regular" /><Text Value="{account.username}" FontSize="13" TextColor="#ddd" Font="Regular" />
+        <Text Value="@" FontSize="13" TextColor="#ddd" Font="Regular" /><Text Value="{account.acct}" FontSize="13" TextColor="#ddd" Font="Regular" />
         <Text Value="{account.display_name}" FontSize="13" Font="Bold" TextColor="#fff" Margin="8,0,0,0" />
       </StackPanel>
       <Text TextWrapping="Wrap" FontSize="13" TextColor="#ddd" Font="Regular" Margin="16,16,24,0" Value="{account.note}" />
-      <StackPanel Orientation="Horizontal" ClipToBounds="True" Margin="16,16,24,0">
+      <StackPanel Orientation="Horizontal" ClipToBounds="True" Margin="16,16,24,16">
         <Text Value="{account.statuses_count}" FontSize="13" TextColor="#ddd" Font="Regular" Margin="0,0,4,0" />
         <Text Value="posts written." FontSize="13" Font="Regular" TextColor="#fff" />
       </StackPanel>
 
-      <!-- <Each Items="{posts}">
-        <PostCard id="{id}" timesince="{timesince}" in_reply_to_id="{in_reply_to_id}" account_username="{account.username}" account_acct="{account.acct}" account_display_name="{account.display_name}" account_avatar="{account.avatar}" media_attachments="{media_attachments}" content="{content}" reblogs_count="{reblogs_count}" favourites_count="{favourites_count}" favourited="{favourited}" reblogged="{reblogged}" reblogname="{reblogname}" show_actions="True" />
+      <Each Items="{posts}">
+        <PostCard />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>
-      </WhileEmpty> -->
+      </WhileEmpty>
     </StackPanel>
   </ScrollView>
 </Page>

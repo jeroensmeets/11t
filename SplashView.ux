@@ -17,7 +17,7 @@
       <StackPanel Orientation="Vertical">
         <Text Color="#ffffff" FontSize="11" Font="Regular">Built with FuseTools, JSO library for oAuth.</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">It uses the Noto font.</Text>
-        <Text Color="#ffffff" FontSize="11" Font="Regular">This is version 1.0.5</Text>
+        <Text Color="#ffffff" FontSize="11" Font="Regular">This is version 1.0.7</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">Suggestions? bugs? contact me at @jeroensmeets</Text>
       </StackPanel>
     </Panel>
