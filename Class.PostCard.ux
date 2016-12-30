@@ -1,30 +1,114 @@
-<StackPanel ux:Class="PostCard" ux:Name="pc" Margin="0,0,0,12">
+<StackPanel ux:Class="PostCard" ux:Name="pc">
 
+  <int ux:Property="postid" />
+  <int ux:Property="userid" />
+  <bool ux:Property="favourited" />
+  <bool ux:Property="reposted" />
   <bool ux:Property="show_actions" />
   <bool ux:Property="show_dimmed" />
+  <bool ux:Property="drawlines" />
 
-  <WhileTrue Value="{isReblog}">
+  <Router ux:Dependency="router" />
+
+  <JavaScript>
+
+    var _this = this;
+
+    var data = require( 'assets/js/data' );
+
+    var Observable = require("FuseJS/Observable");
+    var favouriting = Observable( false );
+    var reposting = Observable( false );
+
+    var userid = 0; this.userid.onValueChanged( function( newValue ) { userid = newValue; })
+    var postid = 0; this.postid.onValueChanged( function( newValue ) { postid = newValue; })
+    var favourited = false; this.favourited.onValueChanged( function( newValue ) { favourited = newValue; })
+    var reposted = false; this.reposted.onValueChanged( function( newValue ) { reposted = newValue; })
+
+    function replyToPost( args ) {
+      router.push( "write", { postid: postid } );
+    }
+
+    function rePost( args ) {
+      reposting.value = true;
+      data.rePost( postid, reposted ).then( function() {
+        _this.reposted.value = !_this.reposted.value;
+        reposting.value = false;
+      }).catch( function( err ) {
+        console.log( 'error in rePost' );
+        console.log( JSON.stringify( err ) );
+        reposting.value = false;
+      });
+    }
+
+    function favouritePost( args ) {
+      favouriting.value = true;
+      data.favouritePost( postid, favourited ).then( function() {
+        _this.favourited.value = !_this.favourited.value;
+        favouriting.value = false;
+      }).catch( function( err ) {
+        console.log( 'error in favouritePost' );
+        console.log( JSON.stringify( err ) );
+        favouriting.value = false;
+      });
+    }
+
+    function gotoPost() {
+      if ( postid > 0 ) {
+        router.push( "postcontext", { postid: postid } );
+      }
+    }
+
+    function gotoUser() {
+      if ( userid > 0 ) {
+        router.push( "userprofile", { userid: userid } );
+      }
+    }
+
+    module.exports = {
+      replyToPost: replyToPost,
+      rePost: rePost,
+      reposting: reposting,
+      favouritePost: favouritePost,
+      favouriting: favouriting,
+      gotoUser: gotoUser,
+      gotoPost: gotoPost
+    };
+  </JavaScript>
+
+  <!-- <WhileTrue Value="{isReblog}">
     <DockPanel Margin="0,8,0,0">
       <FaRepost Color="#fff" FontSize="16" Margin="36,0,0,0" Dock="Left" />
       <StackPanel Orientation="Horizontal" Margin="8,1,0,0">
-        <ParagraphText Color="#fff" FontSize="14" Value="{reblogname}" Margin="0,0,5,0" />
+        <ParagraphText Color="#fff" FontSize="14" Value="{whodidthis}" Margin="0,0,5,0" />
         <ParagraphText Color="#fff" FontSize="14">reblogged this post</ParagraphText>
       </StackPanel>
     </DockPanel>
-  </WhileTrue>
+  </WhileTrue> -->
 
   <DockPanel>
+    <WhileTrue Value="{Property pc.drawlines}">
+      <Rectangle Width="1" Margin="30,68,0,0" Color="#777" Layer="Background" Alignment="Left" />
+    </WhileTrue>
     <Panel Height="54" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" Clicked="{gotoUser}">
       <Image ux:Name="avatarError" File="assets/images/logo-mastodon.png" Width="54" Height="54" ContentAlignment="Center" Visibility="Collapsed" Opacity="1" />
-      <Image Url="{account.avatar}" Width="54" Height="54" StretchMode="UniformToFill" ContentAlignment="Center">
-        <WhileFailed>
-          <Change avatarError.Visibility="Visible" />
-        </WhileFailed>
-        <WhileLoading>
-          <Change avatarError.Visibility="Visible" />
-          <Change avatarError.Opacity=".3" />
-        </WhileLoading>
-      </Image>
+      <WhileTrue Value="{isGifAvatar}">
+        <NativeViewHost>
+          <WebView Url="{account.avatar}" />
+          <Rectangle Color="#282b37" Layer="Background" />
+        </NativeViewHost>
+      </WhileTrue>
+      <WhileFalse Value="{isGifAvatar}">
+        <Image Url="{account.avatar}" Width="54" Height="54" StretchMode="UniformToFill" ContentAlignment="Center">
+          <WhileFailed>
+            <Change avatarError.Visibility="Visible" />
+          </WhileFailed>
+          <WhileLoading>
+            <Change avatarError.Visibility="Visible" />
+            <Change avatarError.Opacity=".3" />
+          </WhileLoading>
+        </Image>
+      </WhileFalse>
     </Panel>
 
     <StackPanel ux:Name="postcontent" Orientation="Vertical" Padding="8,4,8,0">
@@ -35,7 +119,7 @@
         </StackPanel>
         <Text Value="{timesince}" FontSize="13" TextColor="#ddd" Font="Regular" Alignment="Right" />
       </Grid>
-      <Panel Margin="0,8,0,0">
+      <Panel Margin="0,8,0,0" Clicked="{gotoPost}">
         <Text Value="{content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Clicked="{postClicked}" />
       </Panel>
 
@@ -56,7 +140,7 @@
 
       <WhileFalse Value="{sensitive}">
         <Each Items="{media_attachments}">
-          <Panel ClipToBounds="true" Margin="0,12,0,0">
+          <Panel ClipToBounds="true" Margin="0,12,0,12">
             <Image ux:Name="error" File="assets/images/logo-mastodon.png" Height="160" ContentAlignment="Center" Visibility="Collapsed" />
             <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center">
               <WhileFailed>
@@ -68,21 +152,27 @@
       </WhileFalse>
 
       <WhileTrue Value="{Property pc.show_actions}">
-        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+        <StackPanel Orientation="Horizontal" Margin="0,12,0,8">
           <FaReply Color="#777" FontSize="18" Margin="4,0,12,0">
             <Clicked Handler="{replyToPost}" />
           </FaReply>
           <FaRepost ux:Name="icoreblogged" Color="#777" FontSize="18" Margin="0,0,4,0">
             <Clicked Handler="{rePost}" />
-            <WhileTrue Value="{reblogged}">
+            <WhileTrue Value="{Property pc.reposted}">
               <Change icoreblogged.Color="#2b90d9" />
+            </WhileTrue>
+            <WhileTrue Value="{reposting}">
+              <Spin Frequency="1" />
             </WhileTrue>
           </FaRepost>
           <Text FontSize="13" Color="#777" Font="Regular" Value="{reblogs_count}" Margin="0,0,8,0" />
           <FaStar ux:Name="icostar" Color="#777" FontSize="18" Margin="0,0,4,0">
             <Clicked Handler="{favouritePost}" />
-            <WhileTrue Value="{favourited}">
+            <WhileTrue Value="{Property pc.favourited}">
               <Change icostar.Color="#2b90d9" />
+            </WhileTrue>
+            <WhileTrue Value="{favouriting}">
+              <Spin Frequency="1" />
             </WhileTrue>
           </FaStar>
           <Text FontSize="13" Color="#777" Font="Regular" Value="{favourites_count}" Margin="0,0,8,0" />

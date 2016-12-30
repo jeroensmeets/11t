@@ -1,3 +1,4 @@
+var EventEmitter    = require("FuseJS/EventEmitter");
 var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
 
@@ -13,9 +14,12 @@ var posts = {
   public        : Observable(),
   home          : Observable(),
   notifications : Observable(),
+  postcontext   : Observable(),
   user          : Observable(),
   favourites    : Observable()
 }
+
+var currentTimeline = false;
 
 // for showing a userprofile on UserProfileView.ux
 var userprofile = Observable();
@@ -66,7 +70,7 @@ function loadAccessToken( ) {
 
   try {
     var token = Storage.readSync( at_file );
-    console.log( 'token from file: ' + token );
+    // console.log( 'token from file: ' + token );
   }
   catch( e ) {
     return false;
@@ -99,7 +103,12 @@ function loadNotificationsTimeLine() {
 
 function loadUserTimeLine( userid ) {
   // console.log( JSON.stringify( userid ) );
-  loadTimeline( 'user', userid.value );
+  loadTimeline( 'user', userid );
+}
+
+function loadPostContext( postid ) {
+  posts[ 'postcontext' ].clear();
+  loadTimeline( 'postcontext', postid );
 }
 
 function loadUserFavourites() {
@@ -112,7 +121,7 @@ function loadUserProfile( _userid ) {
 
   loadAccessToken();
 
-  api.loadUserProfile( _userid.value, AccessToken.value ).then(
+  api.loadUserProfile( _userid, AccessToken.value ).then(
 
     function( result ) {
 
@@ -139,16 +148,28 @@ function loadUserProfile( _userid ) {
 
 }
 
-function refreshAllTimelines() {
-  for ( var i in posts ) {
-    loadTimeline( i );
+function refreshCurrentTimeline() {
+
+  if ( false != currentTimeline ) {
+    loadTimeline( currentTimeline );
   }
+
 }
 
 function loadTimeline( _type, _id ) {
 
+  if ( loading.value ) {
+    return;
+  }
+
   loading.value = true;
   loadAccessToken();
+
+  clearPosts( _type );
+
+  if ( 'postcontext' != _type ) {
+    currentTimeline = _type;
+  }
 
   var endpoint = '';
   switch ( _type ) {
@@ -161,13 +182,16 @@ function loadTimeline( _type, _id ) {
     case 'user':
       endpoint = 'api/v1/accounts/' + _id + '/statuses';
       break;
+    case 'postcontext':
+      endpoint = '/api/v1/statuses/' + _id + '/context';
+      break;
     case 'public':
     default:
       endpoint = 'api/v1/timelines/public';
       break;
   }
 
-  console.log( 'calling API endpoint ' + endpoint + ' with access token ' + AccessToken.value );
+  // console.log( 'calling API endpoint ' + endpoint + ' with access token ' + AccessToken.value );
 
   fetch( 'https://mastodon.social/' + endpoint, {
     method: 'GET',
@@ -177,9 +201,7 @@ function loadTimeline( _type, _id ) {
     }
   })
   .then( function( resp ) {
-    console.log( 'LD3: ' + resp.status );
     if ( 200 == resp.status ) {
-      // console.log( 'LD3A' );
       return resp.json();
     } else {
       console.log( 'data.loadPosts returned status ' + resp.status );
@@ -187,10 +209,16 @@ function loadTimeline( _type, _id ) {
     }
   })
   .then( function( json ) {
-    console.log( 'LD4' );
-    console.log( 'writing fetch result to cache' );
-    Storage.write( _type + '.' + FILE_DATACACHE, JSON.stringify( json ) );
-    refreshPosts( _type, json );
+    if ( 'postcontext' != _type ) {
+      console.log( "writing to storage for type " + _type );
+      Storage.write( _type + '.' + FILE_DATACACHE, JSON.stringify( json ) );
+      console.log( "finished writing to storage for type " + _type );
+      refreshPosts( _type, json );
+    } else {
+      // for postcontext, we receive an array with ancestors and descendants
+      // console.log( JSON.stringify( json.ancestors.concat( json.descendants ) ) );
+      refreshPosts( _type, json.ancestors.concat( json.descendants ) );
+    }
     loading.value = false;
   })
   .catch( function( err ) {
@@ -203,27 +231,40 @@ function loadTimeline( _type, _id ) {
 
 function refreshPosts( _type, _data ) {
 
-  console.log( 'starting refresh of all posts' );
-  // console.log( JSON.stringify( _data ) );
+  try {
+    posts[ _type ].refreshAll(
+      _data,
+      // same item?
+      function( _old, _new ) {
+        return _old.id == _new.id;
+      },
+      // update if found
+      function( _old, _new ) {
+        _old = MastodonPost( _new, _type );
+      },
+      // not found, add new one
+      function( _new ) {
+        return MastodonPost( _new, _type );
+      }
+    );
+  } catch( e ) {
+    console.log( JSON.stringify( e ) );
+  }
 
-  posts[ _type ].refreshAll(
-    _data,
-    // same item?
-    function( _old, _new ) {
-      return _old.id == _new.id;
-    },
-    // update if found
-    function( _old, _new ) {
-      _old = MastodonPost( _new, _type );
-    },
-    // not found, add new one
-    function( _new ) {
-      return MastodonPost( _new, _type );
+  // console.log( 'finished refresh' );
+
+}
+
+// clear posts in memory
+// if argument is passed, do not clear that one
+function clearPosts( _keep ) {
+
+
+  for ( var i in posts ) {
+    if ( i != _keep ) {
+      posts[ i ].clear();
     }
-  );
-
-  console.log( 'finished refreshing data.posts' );
-
+  }
 }
 
 function doImageUpload( b64 ) {
@@ -305,50 +346,67 @@ function sendPost( _txt, _inreplyto, _media ) {
 
 function rePost( _postid, _currentstatus ) {
 
-  api.rePost( _postid, AccessToken.value, _currentstatus ).then(
+  var _apiAction = ( _currentstatus ) ? 'unreblog' : 'reblog';
 
-    function( result ) {
+  // create promise
+  var repostEmitter = new EventEmitter( 'rePostEnded' );
 
-      if ( result.err ) {
-        // TODO show this has gone wrong
-      } else {
-        updateAllOccurences( result.post, 'reblogged', !_currentstatus );
-      }
-
+  fetch( 'https://mastodon.social/api/v1/statuses/' + _postid + '/' + _apiAction, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer ' + AccessToken.value
     }
-
-  ).catch(
-
-    function( error ) {
-      console.log( JSON.parse( error ) );
+  })
+  .then( function( resp ) {
+    if ( 200 == resp.status ) {
+      return resp.json();
+    } else {
+      repostEmitter.emit( 'rePostEnded', { err: true } );
     }
+  })
+  .then( function( json ) {
+    repostEmitter.emit( 'rePostEnded', { err: false, post: json } );
+  })
+  .catch( function( err ) {
+    repostEmitter.emit( 'rePostEnded', { err: true } );
+  });
 
-  );
+  return repostEmitter.promiseOf( 'rePostEnded' );
 
 }
 
 function favouritePost( _postid, _currentstatus ) {
 
-  api.favouritePost( _postid, AccessToken.value, _currentstatus ).then(
+  // create promise
+  var favEmitter = new EventEmitter( 'favouritePostEnded' );
+  var _apiAction = ( _currentstatus ) ? 'unfavourite' : 'favourite';
 
-    function( result ) {
+  // console.log( 'favourite: ' + _postid + '/' + _apiAction );
 
-      if ( result.err ) {
-        // TODO show this has gone wrong
-      } else {
-        updateAllOccurences( result.post, 'favourited', !_currentstatus );
+  fetch( 'https://mastodon.social/api/v1/statuses/' + _postid + '/' + _apiAction, {
+      method: 'POST',
+      headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer ' + AccessToken.value
       }
+  })
+  .then( function( resp ) {
+      // console.log( 'favourite json response status: ' + resp.status );
+      if ( 200 == resp.status ) {
+          return resp.json();
+      } else {
+          favEmitter.emit( 'favouritePostEnded', { err: true } );
+      }
+  })
+  .then( function( json ) {
+    favEmitter.emit( 'favouritePostEnded', { err: false, post: json } );
+  })
+  .catch( function( err ) {
+    favEmitter.emit( 'favouritePostEnded', { err: true } );
+  });
 
-    }
-  ).catch(
-
-    function( error ) {
-      console.log( 'favourited returned in catch()' );
-      console.log( JSON.stringify( error ) );
-    }
-
-  );
-
+  return favEmitter.promiseOf( 'favouritePostEnded' );
 
 }
 
@@ -357,38 +415,48 @@ function MastodonPost( _info, _type ) {
   var _this = {};
 
   _this.isNotification    = ( 'notifications' == _type );
-  _this.isReblog          = ( 'reblog' == _info.type ) || ( null !== _info.reblog );
+  _this.isReblog          = ( 'reblog' == _info.type );
   _this.isMention         = ( 'mention' == _info.type );
   _this.isFavourite       = ( 'favourite' == _info.type );
   _this.isFollow          = ( 'follow' == _info.type );
 
-  console.log( JSON.stringify( _info ) );
-
-  if ( 'notifications' == _type ) {
-    _info = _info.status;
-  } else if ( ( 'reblog' == _info.type ) || ( null !== _info.reblog ) ) {
-    _this.reblogname      = _info.account.display_name;
-    _info = _info.reblog;
+  if ( _this.isNotification ) {
+    _this.whodidthis = _info.account.acct;
   }
 
-  for (var i in _info ) {
-    _this[ i ]            = _info[ i ];
+  if ( _this.isFollow ) {
+
+    _this.avatar = _info.account.avatar;
+    _this.note   = HtmlEnt.decode( _info.account.note );
+
+  } else if ( _this.isNotification ) {
+
+    _info = _info.status;
+
+  } else if ( _this.isReblog ) {
+
+    _info = _info.reblog;
+
   }
 
   if ( !_this.isFollow ) {
+
+    for (var i in _info ) {
+      _this[ i ]            = _info[ i ];
+    }
 
     // for timelines, remove HTML entities and HTML tags
     _this.content           = HtmlEnt.decode( _info.content );
     _this.content           = _this.content.replace( /<[^>]+>/ig, '' );
 
-    _this.media_attachments = _info.media_attachments;
     _this.timesince         = timeSince( _info.created_at );
 
     // avatar a gif? animated or not, FuseTools cannot handle it
-    _this.isGifAvatar       = ( 'gif' == _info.account.avatar.slice( -3 ).toLowerCase() );
-  }
+    var _avatar = _info.account.avatar.split( '?' );
+    _avatar = ( _avatar.length > 1 ) ? _avatar[ _avatar.length - 2 ] : _avatar[ _avatar.length - 1 ];
+    _this.isGifAvatar       = ( 'gif' == _avatar.slice( -3 ).toLowerCase() );
 
-  // console.log( JSON.stringify( _this ) );
+  }
 
   return _this;
 }
@@ -484,66 +552,6 @@ function preparePostContent( postdata ) {
 
 }
 
-// function preparePostContentOld( postdata ) {
-//
-//   var _placeholder = 'PLCHLDRAEOE';
-//
-//   // replace HTML codes like &amp; and &gt;
-//   var _content = HtmlEnt.decode( postdata.content );
-//
-//   // temporary replace urls to prevent splitting on spaces in linktext
-//   var regex = /<[aA].*?\s+href=["']([^"']*)["'][^>]*>(?:<.*?>)*(.*?)(?:<.*?>)?<\/[aA]>/igm ;
-//   var _uris = _content.match( regex );
-//   if ( _uris && ( _uris.length > 0 ) ) {
-//     for ( var i in _uris ) {
-//       _content = _content.replace( _uris[ i ], _placeholder + i );
-//     }
-//   }
-//
-//   // now remove al HTML tags
-//   _content = _content.replace( /<[^>]+>/ig, '' );
-//
-//   var result = Observable();
-//
-//   // _words = _content.split( /\b/g );
-//   _words = _content.split( /\s/g );
-//   for ( var i in _words ) {
-//
-//     // So take a look at me now Well there's just an empty space
-//     if ( ' ' == _words[ i ] ) {
-//       // TODO adjust regex to not report spaces
-//     } else if ( 0 == _words[ i ].indexOf( _placeholder ) ) {
-//       // we've got a link
-//       var _linkId = Number.parseInt( _words[ i ].replace( _placeholder, '' ) );
-//       var _linkTxt = _uris[ _linkId ].replace( /<[^>]+>/ig, '' );
-//       console.log( _linkTxt );
-//       if ( postdata.mentions.some( function (obj) { return '@' + obj.acct === _linkTxt; }) ) {
-//         result.add( { word: _linkTxt, makeBold: true, username: _linkTxt } );
-//       } else if ( postdata.media_attachments.some( function (obj) { return ( _linkTxt.indexOf( obj.id ) > -1 ); }) ) {
-//         // do not show the urls for media_attachments in the content
-//       }
-//     } else {
-//       result.add( { word: _words[ i ], makeBold: false } );
-//     }
-//     //
-//     //
-//     //
-//     //
-//     // if ( postdata.media_attachments.some( function (obj) { return ( _words[ i ].indexOf( obj.id ) > -1 ); }) ) {
-//     //   // do not show the urls for media_attachments in the content
-//     // } else if ( postdata.mentions.some( function (obj) { return '@' + obj.acct === _words[ i ]; }) ) {
-//     //   result.add( { word: _words[ i ], mention: true, username: _words[ i ], tag: false } );
-//     // } else if ( postdata.tags.some( function (obj) { return '#' + obj.name === _words[ i ]; }) ) {
-//     //   result.add( { word: _words[ i ], mention: false, tag: true, tagname: _words[ i ] } );
-//     // } else {
-//     //   result.add( { word: _words[ i ], mention: false, tag: false } );
-//     // }
-//
-//   }
-//
-//   return result;
-// }
-
 function timeSince(date) {
 
     var seconds = Math.floor( ( new Date() - new Date( date ) ) / 1000 );
@@ -573,10 +581,10 @@ module.exports = {
   loadPublicTimeline: loadPublicTimeline,
   loadHomeTimeLine: loadHomeTimeLine,
   loadNotificationsTimeLine: loadNotificationsTimeLine,
+  loadPostContext: loadPostContext,
   loadUserTimeLine: loadUserTimeLine,
   loadUserProfile: loadUserProfile,
   loadUserFavourites: loadUserFavourites,
-  refreshAllTimelines: refreshAllTimelines,
   sendPost: sendPost,
   sendImage: sendImage,
   rePost: rePost,
@@ -586,5 +594,6 @@ module.exports = {
   loadingError: loadingError,
   msg: msg,
   resetErrorMsg: resetErrorMsg,
-  userprofile: userprofile
+  userprofile: userprofile,
+  refreshCurrentTimeline: refreshCurrentTimeline
 }

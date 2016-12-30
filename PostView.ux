@@ -1,0 +1,17 @@
+<TransitionPage ux:Class="PostPage">
+
+  <Router ux:Dependency="router" />
+  <JavaScript File="PostView.js" />
+
+  <ScrollView LayoutMode="PreserveVisual">
+    <StackPanel Orientation="Vertical">
+      <Each Items="{posts}">
+        <PostCard drawlines="True" favourited="{favourited}" postid="{id}" userid="{account.id}" router="router" show_actions="True" />
+      </Each>
+      <WhileEmpty Items="{posts}">
+        <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No post context found.</Text>
+      </WhileEmpty>
+    </StackPanel>
+  </ScrollView>
+
+</TransitionPage>

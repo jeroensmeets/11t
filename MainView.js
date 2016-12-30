@@ -1,5 +1,6 @@
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Collapsed';
+nav.showBackButton.value = false;
 
 var data = require("assets/js/data");
 
@@ -12,22 +13,27 @@ function goNotifications() {
 }
 
 function goWrite() {
-  router.goto( 'write' );
+  router.push( 'write' );
 }
 
 function goPublic() {
   router.goto( 'publictimeline' );
 }
 
+function goBack() {
+  nav.showBackButton.value = false;
+	router.goBack();
+}
+
 function refreshData() {
-  data.refreshAllTimelines();
+  data.refreshCurrentTimeline();
 }
 
 var Lifecycle = require('FuseJS/Lifecycle');
 Lifecycle.on("enteringInteractive", function() {
   // app activated
   console.log( 'refreshing all timelines' );
-  data.refreshAllTimelines();
+  data.refreshCurrentTimeline();
 });
 
 module.exports = {
@@ -37,5 +43,7 @@ module.exports = {
   goWrite: goWrite,
   goPublic: goPublic,
   loading: data.loading,
-  refreshData: refreshData
+  refreshData: refreshData,
+  showBackButton: nav.showBackButton,
+  goBack: goBack
 }

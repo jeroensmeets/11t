@@ -1,4 +1,4 @@
-<Page ux:Class="NotificationsPage">
+<TransitionPage ux:Class="NotificationsPage" Activated="{setup}">
 
   <Router ux:Dependency="router" />
   <JavaScript File="NotificationsView.js" />
@@ -7,47 +7,45 @@
     <StackPanel Orientation="Vertical">
       <Each Items="{posts}">
 
-        <WhileTrue Value="{isReblog}">
-          <StackPanel Orientation="Horizontal" Margin="8,8,0,0">
-            <FaRepost Color="#fff" FontSize="16" />
-            <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
-            <ParagraphText FontSize="14" Color="#fff">reblogged your post</ParagraphText>
-          </StackPanel>
-          <!-- <PostCard show_actions="False" show_dimmed="True" /> -->
-        </WhileTrue>
+        <StackPanel Orientation="Vertical" Margin="0,8,0,8">
 
-        <WhileTrue Value="{isMention}">
-          <StackPanel Orientation="Horizontal" Margin="8,8,0,0">
-            <FaReply Color="#fff" FontSize="16" />
-            <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
-            <WhileString Value="{account.display_name}" MaxLength="0">
-              <ParagraphText FontSize="14" Color="#fff" Value="{account.acct}" Margin="6,0,4,0" />
-            </WhileString>
-            <ParagraphText FontSize="14" Color="#fff">mentioned you</ParagraphText>
-          </StackPanel>
-          <!-- <PostCard show_actions="True" /> -->
-        </WhileTrue>
+          <WhileTrue Value="{isReblog}">
+            <StackPanel Orientation="Horizontal" Margin="36,0,0,0">
+              <FaRepost Color="#fff" FontSize="16" />
+              <ParagraphText FontSize="14" Color="#fff" Margin="6,0,4,0">{whodidthis} reblogged your post</ParagraphText>
+            </StackPanel>
+            <PostCard show_actions="False" show_dimmed="True" router="router" />
+          </WhileTrue>
 
-        <WhileTrue Value="{isFavourite}">
-          <StackPanel Orientation="Horizontal" Margin="8,8,0,0">
-            <FaStar Color="#fff" FontSize="16" />
-            <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
-            <ParagraphText FontSize="14" Color="#fff">favourited your post</ParagraphText>
-          </StackPanel>
-          <!-- <PostCard show_actions="False" show_dimmed="True" /> -->
-        </WhileTrue>
+          <WhileTrue Value="{isMention}">
+            <StackPanel Orientation="Horizontal" Margin="36,0,0,0">
+              <FaReply Color="#fff" FontSize="16" />
+              <ParagraphText FontSize="14" Color="#fff" Margin="6,0,4,0">{whodidthis} mentioned you</ParagraphText>
+            </StackPanel>
+            <PostCard postid="{id}" userid="{account.id}" show_actions="True" router="router" />
+          </WhileTrue>
 
-        <WhileTrue Value="{isFollow}">
-          <StackPanel Orientation="Horizontal" Margin="8,8,0,0">
-            <FaFollow Color="#fff" FontSize="16" />
-            <ParagraphText FontSize="14" Color="#fff" Value="{account.display_name}" Margin="6,0,4,0" />
-            <ParagraphText FontSize="14" Color="#fff">joins you on your Mastodon travels</ParagraphText>
-          </StackPanel>
-          <DockPanel Margin="0,8,0,8">
-            <Image Url="{account.avatar}" Width="54" Margin="0,0,8,0" Alignment="TopLeft" Dock="Left" />
-            <ParagraphText FontSize="14" Color="#fff" Value="{account.note}" TextWrapping="Wrap" />
-          </DockPanel>
-        </WhileTrue>
+          <WhileTrue Value="{isFavourite}">
+            <StackPanel Orientation="Horizontal" Margin="36,0,0,0">
+              <FaStar Color="#fff" FontSize="16" />
+              <ParagraphText FontSize="14" Color="#fff" Margin="6,0,4,0">{whodidthis} favourited your post</ParagraphText>
+            </StackPanel>
+            <PostCard show_actions="False" show_dimmed="True" router="router" />
+          </WhileTrue>
+
+          <WhileTrue Value="{isFollow}">
+            <DockPanel Margin="36,0,0,0">
+              <FaFollow Color="#fff" FontSize="16" Dock="Left" />
+              <!-- <ParagraphText FontSize="14" Color="#fff" Value="" Margin="6,0,4,0" /> -->
+              <ParagraphText Margin="6,0,4,0" FontSize="14" Color="#fff" TextWrapping="Wrap">{whodidthis} boarded the train and sat down next to you.</ParagraphText>
+            </DockPanel>
+            <DockPanel Margin="0,8,0,8">
+              <Image Url="{avatar}" Width="54" Margin="0,0,8,0" Alignment="TopLeft" Dock="Left" />
+              <ParagraphText FontSize="14" Color="#fff" Value="{note}" TextWrapping="Wrap" />
+            </DockPanel>
+          </WhileTrue>
+
+        </StackPanel>
 
       </Each>
       <WhileEmpty Items="{posts}">
@@ -56,4 +54,4 @@
     </StackPanel>
   </ScrollView>
 
-</Page>
+</TransitionPage>

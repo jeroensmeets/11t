@@ -1,4 +1,4 @@
-<Page ux:Class="UserProfilePage">
+<TransitionPage ux:Class="UserProfilePage">
   <Router ux:Dependency="router" />
   <JavaScript File="UserProfileView.js" />
 
@@ -19,11 +19,11 @@
       </StackPanel>
 
       <Each Items="{posts}">
-        <PostCard />
+        <PostCard router="router" />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>
       </WhileEmpty>
     </StackPanel>
   </ScrollView>
-</Page>
+</TransitionPage>

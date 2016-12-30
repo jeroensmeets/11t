@@ -1,12 +1,12 @@
-<Page ux:Class="TimelinePage">
+<TransitionPage ux:Class="TimelinePage" Activated="{setup}">
 
   <Router ux:Dependency="router" />
   <JavaScript File="TimelineView.js" />
 
-  <ScrollView LayoutMode="PreserveVisual" SnapMinTransform="false">
+  <ScrollView LayoutMode="PreserveVisual">
     <StackPanel Orientation="Vertical">
       <Each Items="{posts}">
-        <PostCard show_actions="True" />
+        <PostCard favourited="{favourited}" postid="{id}" userid="{account.id}" router="router" show_actions="True" />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>
@@ -14,4 +14,4 @@
     </StackPanel>
   </ScrollView>
 
-</Page>
+</TransitionPage>

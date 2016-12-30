@@ -2,6 +2,7 @@ var Observable = require("FuseJS/Observable");
 
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Collapsed';
+nav.showBackButton.value = false;
 
 var webviewVisible = Observable( 'Collapsed' );
 

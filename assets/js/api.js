@@ -115,89 +115,6 @@ function loadPosts( posttype, access_token, id ) {
 
 }
 
-function rePost( _postId, access_token, unRepost ) {
-
-  if ( arguments.length < 3 ) {
-    var unRepost = false;
-  }
-
-  var _apiAction = ( unRepost ) ? 'unreblog' : 'reblog';
-
-  // create promise
-  var repostEmitter = new EventEmitter( 'rePostEnded' );
-
-  fetch( BASE_URL + 'api/v1/statuses/' + _postId + '/' + _apiAction, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': 'Bearer ' + access_token
-    }
-  })
-  .then( function( resp ) {
-    // console.log( 'LD3: ' + resp.status );
-    if ( 200 == resp.status ) {
-      // console.log( 'LD3A' );
-      return resp.json();
-    } else {
-      // console.log( 'LD3B' );
-      repostEmitter.emit( 'rePostEnded', { err: true } );
-    }
-  })
-  .then( function( json ) {
-    // console.log( 'LD4' );
-    repostEmitter.emit( 'rePostEnded', { err: false, post: json } );
-  })
-  .catch( function( err ) {
-    // console.log( 'LD5' );
-    repostEmitter.emit( 'rePostEnded', { err: true } );
-  });
-
-  return repostEmitter.promiseOf( 'rePostEnded' );
-}
-
-function favouritePost( _postId, access_token, unFavourite ) {
-
-  if ( arguments.length < 3 ) {
-    var unFavourite = false;
-  }
-
-  var _apiAction = ( unFavourite ) ? 'unfavourite' : 'favourite';
-
-  // create promise
-  var favEmitter = new EventEmitter( 'favouritePostEnded' );
-
-  console.log( 'favourite: ' + _postId + '/' + _apiAction );
-
-  fetch( BASE_URL + 'api/v1/statuses/' + _postId + '/' + _apiAction, {
-      method: 'POST',
-      headers: {
-          'Content-type': 'application/json',
-          'Authorization': 'Bearer ' + access_token
-      }
-  })
-  .then( function( resp ) {
-      // console.log( 'LD3' );
-      if ( 200 == resp.status ) {
-          // console.log( 'LD3A' );
-          return resp.json();
-      } else {
-          // console.log( 'LD3B' );
-          favEmitter.emit( 'favouritePostEnded', { err: true } );
-      }
-  })
-  .then( function( json ) {
-    // console.log( 'LD4' );
-    favEmitter.emit( 'favouritePostEnded', { err: false, post: json } );
-  })
-  .catch( function( err ) {
-    // console.log( 'LD5' );
-    favEmitter.emit( 'favouritePostEnded', { err: true } );
-  });
-
-  return favEmitter.promiseOf( 'favouritePostEnded' );
-
-}
-
 function loadUserProfile( _userid, access_token ) {
 
   // create promise
@@ -327,8 +244,6 @@ parseUri.options = {
 module.exports = {
   loadPosts: loadPosts,
   sendPost: sendPost,
-  rePost: rePost,
-  favouritePost: favouritePost,
   loadUserProfile: loadUserProfile,
   parseUri: parseUri,
   getAccessToken: getAccessToken

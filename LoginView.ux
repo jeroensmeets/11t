@@ -1,8 +1,8 @@
-<Page ux:Class="LoginPage">
+<TransitionPage ux:Class="LoginPage">
   <Router ux:Dependency="router" />
   <JavaScript File="LoginView.js" />
 
   <NativeViewHost>
     <WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}" Visibility="{webviewVisible}" />
   </NativeViewHost>
-</Page>
+</TransitionPage>

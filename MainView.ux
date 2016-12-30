@@ -25,6 +25,8 @@
 
   <Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 
+  <Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
+
   <Router ux:Name="router" />
   <JavaScript File="MainView.js" />
 
@@ -42,24 +44,26 @@
         </Image>
       </WhileFalse>
       <WhileTrue Value="{showBackButton}">
-        <Text Value="B" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" Clicked="{goBack}" />
+        <Panel Width="64" Height="32" Clicked="{goBack}">
+          <FaGoBack Color="#fff" FontSize="24" Margin="0,2,4,0" Alignment="Center" Clicked="{goBack}" />
+        </Panel>
       </WhileTrue>
 
       <!-- topmenu items -->
       <StackPanel Orientation="Horizontal">
-        <StackPanel Orientation="Horizontal" Margin="2,0,12,0" Clicked="{goWrite}">
+        <StackPanel Orientation="Horizontal" Margin="2,0,12,0" Tapped="{goWrite}">
           <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Toot" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Clicked="{goHome}">
+        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Tapped="{goHome}">
           <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Clicked="{goNotifications}">
+        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Tapped="{goNotifications}">
           <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Clicked="{goPublic}">
+        <StackPanel Orientation="Horizontal" Tapped="{goPublic}">
           <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Public" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
@@ -74,6 +78,7 @@
       <NotificationsPage ux:Template="notifications" router="router" />
       <UserProfilePage ux:Template="userprofile" router="router" />
       <PublicTimelinePage ux:Template="publictimeline" router="router" />
+      <PostPage ux:Template="postcontext" router="router" />
     </Navigator>
 
     <Android>

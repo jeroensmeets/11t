@@ -1,0 +1,11 @@
+<Page ux:Class="TransitionPage" Transition="None">
+    <EnteringAnimation>
+        <Move X="1" RelativeTo="Size" Duration="0.4" Easing="BackOut" />
+    </EnteringAnimation>
+    <ExitingAnimation>
+        <Move X="-1" RelativeTo="Size" Duration="0.4" Easing="BackOut" />
+    </ExitingAnimation>
+    <RemovingAnimation>
+        <Move X="-1" RelativeTo="Size" Duration="0.4" Easing="BackOut" />
+    </RemovingAnimation>
+</Page>

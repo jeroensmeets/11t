@@ -1,29 +1,15 @@
 var nav = require("assets/js/navigation");
-nav.menuVisible.value = 'Visible';
-nav.showBackButton.value = true;
-
-var Observable = require("FuseJS/Observable");
 
 var data = require( 'assets/js/data' );
-data.loadPublicTimeline();
+setup();
 
-function replyToPost( args ) {
-  router.push( "write", { postid: args.data.id, account: args.data.account.username } );
-}
+function setup() {
 
-function rePost( args ) {
-  data.rePost( args.data.id, args.data.reblogged );
-}
+  console.log( 'public timeline activated' );
+  data.loadPublicTimeline();
 
-function favouritePost( args ) {
-  data.favouritePost( args.data.id, args.data.favourited );
-}
-
-function gotoUser( args ) {
-  var HtmlEnt = require( 'assets/js/he/he.js' );
-  args.data.account.note = HtmlEnt.decode( args.data.account.note );
-  console.log( JSON.stringify( args.data.account ) );
-  router.push( "userprofile", { userprofile: args.data.account } );
+  nav.menuVisible.value = 'Visible';
+  nav.showBackButton.value = false;
 }
 
 function goBack() {
@@ -33,8 +19,5 @@ function goBack() {
 module.exports = {
   posts: data.posts.public,
   goBack: goBack,
-  replyToPost: replyToPost,
-  rePost: rePost,
-  favouritePost: favouritePost,
-  gotoUser: gotoUser
+	setup: setup
 }

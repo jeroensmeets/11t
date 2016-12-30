@@ -1,15 +1,15 @@
-<Page ux:Class="PublicTimelinePage">
+<TransitionPage ux:Class="PublicTimelinePage" Activated="{setup}">
   <Router ux:Dependency="router" />
   <JavaScript File="PublicTimelineView.js" />
 
   <ScrollView LayoutMode="PreserveVisual">
     <StackPanel Orientation="Vertical">
       <Each Items="{posts}">
-        <PostCard show_actions="True" />
+        <PostCard show_actions="True" router="router" />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">What??? Public timeline is empty?</Text>
       </WhileEmpty>
     </StackPanel>
   </ScrollView>
-</Page>
+</TransitionPage>

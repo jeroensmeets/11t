@@ -1,11 +1,10 @@
 var data = require( 'assets/js/data' );
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Collapsed';
+nav.showBackButton.value = false;
 
 var Observable = require("FuseJS/Observable");
 var loginButtonVisible = Observable( 'Collapsed' );
-
-data.loadFromCache();
 
 if ( data.loadAccessToken() ) {
   setTimeout( function() { router.goto( 'timeline' ); }, 3000 );

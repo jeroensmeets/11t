@@ -1,5 +1,6 @@
 var nav = require("assets/js/navigation");
 nav.menuVisible.value = 'Visible';
+nav.showBackButton.value = true;
 
 var data = require( 'assets/js/data' );
 

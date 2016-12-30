@@ -1,4 +1,4 @@
-<Page ux:Class="SplashPage">
+<TransitionPage ux:Class="SplashPage">
   <Router ux:Dependency="router" />
   <JavaScript File="SplashView.js" />
 
@@ -15,11 +15,11 @@
 
     <Panel Alignment="BottomLeft" Padding="12,0,0,24">
       <StackPanel Orientation="Vertical">
-        <Text Color="#ffffff" FontSize="11" Font="Regular">Built with FuseTools, JSO library for oAuth.</Text>
-        <Text Color="#ffffff" FontSize="11" Font="Regular">It uses the Noto font.</Text>
+        <Text Color="#ffffff" FontSize="11" Font="Regular">Built with FuseTools.</Text>
+        <Text Color="#ffffff" FontSize="11" Font="Regular">Font is Noto.</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">This is version 1.0.7</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">Suggestions? bugs? contact me at @jeroensmeets</Text>
       </StackPanel>
     </Panel>
   </Panel>
-</Page>
+</TransitionPage>

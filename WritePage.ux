@@ -1,4 +1,4 @@
-<Page ux:Class="WritePage">
+<TransitionPage ux:Class="WritePage">
   <Router ux:Dependency="router" />
   <Uploader ux:Global="Uploader" />
   <JavaScript File="WritePage.js" />
@@ -31,4 +31,4 @@
       </DockPanel>
     </StackPanel>
   </Panel>
-</Page>
+</TransitionPage>
