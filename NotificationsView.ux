@@ -1,13 +1,12 @@
 <TransitionPage ux:Class="NotificationsPage" Activated="{setup}">
-
   <Router ux:Dependency="router" />
   <JavaScript File="NotificationsView.js" />
 
   <ScrollView LayoutMode="PreserveVisual">
-    <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical" Padding="0,8,0,0">
       <Each Items="{posts}">
 
-        <StackPanel Orientation="Vertical" Margin="0,8,0,8">
+        <StackPanel Orientation="Vertical">
 
           <WhileTrue Value="{isReblog}">
             <StackPanel Orientation="Horizontal" Margin="36,0,0,0">
@@ -43,6 +42,9 @@
               <Image Url="{avatar}" Width="54" Margin="0,0,8,0" Alignment="TopLeft" Dock="Left" />
               <ParagraphText FontSize="14" Color="#fff" Value="{note}" TextWrapping="Wrap" />
             </DockPanel>
+
+            <Rectangle Height="1" Fill="#444" Margin="2,6,8,6" />
+
           </WhileTrue>
 
         </StackPanel>

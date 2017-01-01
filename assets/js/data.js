@@ -165,7 +165,7 @@ function loadTimeline( _type, _id ) {
   loading.value = true;
   loadAccessToken();
 
-  clearPosts( _type );
+  // clearPosts( _type );
 
   if ( 'postcontext' != _type ) {
     currentTimeline = _type;
@@ -415,7 +415,7 @@ function MastodonPost( _info, _type ) {
   var _this = {};
 
   _this.isNotification    = ( 'notifications' == _type );
-  _this.isReblog          = ( 'reblog' == _info.type );
+  _this.isReblog          = ( ( 'reblog' == _info.type )  || ( null != _info.reblog ) );
   _this.isMention         = ( 'mention' == _info.type );
   _this.isFavourite       = ( 'favourite' == _info.type );
   _this.isFollow          = ( 'follow' == _info.type );
@@ -435,6 +435,7 @@ function MastodonPost( _info, _type ) {
 
   } else if ( _this.isReblog ) {
 
+    _this.whodidthis = _info.account.acct;
     _info = _info.reblog;
 
   }
@@ -446,8 +447,10 @@ function MastodonPost( _info, _type ) {
     }
 
     // for timelines, remove HTML entities and HTML tags
-    _this.content           = HtmlEnt.decode( _info.content );
-    _this.content           = _this.content.replace( /<[^>]+>/ig, '' );
+    _this.content           = cleanupContent( _info );
+
+    // for post context screen, get words apart
+    _this.prepcontent       = preparePostContent( _info );
 
     _this.timesince         = timeSince( _info.created_at );
 
@@ -461,6 +464,34 @@ function MastodonPost( _info, _type ) {
   return _this;
 }
 
+function getUrisFromText( _text ) {
+
+  // temporary replace urls to prevent splitting on spaces in linktext
+  var regex = /<[aA].*?\s+href=["']([^"']*)["'][^>]*>(?:<.*?>)*(.*?)(?:<.*?>)?<\/[aA]>/igm ;
+  return _text.match( regex );
+
+}
+
+function cleanupContent( postdata ) {
+
+  var _text = HtmlEnt.decode( postdata.content );
+
+  // paragraphs, but not last one (is empty element)
+  var _paragraphs = _text.split( '</p>' );
+  _paragraphs.splice( -1, 1 );
+
+  var result = Observable();
+  for ( var i in _paragraphs ) {
+    var _paragraph = _paragraphs[ i ].replace( "<p>", "" );
+    result.add( { paragraph: _paragraph.replace( /<[^>]+>/ig, '' ) } );
+  }
+
+  console.log( JSON.stringify( result.value ) );
+
+  return result;
+
+}
+
 // the result of this function is for the view of a single post
 // and should NOT be used on a timeline as it generates memory issues
 function preparePostContent( postdata ) {
@@ -472,12 +503,20 @@ function preparePostContent( postdata ) {
   // replace HTML codes like &amp; and &gt;
   var _content = HtmlEnt.decode( postdata.content );
 
+  // paragraphs
+
+  // last closing </p> needs no replacement
+  _content = _content.replace(new RegExp('<\/p>$'), '');
+
+  // other closing </p> need some breathing room (for now a placeholder)
+  _content = _content.replace( "</p>", " ]]]] " );
+  // opening <p> can be removed
+  _content = _content.replace( "<p>", "" );
+
   // temporary replace urls to prevent splitting on spaces in linktext
-  var regex = /<[aA].*?\s+href=["']([^"']*)["'][^>]*>(?:<.*?>)*(.*?)(?:<.*?>)?<\/[aA]>/igm ;
-  var _uris = _content.match( regex );
+  var _uris = getUrisFromText( _content );
   if ( _uris && ( _uris.length > 0 ) ) {
     for ( var i in _uris ) {
-      // console.log( _uris[ i ] );
       _content = _content.replace( _uris[ i ], '[[[[' + i );
     }
   }
@@ -506,6 +545,9 @@ function preparePostContent( postdata ) {
       // bug fix: if e.g. a mention links to another server, it's a link with a @ before it
       var _charBeforeLink = ( '[[[[' == _words[ i ].substring( 1, 5 ) ) ? _words[ i ].substring( 0, 1 ) : '';
       var _linkId = Number.parseInt( _words[ i ].match(/\d/g).join('') );
+      if ( !_uris[ _linkId ] ) {
+        continue;
+      }
       var _linkTxt = _uris[ _linkId ].replace( /<[^>]+>/ig, '' );
 
       // console.log( _uris[ _linkId ] );
@@ -547,6 +589,8 @@ function preparePostContent( postdata ) {
       }
     }
   }
+
+  // console.log( JSON.stringify( result ) );
 
   return result;
 

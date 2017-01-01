@@ -27,7 +27,6 @@
 
   <Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
 
-  <Router ux:Name="router" />
   <JavaScript File="MainView.js" />
 
   <DockPanel>
@@ -51,33 +50,34 @@
 
       <!-- topmenu items -->
       <StackPanel Orientation="Horizontal">
-        <StackPanel Orientation="Horizontal" Margin="2,0,12,0" Tapped="{goWrite}">
+        <StackPanel Orientation="Horizontal" Margin="2,0,12,0" HitTestMode="LocalBounds" Clicked="{goWrite}">
           <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Toot" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Tapped="{goHome}">
+        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goHome}">
           <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" Tapped="{goNotifications}">
+        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goNotifications}">
           <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Tapped="{goPublic}">
+        <StackPanel Orientation="Horizontal" HitTestMode="LocalBounds" Clicked="{goPublic}">
           <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
           <Text Value="Public" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
         </StackPanel>
       </StackPanel>
     </StackPanel>
 
+    <Router ux:Name="router" />
     <Navigator DefaultPath="splash">
-      <SplashPage ux:Template="splash" router="router" />
-      <LoginPage ux:Template="login" router="router" />
       <WritePage ux:Template="write" router="router" />
       <TimelinePage ux:Template="timeline" router="router" />
       <NotificationsPage ux:Template="notifications" router="router" />
-      <UserProfilePage ux:Template="userprofile" router="router" />
       <PublicTimelinePage ux:Template="publictimeline" router="router" />
+      <SplashPage ux:Template="splash" router="router" />
+      <LoginPage ux:Template="login" router="router" />
+      <UserProfilePage ux:Template="userprofile" router="router" />
       <PostPage ux:Template="postcontext" router="router" />
     </Navigator>
 

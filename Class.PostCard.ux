@@ -1,14 +1,14 @@
 <StackPanel ux:Class="PostCard" ux:Name="pc">
+  <Router ux:Dependency="router" />
 
   <int ux:Property="postid" />
   <int ux:Property="userid" />
+  <bool ux:Property="preparedcontent" />
   <bool ux:Property="favourited" />
   <bool ux:Property="reposted" />
   <bool ux:Property="show_actions" />
   <bool ux:Property="show_dimmed" />
   <bool ux:Property="drawlines" />
-
-  <Router ux:Dependency="router" />
 
   <JavaScript>
 
@@ -26,7 +26,13 @@
     var reposted = false; this.reposted.onValueChanged( function( newValue ) { reposted = newValue; })
 
     function replyToPost( args ) {
-      router.push( "write", { postid: postid } );
+      // router.push( "write", { postid: postid } );
+      console.log( JSON.stringify( args ) );
+      if ( args.data.isNotification ) {
+        router.push( "write", { postid: args.data.status.id, firstup: args.data.account.username, mentions: args.data.status.mentions } );
+      } else {
+        router.push( "write", { postid: args.data.id, firstup: args.data.account.acct, mentions: args.data.mentions } );
+      }
     }
 
     function rePost( args ) {
@@ -76,16 +82,6 @@
     };
   </JavaScript>
 
-  <!-- <WhileTrue Value="{isReblog}">
-    <DockPanel Margin="0,8,0,0">
-      <FaRepost Color="#fff" FontSize="16" Margin="36,0,0,0" Dock="Left" />
-      <StackPanel Orientation="Horizontal" Margin="8,1,0,0">
-        <ParagraphText Color="#fff" FontSize="14" Value="{whodidthis}" Margin="0,0,5,0" />
-        <ParagraphText Color="#fff" FontSize="14">reblogged this post</ParagraphText>
-      </StackPanel>
-    </DockPanel>
-  </WhileTrue> -->
-
   <DockPanel>
     <WhileTrue Value="{Property pc.drawlines}">
       <Rectangle Width="1" Margin="30,68,0,0" Color="#777" Layer="Background" Alignment="Left" />
@@ -119,20 +115,25 @@
         </StackPanel>
         <Text Value="{timesince}" FontSize="13" TextColor="#ddd" Font="Regular" Alignment="Right" />
       </Grid>
-      <Panel Margin="0,8,0,0" Clicked="{gotoPost}">
-        <Text Value="{content}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Clicked="{postClicked}" />
-      </Panel>
-
-      <!-- <WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,8,0,0">
-        <Each Items="{content}">
-          <Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,2,2" LoadAsync="True">
-            <WhileTrue Value="{makeBold}">
-              <Change word.Font="Bold" />
-              <Clicked Handler="{wordClicked}" />
-            </WhileTrue>
-          </Text>
-        </Each>
-      </WrapPanel> -->
+      <WhileFalse Value="{Property pc.preparedcontent}">
+        <StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{gotoPost}">
+          <Each Items="{content}">
+            <Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,8,16" LoadAsync="True" />
+          </Each>
+        </StackPanel>
+      </WhileFalse>
+      <WhileTrue Value="{Property pc.preparedcontent}">
+        <WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,8,0,0">
+          <Each Items="{prepcontent}">
+            <Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,2,2" LoadAsync="True">
+              <WhileTrue Value="{makeBold}">
+                <Change word.Font="Bold" />
+                <Clicked Handler="{wordClicked}" />
+              </WhileTrue>
+            </Text>
+          </Each>
+        </WrapPanel>
+      </WhileTrue>
 
       <WhileTrue Value="{sensitive}">
         <TextView Value="This post has been marked as sensitive. This betaversion of Matodor hides the images attached." Margin="16" Font="Italic" FontSize="14" TextColor="#777" TextWrapping="Wrap" />
@@ -186,4 +187,7 @@
     </StackPanel>
 
   </DockPanel>
+
+  <Rectangle Height="1" Fill="#444" Margin="2,6,8,6" />
+
 </StackPanel>

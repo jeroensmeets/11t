@@ -1,12 +1,20 @@
 <TransitionPage ux:Class="TimelinePage" Activated="{setup}">
-
   <Router ux:Dependency="router" />
   <JavaScript File="TimelineView.js" />
 
   <ScrollView LayoutMode="PreserveVisual">
     <StackPanel Orientation="Vertical">
       <Each Items="{posts}">
-        <PostCard favourited="{favourited}" postid="{id}" userid="{account.id}" router="router" show_actions="True" />
+        <WhileTrue Value="{isReblog}">
+        <DockPanel Margin="0,8,0,8">
+          <FaRepost Color="#fff" FontSize="16" Margin="36,0,0,0" Dock="Left" />
+          <StackPanel Orientation="Horizontal" Margin="8,1,0,0">
+            <ParagraphText Color="#fff" FontSize="14" Value="{whodidthis}" Margin="0,0,5,0" />
+            <ParagraphText Color="#fff" FontSize="14">reblogged this post</ParagraphText>
+          </StackPanel>
+        </DockPanel>
+        </WhileTrue>
+        <PostCard favourited="{favourited}" postid="{id}" userid="{account.id}" show_actions="True" router="router" />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>
