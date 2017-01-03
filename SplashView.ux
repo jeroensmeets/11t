@@ -1,4 +1,5 @@
 <TransitionPage ux:Class="SplashPage">
+
   <Router ux:Dependency="router" />
   <JavaScript File="SplashView.js" />
 

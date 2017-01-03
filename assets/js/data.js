@@ -11,15 +11,35 @@ var HtmlEnt         = require( 'assets/js/he/he.js' );
 var api = require( 'assets/js/api' );
 
 var posts = {
-  public        : Observable(),
   home          : Observable(),
   notifications : Observable(),
+  public        : Observable(),
   postcontext   : Observable(),
   user          : Observable(),
   favourites    : Observable()
 }
 
-var currentTimeline = false;
+function getPostById( _postid ) {
+
+  // if a post is requested, it should be in one of the posts observables
+  // TODO: get the current route, that would be the most obvious suspect where to find the post
+  for ( var _i in posts ) {
+    // TODO why doesn't this return the post we look for?
+    // var _found = posts[ _i ].where( { id: _postid } );
+    // console.log( _found.length );
+    // if ( _found.length > 0 ) {
+    //   return _found.first().value;
+    // }
+    var _arr = posts[ _i ].toArray();
+    for ( var _j in _arr ) {
+      if ( _postid == _arr[ _j ].id ) {
+        return _arr[ _j ];
+      }
+    }
+  }
+
+  return false;
+}
 
 // for showing a userprofile on UserProfileView.ux
 var userprofile = Observable();
@@ -40,10 +60,12 @@ function loadFromCache( _type ) {
 
   Storage.read( _type + '.' + FILE_DATACACHE )
     .then(function(contents) {
+      console.log( 'read cache file for ' + _type );
       if ( '' != contents ) {
         var _json = JSON.parse( contents );
         if ( ( 'object' == typeof _json ) && ( _json.length > 0 ) ) {
-          posts[ _type ] = _json;
+          // posts[ _type ].value = _json;
+          refreshPosts( _type, json );
         }
       }
     }, function(error) {
@@ -106,9 +128,14 @@ function loadUserTimeLine( userid ) {
   loadTimeline( 'user', userid );
 }
 
-function loadPostContext( postid ) {
-  posts[ 'postcontext' ].clear();
-  loadTimeline( 'postcontext', postid );
+function loadPostContext( _postid ) {
+
+  var _post = getPostById( _postid );
+
+  if ( false !== _post ) {
+    loadTimeline( 'postcontext', _post.id, _post );
+  }
+
 }
 
 function loadUserFavourites() {
@@ -148,27 +175,13 @@ function loadUserProfile( _userid ) {
 
 }
 
-function refreshCurrentTimeline() {
-
-  if ( false != currentTimeline ) {
-    loadTimeline( currentTimeline );
-  }
-
-}
-
-function loadTimeline( _type, _id ) {
-
-  if ( loading.value ) {
-    return;
-  }
+function loadTimeline( _type, _id, _postObj ) {
 
   loading.value = true;
   loadAccessToken();
 
-  // clearPosts( _type );
-
-  if ( 'postcontext' != _type ) {
-    currentTimeline = _type;
+  if ( 0 == posts[ _type ].length ) {
+    loadFromCache( _type );
   }
 
   var endpoint = '';
@@ -210,26 +223,29 @@ function loadTimeline( _type, _id ) {
   })
   .then( function( json ) {
     if ( 'postcontext' != _type ) {
-      console.log( "writing to storage for type " + _type );
+      // console.log( "writing to storage for type " + _type );
       Storage.write( _type + '.' + FILE_DATACACHE, JSON.stringify( json ) );
-      console.log( "finished writing to storage for type " + _type );
+      // console.log( "finished writing to storage for type " + _type );
       refreshPosts( _type, json );
     } else {
       // for postcontext, we receive an array with ancestors and descendants
-      // console.log( JSON.stringify( json.ancestors.concat( json.descendants ) ) );
+      // console.log( 'post object: ' + JSON.stringify( _postObj ) );
+      json.ancestors.push( _postObj );
       refreshPosts( _type, json.ancestors.concat( json.descendants ) );
     }
     loading.value = false;
   })
   .catch( function( err ) {
-    console.log( 'data.loadPosts caused error' );
-    console.log( JSON.stringify( err ) );
+    // console.log( 'data.loadPosts caused error' );
+    // console.log( JSON.stringify( err ) );
     loading.value = false;
   });
 
 }
 
 function refreshPosts( _type, _data ) {
+
+  // console.log( 'refreshing posts for ' + _type );
 
   try {
     posts[ _type ].refreshAll(
@@ -240,18 +256,18 @@ function refreshPosts( _type, _data ) {
       },
       // update if found
       function( _old, _new ) {
-        _old = MastodonPost( _new, _type );
+        _old = new MastodonPost( _new, _type );
       },
       // not found, add new one
       function( _new ) {
-        return MastodonPost( _new, _type );
+        return new MastodonPost( _new, _type );
       }
     );
   } catch( e ) {
     console.log( JSON.stringify( e ) );
   }
 
-  // console.log( 'finished refresh' );
+  // console.log( 'finished refresh, now has ' + posts[ _type ].length + ' items.' );
 
 }
 
@@ -412,56 +428,60 @@ function favouritePost( _postid, _currentstatus ) {
 
 function MastodonPost( _info, _type ) {
 
-  var _this = {};
-
-  _this.isNotification    = ( 'notifications' == _type );
-  _this.isReblog          = ( ( 'reblog' == _info.type )  || ( null != _info.reblog ) );
-  _this.isMention         = ( 'mention' == _info.type );
-  _this.isFavourite       = ( 'favourite' == _info.type );
-  _this.isFollow          = ( 'follow' == _info.type );
-
-  if ( _this.isNotification ) {
-    _this.whodidthis = _info.account.acct;
+  // processed before?
+  if ( _info.hasOwnProperty( "isNotification" ) ) {
+    return _info;
   }
 
-  if ( _this.isFollow ) {
+  this.isNotification    = ( 'notifications' == _type );
+  this.isReblog          = ( ( 'reblog' == _info.type )  || ( null != _info.reblog ) );
+  this.isMention         = ( 'mention' == _info.type );
+  this.isFavourite       = ( 'favourite' == _info.type );
+  this.isFollow          = ( 'follow' == _info.type );
 
-    _this.avatar = _info.account.avatar;
-    _this.note   = HtmlEnt.decode( _info.account.note );
+  if ( this.isNotification ) {
+    this.whodidthis = _info.account.acct;
+  }
 
-  } else if ( _this.isNotification ) {
+  if ( this.isFollow ) {
+
+    this.avatar = _info.account.avatar;
+    this.note   = HtmlEnt.decode( _info.account.note );
+
+  } else if ( this.isNotification ) {
 
     _info = _info.status;
 
-  } else if ( _this.isReblog ) {
+  } else if ( this.isReblog ) {
 
-    _this.whodidthis = _info.account.acct;
+    this.whodidthis = _info.account.acct;
     _info = _info.reblog;
 
   }
 
-  if ( !_this.isFollow ) {
+  if ( !this.isFollow ) {
 
     for (var i in _info ) {
-      _this[ i ]            = _info[ i ];
+      this[ i ]            = _info[ i ];
     }
 
     // for timelines, remove HTML entities and HTML tags
-    _this.content           = cleanupContent( _info );
+    this.content           = cleanupContent( _info );
 
     // for post context screen, get words apart
-    _this.prepcontent       = preparePostContent( _info );
+    this.prepcontent       = preparePostContent( _info );
 
-    _this.timesince         = timeSince( _info.created_at );
+    this.timesince         = timeSince( _info.created_at );
 
     // avatar a gif? animated or not, FuseTools cannot handle it
     var _avatar = _info.account.avatar.split( '?' );
     _avatar = ( _avatar.length > 1 ) ? _avatar[ _avatar.length - 2 ] : _avatar[ _avatar.length - 1 ];
-    _this.isGifAvatar       = ( 'gif' == _avatar.slice( -3 ).toLowerCase() );
+    this.isGifAvatar       = ( 'gif' == _avatar.slice( -3 ).toLowerCase() );
 
   }
 
-  return _this;
+  // console.log( JSON.stringify( this ) );
+
 }
 
 function getUrisFromText( _text ) {
@@ -486,7 +506,10 @@ function cleanupContent( postdata ) {
     result.add( { paragraph: _paragraph.replace( /<[^>]+>/ig, '' ) } );
   }
 
-  console.log( JSON.stringify( result.value ) );
+  // in case content has no paragraphs
+  if ( 0 == result.length ) {
+    result.add( { paragraph: _text.replace( /<[^>]+>/ig, '' ) } );
+  }
 
   return result;
 
@@ -533,7 +556,12 @@ function preparePostContent( postdata ) {
   var _words = _content.split( /\s/g );
 
   for ( var i in _words ) {
-    if ( -1 === _words[ i ].indexOf( '[[[[' ) ) {
+
+    if ( _words[ i ].indexOf( ']]]]' ) > -1 ) {
+
+      result.add( { word: '', clear: true } );
+
+    } else if ( -1 === _words[ i ].indexOf( '[[[[' ) ) {
 
       // this is not a link, add it as a word
       // click event in Part.PostCard can send it to the post detail screen
@@ -638,6 +666,5 @@ module.exports = {
   loadingError: loadingError,
   msg: msg,
   resetErrorMsg: resetErrorMsg,
-  userprofile: userprofile,
-  refreshCurrentTimeline: refreshCurrentTimeline
+  userprofile: userprofile
 }

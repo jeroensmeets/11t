@@ -1,7 +1,3 @@
-var nav = require("assets/js/navigation");
-nav.menuVisible.value = 'Visible';
-nav.showBackButton.value = true;
-
 var data = require( 'assets/js/data' );
 
 var Observable = require("FuseJS/Observable");
@@ -20,14 +16,13 @@ var txtToToot = this.Parameter.map( function( param ) {
 
   var _prefillPost = '';
 
-  // firstup: args.data.account.acct, mentions: args.data.mentions
   if ( param.firstup ) {
     var _prefillPost = '@' + param.firstup + ' ';
   }
 
   for ( var i in param.mentions ) {
     if ( param.firstup != param.mentions[ i ].acct ) {
-      _prefillPost += ' @' + param.mentions[ i ].acct + ' ';
+      _prefillPost += '@' + param.mentions[ i ].acct + ' ';
     }
   }
 

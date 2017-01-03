@@ -6,7 +6,7 @@
   <ScrollView LayoutMode="PreserveVisual">
     <StackPanel Orientation="Vertical">
       <Each Items="{posts}">
-        <PostCard drawlines="True" preparedcontent="True" favourited="{favourited}" postid="{id}" userid="{account.id}" show_actions="True" router="router" />
+        <PostCard drawlines="True" preparedcontent="True" favourited="{favourited}" postid="{id}" userid="{account.id}" acct="{account.acct}" mentions="{mentions}" show_actions="True" router="router" />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No post context found.</Text>

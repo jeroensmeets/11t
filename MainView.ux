@@ -32,53 +32,82 @@
   <DockPanel>
     <StatusBarBackground Dock="Top" />
 
-    <StackPanel Dock="Top" Orientation="Horizontal" Visibility="{menuVisible}" Padding="0,8,0,6" Background="#484b57">
+    <Panel ux:Name="TopNavBar" Dock="Top" Padding="0,8,0,6" Background="#484b57">
 
-      <!-- logo or back button -->
-      <WhileFalse Value="{showBackButton}">
+      <!-- show main navigation with logo -->
+      <StackPanel Orientation="Horizontal" ux:Name="MainNav">
         <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,24,4" Clicked="{refreshData}">
           <WhileTrue Value="{loading}">
             <Spin Frequency="2" />
           </WhileTrue>
         </Image>
-      </WhileFalse>
-      <WhileTrue Value="{showBackButton}">
+
+        <!-- topmenu items -->
+        <StackPanel Orientation="Horizontal">
+          <StackPanel Orientation="Horizontal" Margin="2,0,12,0" HitTestMode="LocalBounds" Clicked="{goWrite}">
+            <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+            <Text Value="Toot" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goHome}">
+            <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+            <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goNotifications}">
+            <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+            <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" HitTestMode="LocalBounds" Clicked="{goPublic}">
+            <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
+            <Text Value="Public" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
+          </StackPanel>
+        </StackPanel>
+      </StackPanel>
+
+      <StackPanel ux:Name="BackNav" Orientation="Horizontal" Visibility="Collapsed">
         <Panel Width="64" Height="32" Clicked="{goBack}">
           <FaGoBack Color="#fff" FontSize="24" Margin="0,2,4,0" Alignment="Center" Clicked="{goBack}" />
         </Panel>
-      </WhileTrue>
 
-      <!-- topmenu items -->
-      <StackPanel Orientation="Horizontal">
-        <StackPanel Orientation="Horizontal" Margin="2,0,12,0" HitTestMode="LocalBounds" Clicked="{goWrite}">
-          <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-          <Text Value="Toot" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goHome}">
-          <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-          <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goNotifications}">
-          <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-          <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HitTestMode="LocalBounds" Clicked="{goPublic}">
-          <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-          <Text Value="Public" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-        </StackPanel>
+        <Panel>
+          <Text Value="{Resource Title}" Color="#fff" Font="Bold" FontSize="13" />
+        </Panel>
       </StackPanel>
-    </StackPanel>
+    </Panel>
 
     <Router ux:Name="router" />
+
     <Navigator DefaultPath="splash">
-      <WritePage ux:Template="write" router="router" />
-      <TimelinePage ux:Template="timeline" router="router" />
-      <NotificationsPage ux:Template="notifications" router="router" />
-      <PublicTimelinePage ux:Template="publictimeline" router="router" />
-      <SplashPage ux:Template="splash" router="router" />
-      <LoginPage ux:Template="login" router="router" />
-      <UserProfilePage ux:Template="userprofile" router="router" />
-      <PostPage ux:Template="postcontext" router="router" />
+      <WritePage ux:Template="write" router="router">
+        <WhileActive>
+          <Change Target="MainNav.Visibility" Value="Collapsed" />
+          <Change Target="BackNav.Visibility" Value="Visible" />
+        </WhileActive>
+      </WritePage>
+      <TimelinePage ux:Name="timeline" router="router" />
+      <NotificationsPage ux:Name="notifications" router="router" />
+      <PublicTimelinePage ux:Name="publictimeline" router="router" />
+      <SplashPage ux:Name="splash" router="router">
+        <WhileActive Bypass="Never">
+          <Change Target="TopNavBar.Visibility" Value="Collapsed" />
+        </WhileActive>
+      </SplashPage>
+      <LoginPage ux:Name="login" router="router">
+        <WhileActive>
+          <Change Target="TopNavBar.Visibility" Value="Collapsed" />
+        </WhileActive>
+      </LoginPage>
+      <UserProfilePage Title="User info" ux:Template="userprofile" router="router">
+        <WhileActive>
+          <Change Target="MainNav.Visibility" Value="Collapsed" />
+          <Change Target="BackNav.Visibility" Value="Visible" />
+        </WhileActive>
+      </UserProfilePage>
+      <PostPage Title="Post context" ux:Template="postcontext" router="router">
+        <WhileActive>
+          <Change Target="MainNav.Visibility" Value="Collapsed" />
+          <Change Target="BackNav.Visibility" Value="Visible" />
+        </WhileActive>
+      </PostPage>
     </Navigator>
 
     <Android>

@@ -1,4 +1,4 @@
-<TransitionPage ux:Class="TimelinePage" Activated="{setup}">
+<TransitionPage ux:Class="TimelinePage" Activated="{refreshData}">
   <Router ux:Dependency="router" />
   <JavaScript File="TimelineView.js" />
 
@@ -14,7 +14,7 @@
           </StackPanel>
         </DockPanel>
         </WhileTrue>
-        <PostCard favourited="{favourited}" postid="{id}" userid="{account.id}" show_actions="True" router="router" />
+        <PostCard favourited="{favourited}" postid="{id}" userid="{account.id}" acct="{account.acct}" mentions="{mentions}" show_actions="True" router="router" />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>

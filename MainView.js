@@ -1,7 +1,4 @@
-var nav = require("assets/js/navigation");
-nav.menuVisible.value = 'Collapsed';
-nav.showBackButton.value = false;
-
+var Observable = require("FuseJS/Observable");
 var data = require("assets/js/data");
 
 function goHome() {
@@ -9,6 +6,7 @@ function goHome() {
 }
 
 function goNotifications() {
+  data.loadFromCache( 'notifications' );
   router.goto( 'notifications' );
 }
 
@@ -17,33 +15,43 @@ function goWrite() {
 }
 
 function goPublic() {
+  data.loadFromCache( 'public' );
   router.goto( 'publictimeline' );
 }
 
 function goBack() {
-  nav.showBackButton.value = false;
 	router.goBack();
 }
 
 function refreshData() {
-  data.refreshCurrentTimeline();
+
+  router.getRoute( function(route) {
+    switch ( route[0] ) {
+      case 'timeline':
+        data.loadHomeTimeLine();
+        break;
+      case 'notifications':
+        data.loadNotificationsTimeLine();
+        break;
+      case 'public':
+        data.loadPublicTimeline();
+        break;
+    }
+  } );
 }
 
 var Lifecycle = require('FuseJS/Lifecycle');
 Lifecycle.on("enteringInteractive", function() {
   // app activated
-  console.log( 'refreshing all timelines' );
-  data.refreshCurrentTimeline();
+  refreshData();
 });
 
 module.exports = {
-  menuVisible: nav.menuVisible,
   goHome: goHome,
   goNotifications: goNotifications,
   goWrite: goWrite,
   goPublic: goPublic,
   loading: data.loading,
   refreshData: refreshData,
-  showBackButton: nav.showBackButton,
   goBack: goBack
 }

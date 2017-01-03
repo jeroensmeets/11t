@@ -3,6 +3,8 @@
 
   <int ux:Property="postid" />
   <int ux:Property="userid" />
+  <string ux:Property="acct" />
+  <object ux:Property="mentions" />
   <bool ux:Property="preparedcontent" />
   <bool ux:Property="favourited" />
   <bool ux:Property="reposted" />
@@ -10,77 +12,7 @@
   <bool ux:Property="show_dimmed" />
   <bool ux:Property="drawlines" />
 
-  <JavaScript>
-
-    var _this = this;
-
-    var data = require( 'assets/js/data' );
-
-    var Observable = require("FuseJS/Observable");
-    var favouriting = Observable( false );
-    var reposting = Observable( false );
-
-    var userid = 0; this.userid.onValueChanged( function( newValue ) { userid = newValue; })
-    var postid = 0; this.postid.onValueChanged( function( newValue ) { postid = newValue; })
-    var favourited = false; this.favourited.onValueChanged( function( newValue ) { favourited = newValue; })
-    var reposted = false; this.reposted.onValueChanged( function( newValue ) { reposted = newValue; })
-
-    function replyToPost( args ) {
-      // router.push( "write", { postid: postid } );
-      console.log( JSON.stringify( args ) );
-      if ( args.data.isNotification ) {
-        router.push( "write", { postid: args.data.status.id, firstup: args.data.account.username, mentions: args.data.status.mentions } );
-      } else {
-        router.push( "write", { postid: args.data.id, firstup: args.data.account.acct, mentions: args.data.mentions } );
-      }
-    }
-
-    function rePost( args ) {
-      reposting.value = true;
-      data.rePost( postid, reposted ).then( function() {
-        _this.reposted.value = !_this.reposted.value;
-        reposting.value = false;
-      }).catch( function( err ) {
-        console.log( 'error in rePost' );
-        console.log( JSON.stringify( err ) );
-        reposting.value = false;
-      });
-    }
-
-    function favouritePost( args ) {
-      favouriting.value = true;
-      data.favouritePost( postid, favourited ).then( function() {
-        _this.favourited.value = !_this.favourited.value;
-        favouriting.value = false;
-      }).catch( function( err ) {
-        console.log( 'error in favouritePost' );
-        console.log( JSON.stringify( err ) );
-        favouriting.value = false;
-      });
-    }
-
-    function gotoPost() {
-      if ( postid > 0 ) {
-        router.push( "postcontext", { postid: postid } );
-      }
-    }
-
-    function gotoUser() {
-      if ( userid > 0 ) {
-        router.push( "userprofile", { userid: userid } );
-      }
-    }
-
-    module.exports = {
-      replyToPost: replyToPost,
-      rePost: rePost,
-      reposting: reposting,
-      favouritePost: favouritePost,
-      favouriting: favouriting,
-      gotoUser: gotoUser,
-      gotoPost: gotoPost
-    };
-  </JavaScript>
+  <JavaScript File="Class.PostCard.js" />
 
   <DockPanel>
     <WhileTrue Value="{Property pc.drawlines}">
@@ -88,13 +20,13 @@
     </WhileTrue>
     <Panel Height="54" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" Clicked="{gotoUser}">
       <Image ux:Name="avatarError" File="assets/images/logo-mastodon.png" Width="54" Height="54" ContentAlignment="Center" Visibility="Collapsed" Opacity="1" />
-      <WhileTrue Value="{isGifAvatar}">
+      <!-- <WhileTrue Value="{isGifAvatar}">
         <NativeViewHost>
           <WebView Url="{account.avatar}" />
           <Rectangle Color="#282b37" Layer="Background" />
         </NativeViewHost>
       </WhileTrue>
-      <WhileFalse Value="{isGifAvatar}">
+      <WhileFalse Value="{isGifAvatar}"> -->
         <Image Url="{account.avatar}" Width="54" Height="54" StretchMode="UniformToFill" ContentAlignment="Center">
           <WhileFailed>
             <Change avatarError.Visibility="Visible" />
@@ -104,7 +36,7 @@
             <Change avatarError.Opacity=".3" />
           </WhileLoading>
         </Image>
-      </WhileFalse>
+      <!-- </WhileFalse> -->
     </Panel>
 
     <StackPanel ux:Name="postcontent" Orientation="Vertical" Padding="8,4,8,0">
@@ -126,6 +58,9 @@
         <WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,8,0,0">
           <Each Items="{prepcontent}">
             <Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="#fff" Font="Regular" Margin="0,0,2,2" LoadAsync="True">
+              <WhileTrue Value="{clear}">
+                <Change word.Margin="0,0,800,8" />
+              </WhileTrue>
               <WhileTrue Value="{makeBold}">
                 <Change word.Font="Bold" />
                 <Clicked Handler="{wordClicked}" />

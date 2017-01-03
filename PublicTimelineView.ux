@@ -1,14 +1,17 @@
-<TransitionPage ux:Class="PublicTimelinePage" Activated="{setup}">
+<TransitionPage ux:Class="PublicTimelinePage">
   <Router ux:Dependency="router" />
   <JavaScript File="PublicTimelineView.js" />
 
   <ScrollView LayoutMode="PreserveVisual">
     <StackPanel Orientation="Vertical">
       <Each Items="{posts}">
-        <PostCard show_actions="True" router="router" />
+        <PostCard favourited="{favourited}" postid="{id}" userid="{account.id}" acct="{account.acct}" mentions="{mentions}" show_actions="True" router="router" />
       </Each>
       <WhileEmpty Items="{posts}">
-        <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">What??? Public timeline is empty?</Text>
+        <Text Value="No posts for public timeline." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff"></Text>
+        <Text Value="Want to load some?" Margin="0,16,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff" Clicked="{refreshData}">
+          <Rectangle Height="1" Fill="#fff" Margin="2,18,2,0" />
+        </Text>
       </WhileEmpty>
     </StackPanel>
   </ScrollView>

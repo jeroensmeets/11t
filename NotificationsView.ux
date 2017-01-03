@@ -1,4 +1,4 @@
-<TransitionPage ux:Class="NotificationsPage" Activated="{setup}">
+<TransitionPage ux:Class="NotificationsPage">
   <Router ux:Dependency="router" />
   <JavaScript File="NotificationsView.js" />
 
@@ -21,7 +21,7 @@
               <FaReply Color="#fff" FontSize="16" />
               <ParagraphText FontSize="14" Color="#fff" Margin="6,0,4,0">{whodidthis} mentioned you</ParagraphText>
             </StackPanel>
-            <PostCard postid="{id}" userid="{account.id}" show_actions="True" router="router" />
+            <PostCard postid="{id}" userid="{account.id}" acct="{account.acct}" mentions="{mentions}" show_actions="True" router="router" />
           </WhileTrue>
 
           <WhileTrue Value="{isFavourite}">
@@ -51,7 +51,10 @@
 
       </Each>
       <WhileEmpty Items="{posts}">
-        <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No notifications found.</Text>
+        <Text Value="No notifications found." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff"></Text>
+        <Text Value="Want to see if the server has some?" Margin="0,16,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff" Clicked="{refreshData}">
+          <Rectangle Height="1" Fill="#fff" Margin="2,18,2,0" />
+        </Text>
       </WhileEmpty>
     </StackPanel>
   </ScrollView>

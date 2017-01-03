@@ -1,9 +1,6 @@
 var data = require( 'assets/js/data' );
-var nav = require("assets/js/navigation");
-nav.menuVisible.value = 'Collapsed';
-nav.showBackButton.value = false;
-
 var Observable = require("FuseJS/Observable");
+
 var loginButtonVisible = Observable( 'Collapsed' );
 
 if ( data.loadAccessToken() ) {
@@ -14,13 +11,12 @@ if ( data.loadAccessToken() ) {
 }
 
 function startOAuth() {
-  console.log( 'starting oauth' );
+  // console.log( 'starting oauth' );
   router.goto( 'login' );
 }
 
 module.exports = {
   msg: data.msg,
-  menuVisible: nav.menuVisible,
   startOAuth: startOAuth,
   loginButtonVisible: loginButtonVisible
 };
