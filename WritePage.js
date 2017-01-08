@@ -2,6 +2,9 @@ var data = require( 'assets/js/data' );
 
 var Observable = require("FuseJS/Observable");
 
+var isPrivate = Observable( false );
+var hidePublic = Observable( false );
+
 var errorInSending = Observable( false );
 var errorTooManyImages = Observable( false );
 
@@ -52,7 +55,7 @@ function doToot() {
 
   // console.log( 'preparing media attachment ids: ' + JSON.stringify( _media_ids ) );
 
-  data.sendPost( txtToToot.value, inReplyToPostId.value, _media_ids ).then( function( result ) {
+  data.sendPost( txtToToot.value, inReplyToPostId.value, _media_ids, isPrivate.value, hidePublic.value ).then( function( result ) {
 
     emptyScreenAndReturn();
 
@@ -73,7 +76,7 @@ function emptyScreenAndReturn() {
   if ( _goBack ) {
     router.goBack();
   } else {
-    router.push( "timeline" );
+    router.goto( "home" );
   }
 
 }
@@ -116,5 +119,7 @@ module.exports = {
   emptyScreenAndReturn: emptyScreenAndReturn,
   errorInSending: errorInSending,
   errorTooManyImages: errorTooManyImages,
-  selectImage: selectImage
+  selectImage: selectImage,
+  isPrivate: isPrivate,
+  hidePublic: hidePublic
 }

@@ -6,13 +6,13 @@ var Observable = require("FuseJS/Observable");
 var favouriting = Observable( false );
 var reposting = Observable( false );
 
-var userid = 0; this.userid.onValueChanged( function( newValue ) { userid = newValue; })
-var acct = 0; this.acct.onValueChanged( function( newValue ) { acct = newValue; })
-var postid = 0; this.postid.onValueChanged( function( newValue ) { postid = newValue; })
-var mentions = 0; this.mentions.onValueChanged( function( newValue ) { mentions = newValue; })
+var userid = 0; this.userid.onValueChanged( function( newValue ) { userid = newValue; });
+var acct = 0; this.acct.onValueChanged( function( newValue ) { acct = newValue; });
+var postid = 0; this.postid.onValueChanged( function( newValue ) { postid = newValue; });
+var mentions = 0; this.mentions.onValueChanged( function( newValue ) { mentions = newValue; });
 
-var favourited = false; this.favourited.onValueChanged( function( newValue ) { favourited = newValue; })
-var reposted = false; this.reposted.onValueChanged( function( newValue ) { reposted = newValue; })
+var favourited = false; this.favourited.onValueChanged( function( newValue ) { favourited = newValue; });
+var reposted = false; this.reposted.onValueChanged( function( newValue ) { reposted = newValue; });
 
 function replyToPost( args ) {
   // console.log( JSON.stringify( mentions ) );

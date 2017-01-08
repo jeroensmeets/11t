@@ -12,9 +12,9 @@
   ],
   "Title": "Matodor",
   "Description": "An app to tame the Mastodon",
-  "Copyright": "Copyright ©2016 someone & me",
+  "Copyright": "Run with it!",
   "Version": "1.0",
-  "VersionCode": 7,
+  "VersionCode": 8,
   "RootNamespace": "com.jeroensmeets",
   "Mobile": {
     "Orientations": "Portrait"

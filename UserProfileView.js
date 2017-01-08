@@ -6,7 +6,8 @@ var userid = this.Parameter.map( function( param ) {
 
 userid.addSubscriber( function() {
   data.loadUserProfile( userid.value );
-  data.loadUserTimeLine( userid.value );
+  // data.loadUserTimeLine( userid.value );
+  data.loadTimeline( 'user', userid.value )
 })
 
 function goBack() {

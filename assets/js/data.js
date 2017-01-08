@@ -11,12 +11,12 @@ var HtmlEnt         = require( 'assets/js/he/he.js' );
 var api = require( 'assets/js/api' );
 
 var posts = {
-  home          : Observable(),
-  notifications : Observable(),
-  public        : Observable(),
-  postcontext   : Observable(),
-  user          : Observable(),
-  favourites    : Observable()
+  home            : Observable(),
+  notifications   : Observable(),
+  publictimeline  : Observable(),
+  postcontext     : Observable(),
+  user            : Observable(),
+  favourites      : Observable()
 }
 
 function getPostById( _postid ) {
@@ -111,24 +111,9 @@ function loadAccessToken( ) {
 
 }
 
-function loadPublicTimeline() {
-  loadTimeline( 'public' );
-}
-
-function loadHomeTimeLine() {
-  loadTimeline( 'home' );
-}
-
-function loadNotificationsTimeLine() {
-  loadTimeline( 'notifications' );
-}
-
-function loadUserTimeLine( userid ) {
-  // console.log( JSON.stringify( userid ) );
-  loadTimeline( 'user', userid );
-}
-
 function loadPostContext( _postid ) {
+
+  posts.postcontext.clear();
 
   var _post = getPostById( _postid );
 
@@ -198,7 +183,7 @@ function loadTimeline( _type, _id, _postObj ) {
     case 'postcontext':
       endpoint = '/api/v1/statuses/' + _id + '/context';
       break;
-    case 'public':
+    case 'publictimeline':
     default:
       endpoint = 'api/v1/timelines/public';
       break;
@@ -321,7 +306,7 @@ function sendImage( _imgObj ) {
 
 }
 
-function sendPost( _txt, _inreplyto, _media ) {
+function sendPost( _txt, _inreplyto, _media, _private, _hidepublic ) {
 
   loading.value = true;
 
@@ -338,7 +323,7 @@ function sendPost( _txt, _inreplyto, _media ) {
     var _resolve = resolve;
     var _reject = reject;
 
-    api.sendPost( _txt, _inreplyto, _media, AccessToken.value ).then(
+    api.sendPost( _txt, _inreplyto, _media, _private, _hidepublic, AccessToken.value ).then(
 
       function( data ) {
 
@@ -480,7 +465,7 @@ function MastodonPost( _info, _type ) {
 
   }
 
-  // console.log( JSON.stringify( this ) );
+  console.log( JSON.stringify( this ) );
 
 }
 
@@ -650,11 +635,8 @@ module.exports = {
   loadFromCache: loadFromCache,
   loadAccessToken: loadAccessToken,
   saveAccessToken: saveAccessToken,
-  loadPublicTimeline: loadPublicTimeline,
-  loadHomeTimeLine: loadHomeTimeLine,
-  loadNotificationsTimeLine: loadNotificationsTimeLine,
+  loadTimeline: loadTimeline,
   loadPostContext: loadPostContext,
-  loadUserTimeLine: loadUserTimeLine,
   loadUserProfile: loadUserProfile,
   loadUserFavourites: loadUserFavourites,
   sendPost: sendPost,

@@ -4,7 +4,7 @@ var auth            = require("assets/js/auth");
 
 var BASE_URL        = 'https://mastodon.social/';
 
-function sendPost( _txt, _inreplyto, _media_ids, access_token ) {
+function sendPost( _txt, _inreplyto, _media_ids, _private, _hidepublic, access_token ) {
 
   // POST /api/v1/statuses
   // Form data:
@@ -29,6 +29,14 @@ function sendPost( _txt, _inreplyto, _media_ids, access_token ) {
 
     if ( _media_ids.length > 0 ) {
       _bodyArgs.media_ids = _media_ids;
+    }
+
+    if ( _hidepublic ) {
+      _bodyArgs.visibility = 'unlisted';
+    }
+
+    if ( _private ) {
+      _bodyArgs.visibility = 'private';
     }
 
     fetch( BASE_URL + 'api/v1/statuses', {

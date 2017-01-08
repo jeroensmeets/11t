@@ -20,13 +20,13 @@
     </WhileTrue>
     <Panel Height="54" Width="54" Margin="0,8,0,0" Alignment="TopLeft" Dock="Left" Clicked="{gotoUser}">
       <Image ux:Name="avatarError" File="assets/images/logo-mastodon.png" Width="54" Height="54" ContentAlignment="Center" Visibility="Collapsed" Opacity="1" />
-      <!-- <WhileTrue Value="{isGifAvatar}">
+      <WhileTrue Value="{isGifAvatar}">
         <NativeViewHost>
           <WebView Url="{account.avatar}" />
           <Rectangle Color="#282b37" Layer="Background" />
         </NativeViewHost>
       </WhileTrue>
-      <WhileFalse Value="{isGifAvatar}"> -->
+      <WhileFalse Value="{isGifAvatar}">
         <Image Url="{account.avatar}" Width="54" Height="54" StretchMode="UniformToFill" ContentAlignment="Center">
           <WhileFailed>
             <Change avatarError.Visibility="Visible" />
@@ -36,7 +36,7 @@
             <Change avatarError.Opacity=".3" />
           </WhileLoading>
         </Image>
-      <!-- </WhileFalse> -->
+      </WhileFalse>
     </Panel>
 
     <StackPanel ux:Name="postcontent" Orientation="Vertical" Padding="8,4,8,0">
@@ -71,7 +71,10 @@
       </WhileTrue>
 
       <WhileTrue Value="{sensitive}">
-        <TextView Value="This post has been marked as sensitive. This betaversion of Matodor hides the images attached." Margin="16" Font="Italic" FontSize="14" TextColor="#777" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" Margin="0,4,0,12" Alignment="Center">
+          <FaLock Color="#777" FontSize="18" Margin="0,8,4,0" />
+          <TextView Value="sensitive images hidden" Font="Italic" FontSize="14" TextColor="#777" />
+        </StackPanel>
       </WhileTrue>
 
       <WhileFalse Value="{sensitive}">
@@ -89,30 +92,47 @@
 
       <WhileTrue Value="{Property pc.show_actions}">
         <StackPanel Orientation="Horizontal" Margin="0,12,0,8">
-          <FaReply Color="#777" FontSize="18" Margin="4,0,12,0">
+
+          <Panel Alignment="CenterLeft" Margin="0,0,12,0">
+            <FaReply Color="#777" FontSize="15" />
             <Clicked Handler="{replyToPost}" />
-          </FaReply>
-          <FaRepost ux:Name="icoreblogged" Color="#777" FontSize="18" Margin="0,0,4,0">
-            <Clicked Handler="{rePost}" />
-            <WhileTrue Value="{Property pc.reposted}">
-              <Change icoreblogged.Color="#2b90d9" />
-            </WhileTrue>
-            <WhileTrue Value="{reposting}">
-              <Spin Frequency="1" />
-            </WhileTrue>
-          </FaRepost>
-          <Text FontSize="13" Color="#777" Font="Regular" Value="{reblogs_count}" Margin="0,0,8,0" />
-          <FaStar ux:Name="icostar" Color="#777" FontSize="18" Margin="0,0,4,0">
+          </Panel>
+
+          <!-- can't reblog when marked sensitive -->
+          <WhileString Value="{visibility}" Equals="public" Invert="True">
+            <Panel Alignment="CenterLeft" Margin="0,0,12,0">
+              <FaLock Color="#777" FontSize="18" />
+            </Panel>
+          </WhileString>
+
+          <WhileString Value="{visibility}" Equals="public">
+            <StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,12,0">
+              <FaRepost ux:Name="icoreblogged" Color="#777" FontSize="18" Margin="0,0,3,0">
+                <WhileTrue Value="{reposting}">
+                  <Spin Frequency="1" />
+                </WhileTrue>
+              </FaRepost>
+              <Text FontSize="13" Color="#777" Font="Regular" Value="{reblogs_count}" />
+              <Clicked Handler="{rePost}" />
+              <WhileTrue Value="{Property pc.reposted}">
+                <Change icoreblogged.Color="#2b90d9" />
+              </WhileTrue>
+            </StackPanel>
+          </WhileString>
+
+          <StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,12,0">
+            <FaStar ux:Name="icostar" Color="#777" FontSize="18" Margin="0,0,3,0">
+              <WhileTrue Value="{favouriting}">
+                <Spin Frequency="1" />
+              </WhileTrue>
+            </FaStar>
+            <Text FontSize="13" Color="#777" Font="Regular" Value="{favourites_count}" />
             <Clicked Handler="{favouritePost}" />
             <WhileTrue Value="{Property pc.favourited}">
               <Change icostar.Color="#2b90d9" />
             </WhileTrue>
-            <WhileTrue Value="{favouriting}">
-              <Spin Frequency="1" />
-            </WhileTrue>
-          </FaStar>
-          <Text FontSize="13" Color="#777" Font="Regular" Value="{favourites_count}" Margin="0,0,8,0" />
-          <!-- <FaMore Color="#777" FontSize="16" /> -->
+          </StackPanel>
+
         </StackPanel>
       </WhileTrue>
 

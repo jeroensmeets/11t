@@ -1,4 +1,4 @@
-<TransitionPage ux:Class="TimelinePage" Activated="{refreshData}">
+<TransitionPage ux:Class="TimelinePage">
   <Router ux:Dependency="router" />
   <JavaScript File="TimelineView.js" />
 

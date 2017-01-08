@@ -10,6 +10,27 @@
           <Text TextWrapping="Wrap" Margin="4">What's on your mind?</Text>
         </WhileString>
       </TextView>
+      <Grid Columns="1*,4*" Margin="8,16,0,16">
+        <Switch Value="{isPrivate}"></Switch>
+        <Text Value="private post" Color="#fff" Font="Italic" Alignment="CenterLeft"></Text>
+      </Grid>
+      <WhileFalse Value="{isPrivate}">
+        <Grid Columns="1*,4*" Margin="8,16,0,16">
+          <Switch Value="{hidePublic}"></Switch>
+          <Text Value="hide from public timeline" Color="#fff" Font="Italic" Alignment="CenterLeft"></Text>
+        </Grid>
+      </WhileFalse>
+      <DockPanel Margin="0,24,0,0">
+        <MatodorButton Dock="Left" text="Cancel" Clicked="{emptyScreenAndReturn}" />
+        <MatodorButton Dock="Right" text="Share" Clicked="{doToot}" />
+        <MatodorButton Dock="Right" text="Upload image" Clicked="{selectImage}" />
+      </DockPanel>
+      <WhileTrue Value="{errorInSending}">
+        <Text Value="Could not send your toot at this time. Sorry!" TextWrapping="Wrap" Color="#fff" Font="Italic" Margin="0,12,0,0" />
+      </WhileTrue>
+      <WhileTrue Value="{errorTooManyImages}">
+        <Text Value="You can attach a maximum of 4 images to one post." TextWrapping="Wrap" Color="#fff" Font="Italic" Margin="0,12,0,0" />
+      </WhileTrue>
       <StackPanel Orientation="Horizontal">
         <ColumnLayout ColumnCount="4" />
         <Each Items="{attachments}">
@@ -18,17 +39,6 @@
           </Panel>
         </Each>
       </StackPanel>
-      <WhileTrue Value="{errorInSending}">
-        <Text Value="Could not send your toot at this time. Sorry!" TextWrapping="Wrap" Color="#fff" Font="Italic" Margin="0,12,0,0" />
-      </WhileTrue>
-      <WhileTrue Value="{errorTooManyImages}">
-        <Text Value="You can attach a maximum of 4 images to one post." TextWrapping="Wrap" Color="#fff" Font="Italic" Margin="0,12,0,0" />
-      </WhileTrue>
-      <DockPanel Margin="0,24,0,0">
-        <MatodorButton Dock="Left" text="Cancel" Clicked="{emptyScreenAndReturn}" />
-        <MatodorButton Dock="Right" text="Share" Clicked="{doToot}" />
-        <MatodorButton Dock="Right" text="Upload image" Clicked="{selectImage}" />
-      </DockPanel>
     </StackPanel>
   </Panel>
 </TransitionPage>

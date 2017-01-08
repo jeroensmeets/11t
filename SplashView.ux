@@ -18,7 +18,6 @@
       <StackPanel Orientation="Vertical">
         <Text Color="#ffffff" FontSize="11" Font="Regular">Built with FuseTools.</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">Font is Noto.</Text>
-        <Text Color="#ffffff" FontSize="11" Font="Regular">This is version 1.0.7</Text>
         <Text Color="#ffffff" FontSize="11" Font="Regular">Suggestions? bugs? contact me at @jeroensmeets</Text>
       </StackPanel>
     </Panel>

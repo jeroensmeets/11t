@@ -4,7 +4,7 @@ var Observable = require("FuseJS/Observable");
 var loginButtonVisible = Observable( 'Collapsed' );
 
 if ( data.loadAccessToken() ) {
-  setTimeout( function() { router.goto( 'timeline' ); }, 3000 );
+  setTimeout( function() { router.goto( 'home' ); }, 2000 );
 } else {
   // code not loaded, let user log in
   loginButtonVisible.value = 'Visible';

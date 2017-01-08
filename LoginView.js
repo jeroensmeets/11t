@@ -54,7 +54,7 @@ function webViewUrlChanged( ) {
         var data = require( 'assets/js/data' );
         if ( data.saveAccessToken( access_token ) ) {
           console.log( 'saved access token to file' );
-          router.goto( 'timeline' );
+          router.goto( 'home' );
         } else {
           console.log( 'could not save access token to file' );
           router.goto( 'splash' );

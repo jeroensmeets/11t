@@ -1,5 +1,5 @@
 var data = require( 'assets/js/data' );
 
 module.exports = {
-  posts: data.posts.public
+  posts: data.posts.publictimeline
 }

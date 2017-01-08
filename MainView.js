@@ -1,43 +1,60 @@
 var Observable = require("FuseJS/Observable");
 var data = require("assets/js/data");
 
-function goHome() {
-  router.goto( 'timeline' );
-}
-
-function goNotifications() {
-  data.loadFromCache( 'notifications' );
-  router.goto( 'notifications' );
-}
-
 function goWrite() {
   router.push( 'write' );
 }
 
+function goHome() {
+  // data.loadFromCache( 'home' );
+  // router.goto( 'home' );
+  gotoPage( 'home' );
+}
+
+function goNotifications() {
+  // data.loadFromCache( 'notifications' );
+  // router.goto( 'notifications' );
+  gotoPage( 'notifications' );
+}
+
 function goPublic() {
-  data.loadFromCache( 'public' );
-  router.goto( 'publictimeline' );
+  // data.loadFromCache( 'publictimeline' );
+  // router.goto( 'publictimeline' );
+  gotoPage( 'publictimeline' );
 }
 
 function goBack() {
 	router.goBack();
 }
 
-function refreshData() {
+function gotoPage( _pageid, _pushit ) {
 
-  router.getRoute( function(route) {
-    switch ( route[0] ) {
-      case 'timeline':
-        data.loadHomeTimeLine();
-        break;
-      case 'notifications':
-        data.loadNotificationsTimeLine();
-        break;
-      case 'public':
-        data.loadPublicTimeline();
-        break;
-    }
+  if ( 0 == arguments ) {
+    return;
+  }
+
+  data.loadFromCache( _pageid );
+
+  if ( 1 == arguments ) {
+    var _pushit = false;
+  }
+
+  if ( _pushit ) {
+    router.push( _pageid );
+  } else {
+    router.goto( _pageid );
+  }
+
+  setTimeout( function() { data.loadTimeline( _pageid ); }, 500 );
+
+}
+
+function refreshData(  ) {
+
+  router.getRoute( function( route ) {
+    data.loadTimeline( route[ 0 ] );
   } );
+
 }
 
 var Lifecycle = require('FuseJS/Lifecycle');

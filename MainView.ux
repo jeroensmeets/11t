@@ -22,6 +22,7 @@
   <Text ux:Class="FaStar" Font="fa" FontSize="16">&#xf005;</Text>
   <Text ux:Class="FaRepost" Font="fa" FontSize="16">&#xf079;</Text>
   <Text ux:Class="FaMore" Font="fa" FontSize="16">&#xf141;</Text>
+  <Text ux:Class="FaLock" Font="fa" FontSize="16">&#xf023;</Text>
 
   <Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 
@@ -83,9 +84,21 @@
           <Change Target="BackNav.Visibility" Value="Visible" />
         </WhileActive>
       </WritePage>
-      <TimelinePage ux:Name="timeline" router="router" />
-      <NotificationsPage ux:Name="notifications" router="router" />
-      <PublicTimelinePage ux:Name="publictimeline" router="router" />
+      <TimelinePage ux:Name="home" router="router">
+        <Activated>
+          <Callback Handler="{refreshData}" />
+        </Activated>
+      </TimelinePage>
+      <NotificationsPage ux:Name="notifications" router="router">
+        <Activated>
+          <Callback Handler="{refreshData}" Delay="3" />
+        </Activated>
+      </NotificationsPage>
+      <PublicTimelinePage ux:Name="publictimeline" router="router"><!-- 
+        <Activated>
+          <Callback Handler="{refreshData}" />
+        </Activated> -->
+      </PublicTimelinePage>
       <SplashPage ux:Name="splash" router="router">
         <WhileActive Bypass="Never">
           <Change Target="TopNavBar.Visibility" Value="Collapsed" />

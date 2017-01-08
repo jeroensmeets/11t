@@ -19,7 +19,7 @@
       </StackPanel>
 
       <Each Items="{posts}">
-        <PostCard router="router" />
+        <PostCard router="router" show_actions="True" />
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>
