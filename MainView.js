@@ -60,7 +60,7 @@ function refreshData(  ) {
 var Lifecycle = require('FuseJS/Lifecycle');
 Lifecycle.on("enteringInteractive", function() {
   // app activated
-  refreshData();
+  // refreshData();
 });
 
 module.exports = {

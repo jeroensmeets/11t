@@ -70,15 +70,14 @@
         </WrapPanel>
       </WhileTrue>
 
-      <WhileTrue Value="{sensitive}">
-        <StackPanel Orientation="Horizontal" Margin="0,4,0,12" Alignment="Center">
-          <FaLock Color="#777" FontSize="18" Margin="0,8,4,0" />
-          <TextView Value="sensitive images hidden" Font="Italic" FontSize="14" TextColor="#777" />
-        </StackPanel>
-      </WhileTrue>
-
-      <WhileFalse Value="{sensitive}">
-        <Each Items="{media_attachments}">
+      <Each Items="{media_attachments}" Limit="1">
+        <WhileTrue Value="{sensitive}">
+          <StackPanel Orientation="Horizontal" Margin="0,4,0,12" Alignment="Center">
+            <FaLock Color="#777" FontSize="18" Margin="0,8,4,0" />
+            <TextView Value="sensitive images hidden" Font="Italic" FontSize="14" TextColor="#777" />
+          </StackPanel>
+        </WhileTrue>
+        <WhileFalse Value="{sensitive}">
           <Panel ClipToBounds="true" Margin="0,12,0,12">
             <Image ux:Name="error" File="assets/images/logo-mastodon.png" Height="160" ContentAlignment="Center" Visibility="Collapsed" />
             <Image Height="160" Url="{preview_url}" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center">
@@ -87,8 +86,8 @@
               </WhileFailed>
             </Image>
           </Panel>
-        </Each>
-      </WhileFalse>
+        </WhileFalse>
+      </Each>
 
       <WhileTrue Value="{Property pc.show_actions}">
         <StackPanel Orientation="Horizontal" Margin="0,12,0,8">

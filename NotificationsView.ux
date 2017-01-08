@@ -35,7 +35,6 @@
           <WhileTrue Value="{isFollow}">
             <DockPanel Margin="36,0,0,0">
               <FaFollow Color="#fff" FontSize="16" Dock="Left" />
-              <!-- <ParagraphText FontSize="14" Color="#fff" Value="" Margin="6,0,4,0" /> -->
               <ParagraphText Margin="6,0,4,0" FontSize="14" Color="#fff" TextWrapping="Wrap">{whodidthis} boarded the train and sat down next to you.</ParagraphText>
             </DockPanel>
             <DockPanel Margin="0,8,0,8">
@@ -52,9 +51,6 @@
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Value="No notifications found." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff"></Text>
-        <Text Value="Want to see if the server has some?" Margin="0,16,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff" Clicked="{refreshData}">
-          <Rectangle Height="1" Fill="#fff" Margin="2,18,2,0" />
-        </Text>
       </WhileEmpty>
     </StackPanel>
   </ScrollView>

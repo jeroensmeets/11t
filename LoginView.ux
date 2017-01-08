@@ -1,8 +1,11 @@
 <TransitionPage ux:Class="LoginPage">
-  <Router ux:Dependency="router" />
-  <JavaScript File="LoginView.js" />
+	<WhileInactive>
+		<Change _nativeViewHost.Visibility="Hidden" />
+	</WhileInactive>
+	<Router ux:Dependency="router" />
+	<JavaScript File="LoginView.js" />
 
-  <NativeViewHost>
-    <WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}" Visibility="{webviewVisible}" />
-  </NativeViewHost>
+	<NativeViewHost ux:Name="_nativeViewHost">
+    	<WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}" Visibility="{webviewVisible}" />
+	</NativeViewHost>
 </TransitionPage>

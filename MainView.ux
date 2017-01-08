@@ -89,16 +89,8 @@
           <Callback Handler="{refreshData}" />
         </Activated>
       </TimelinePage>
-      <NotificationsPage ux:Name="notifications" router="router">
-        <Activated>
-          <Callback Handler="{refreshData}" Delay="3" />
-        </Activated>
-      </NotificationsPage>
-      <PublicTimelinePage ux:Name="publictimeline" router="router"><!-- 
-        <Activated>
-          <Callback Handler="{refreshData}" />
-        </Activated> -->
-      </PublicTimelinePage>
+      <NotificationsPage ux:Name="notifications" router="router" />
+      <PublicTimelinePage ux:Name="publictimeline" router="router" />
       <SplashPage ux:Name="splash" router="router">
         <WhileActive Bypass="Never">
           <Change Target="TopNavBar.Visibility" Value="Collapsed" />

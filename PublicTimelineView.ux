@@ -9,9 +9,6 @@
       </Each>
       <WhileEmpty Items="{posts}">
         <Text Value="No posts for public timeline." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff"></Text>
-        <Text Value="Want to load some?" Margin="0,16,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff" Clicked="{refreshData}">
-          <Rectangle Height="1" Fill="#fff" Margin="2,18,2,0" />
-        </Text>
       </WhileEmpty>
     </StackPanel>
   </ScrollView>

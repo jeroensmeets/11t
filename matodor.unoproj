@@ -14,7 +14,7 @@
   "Description": "An app to tame the Mastodon",
   "Copyright": "Run with it!",
   "Version": "1.0",
-  "VersionCode": 8,
+  "VersionCode": 9,
   "RootNamespace": "com.jeroensmeets",
   "Mobile": {
     "Orientations": "Portrait"
