@@ -11,7 +11,7 @@ You are absolutely right! I'm building this app from scratch, so please have som
 ## iOS ##
 If you use an Apple device, send me an e-mail at jeroen at jeroensmeets dot net. Important: I need you AppleID, i.e. the address that you use for logging into the App Store.
 
-As long there are spots open for the iOS test group, I'll add you to the beta group.
+As long as there are spots open for the iOS test group, I'll add you to the beta group.
 
 ## Android ##
 For Android, you can [visit this link](https://play.google.com/apps/testing/com.jeroensmeets.mastodon) on your mobile.
@@ -23,6 +23,11 @@ Easy -- it's `elephan-t`.
 ### Build it yourself ###
 
 You need the brilliant [FuseTools](https://www.fusetools.com/) and the code in this repository.
+
+### Compliments ###
+
+Font: [Noto](https://www.google.com/get/noto/).
+The elephant in the room: [Tineke Meirink](https://www.tinekemeirink.nl/).
 
 ### Contact ###
 
