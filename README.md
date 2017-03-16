@@ -1,10 +1,8 @@
 # README #
 
-Matodor is an iOS and Android app for [Mastodon](https://mastodon.social), written in FuseTools. In beta for both Android and iOS.
+11t is an iOS and Android app for connecting to [Mastodon](https://github.com/tootsuite/mastodon), written in FuseTools. In beta for both Android and iOS.
 
-### What are your plans for Matodor? ###
-
-I try to keep everything on [the Issues list on Github](https://github.com/jeroensmeets/mastodon-app/issues).
+I connect to Mastodon on [mastodon.social](https://mastodon.social/), but everyone can start her own server. 11t let's you use any Mastodon instance.
 
 ### I hear there's a beta test? ###
 
@@ -18,25 +16,13 @@ As long there are spots open for the iOS test group, I'll add you to the beta gr
 ## Android ##
 For Android, you can [visit this link](https://play.google.com/apps/testing/com.jeroensmeets.mastodon) on your mobile.
 
-### What's up with this name? ###
+### How do I pronounce 11t? ###
 
-Every mastodon needs a matodor to tame it. I liked the idea of following the vowels a-o-o. Sounds like a monkey in a fruit basket.
+Easy -- it's `elephan-t`.
 
 ### Build it yourself ###
 
-All code is in this repository, minus one file. The app needs client credentials to connect to Mastodon. Place them in assets/js/auth.js like this:
-
-```
-#!javascript
-
-module.exports = {
-  redirect_uri   : "http://mastodon.jeroensmeets.net/",
-  client_id      : CLIENT_ID,
-  client_secret  : CLIENT_SECRET
-}
-```
-
-For obtaining an client_id and client_secret see [this page](https://github.com/Gargron/mastodon/wiki/API#oauth-apps). As the WebView in FuseTools needs an existing redirect_uri, I have configured the subdomain above. Feel free to use it, but be aware that it could go away at any time.
+You need the brilliant [FuseTools](https://www.fusetools.com/) and the code in this repository.
 
 ### Contact ###
 

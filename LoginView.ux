@@ -1,11 +1,42 @@
 <TransitionPage ux:Class="LoginPage">
-	<WhileInactive>
-		<Change _nativeViewHost.Visibility="Hidden" />
-	</WhileInactive>
 	<Router ux:Dependency="router" />
 	<JavaScript File="LoginView.js" />
+	<Activated Handler="{setOAuthUri}" />
 
-	<NativeViewHost ux:Name="_nativeViewHost">
-    	<WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}" Visibility="{webviewVisible}" />
+	<NativeViewHost ux:Name="_nativeViewHost" Visibility="{webviewVisible}">
+    	<WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}">
+    		<PageLoaded>
+				<EvaluateJS Delay="1">
+					var logo = document.querySelector(".logo-container h1 img");
+
+					function handleLogoClick( e ) {
+						e.preventDefault();
+						logo.style.width = "180px";
+						logo.style.height = "180px";
+						logo.style.margin = "20px auto";
+					}
+
+					var img = document.querySelector( ".logo-container h1 a img" );
+					if ( img ) {
+						img.style.transition = "none";
+					}
+
+					var link = document.querySelector( ".logo-container a" );
+					if ( link ) {
+						link.onclick = handleLogoClick;
+					}
+  				</EvaluateJS>
+  			</PageLoaded>
+			<WhileKeyboardVisible>
+				<EvaluateJS>
+					var logo = document.querySelector(".logo-container h1 img");
+					if ( logo ) {
+						logo.style.width = "80px";
+						logo.style.height = "80px";
+						logo.style.margin = "0 auto";
+					}
+				</EvaluateJS>
+			</WhileKeyboardVisible>
+		</WebView>
 	</NativeViewHost>
 </TransitionPage>

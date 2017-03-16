@@ -1,123 +1,123 @@
-<App Background="#282b37">
-  <Android.StatusBarConfig Color="#0003" IsVisible="True" />
-  <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
+<App Background="#fff">
 
-  <MemoryPolicy ux:Global="QuickUnload" UnloadInBackground="true" UnusedTimeout="10" UnpinInvisible="true"/>
+	<float4 ux:Global="palette.clrText" ux:Value="#282b37" />
+	<float4 ux:Global="palette.clrIcon" ux:Value="#282b37" />
+	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#787b87" />
+	<float4 ux:Global="palette.clrLines" ux:Value="#282b37" />
+	<float4 ux:Global="palette.clrHighlight" ux:Value="#1a9df8" />
+	<float4 ux:Global="palette.clrNavigation" ux:Value="#1a9df8" />
 
-  <Font File="assets/fonts/NotoSans-Regular.ttf" ux:Global="Regular" />
-  <Font File="assets/fonts/NotoSans-Bold.ttf" ux:Global="Bold" />
-  <Font File="assets/fonts/NotoSans-Italic.ttf" ux:Global="Italic" />
-  <Font File="assets/fonts/NotoSans-BoldItalic.ttf" ux:Global="BoldItalic" />
+	<MemoryPolicy ux:Global="QuickUnload" UnloadInBackground="true" UnusedTimeout="10" UnpinInvisible="true"/>
 
-  <Text ux:Class="ParagraphText" Font="Regular" FontSize="14" />
-  <Text ux:Class="HeaderText" Font="Bold" FontSize="14" />
+	<Font File="assets/fonts/NotoSans-Regular.ttf" ux:Global="Regular" />
+	<Font File="assets/fonts/NotoSans-Bold.ttf" ux:Global="Bold" />
+	<Font File="assets/fonts/NotoSans-Italic.ttf" ux:Global="Italic" />
+	<Font File="assets/fonts/NotoSans-BoldItalic.ttf" ux:Global="BoldItalic" />
 
-  <Font File="assets/fonts/fontawesome-webfont.ttf" ux:Global="fa" />
-  <!-- tabs at top of screen -->
-  <Text ux:Class="FaWrite" Font="fa">&#xf044;</Text>
-  <Text ux:Class="FaClock" Font="fa">&#xf017;</Text>
-  <Text ux:Class="FaBell" Font="fa">&#xf0a2;</Text>
-  <!-- icons for actions per post -->
-  <Text ux:Class="FaReply" Font="fa" FontSize="16">&#xf112;</Text>
-  <Text ux:Class="FaStar" Font="fa" FontSize="16">&#xf005;</Text>
-  <Text ux:Class="FaRepost" Font="fa" FontSize="16">&#xf079;</Text>
-  <Text ux:Class="FaMore" Font="fa" FontSize="16">&#xf141;</Text>
-  <Text ux:Class="FaLock" Font="fa" FontSize="16">&#xf023;</Text>
+	<Text ux:Class="ParagraphText" Font="Regular" FontSize="14" />
+	<Text ux:Class="HeaderText" Font="Bold" FontSize="14" />
+	<Text ux:Class="ItalicText" Font="Italic" FontSize="14" />
 
-  <Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
+	<Router ux:Name="router" />
 
-  <Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
+	<Font File="assets/fonts/fontawesome-webfont.ttf" ux:Global="fa" />
 
-  <JavaScript File="MainView.js" />
+	<!-- tabs at bottom of screen -->
+	<Text ux:Class="FaWrite" Font="fa">&#xf044;</Text>
+	<Text ux:Class="FaClock" Font="fa">&#xf017;</Text>
+	<Text ux:Class="FaBell" Font="fa">&#xf0a2;</Text>
+	<Text ux:Class="FaList" Font="fa">&#xf022;</Text>
+	<Text ux:Class="FaGlobe" Font="fa">&#xf0ac;</Text>
+	<Text ux:Class="FaHome" Font="fa">&#xf015;</Text>
 
-  <DockPanel>
-    <StatusBarBackground Dock="Top" />
+	<!-- icons for actions per post -->
+	<Text ux:Class="FaReply" Font="fa" FontSize="16">&#xf112;</Text>
+	<Text ux:Class="FaReplyAll" Font="fa" FontSize="16">&#xf122;</Text>
+	<Text ux:Class="FaStar" Font="fa" FontSize="16">&#xf005;</Text>
+	<Text ux:Class="FaRepost" Font="fa" FontSize="16">&#xf079;</Text>
+	<Text ux:Class="FaMore" Font="fa" FontSize="16">&#xf141;</Text>
+	<Text ux:Class="FaLock" Font="fa" FontSize="16">&#xf023;</Text>
 
-    <Panel ux:Name="TopNavBar" Dock="Top" Padding="0,8,0,6" Background="#484b57">
+	<Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 
-      <!-- show main navigation with logo -->
-      <StackPanel Orientation="Horizontal" ux:Name="MainNav">
-        <Image File="assets/images/logo-mastodon.png" Width="24" Height="24" Margin="16,4,24,4" Clicked="{refreshData}">
-          <WhileTrue Value="{loading}">
-            <Spin Frequency="2" />
-          </WhileTrue>
-        </Image>
+	<Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
 
-        <!-- topmenu items -->
-        <StackPanel Orientation="Horizontal">
-          <StackPanel Orientation="Horizontal" Margin="2,0,12,0" HitTestMode="LocalBounds" Clicked="{goWrite}">
-            <FaWrite Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-            <Text Value="Toot" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-          </StackPanel>
-          <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goHome}">
-            <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-            <Text Value="Home" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-          </StackPanel>
-          <StackPanel Orientation="Horizontal" Margin="0,0,12,0" HitTestMode="LocalBounds" Clicked="{goNotifications}">
-            <FaBell Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-            <Text Value="Notifications" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-          </StackPanel>
-          <StackPanel Orientation="Horizontal" HitTestMode="LocalBounds" Clicked="{goPublic}">
-            <FaClock Color="#fff" FontSize="12" Margin="0,0,4,0" Alignment="Center" />
-            <Text Value="Public" Color="#fff" Font="Bold" FontSize="13" Alignment="Center" />
-          </StackPanel>
-        </StackPanel>
-      </StackPanel>
+	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>  
 
-      <StackPanel ux:Name="BackNav" Orientation="Horizontal" Visibility="Collapsed">
-        <Panel Width="64" Height="32" Clicked="{goBack}">
-          <FaGoBack Color="#fff" FontSize="24" Margin="0,2,4,0" Alignment="Center" Clicked="{goBack}" />
-        </Panel>
+	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>  
 
-        <Panel>
-          <Text Value="{Resource Title}" Color="#fff" Font="Bold" FontSize="13" />
-        </Panel>
-      </StackPanel>
-    </Panel>
+	<JavaScript File="MainView.js" />
 
-    <Router ux:Name="router" />
+	<DockPanel Background="#f4f4f4">
 
-    <Navigator DefaultPath="splash">
-      <WritePage ux:Template="write" router="router">
-        <WhileActive>
-          <Change Target="MainNav.Visibility" Value="Collapsed" />
-          <Change Target="BackNav.Visibility" Value="Visible" />
-        </WhileActive>
-      </WritePage>
-      <TimelinePage ux:Name="home" router="router">
-        <Activated>
-          <Callback Handler="{refreshData}" />
-        </Activated>
-      </TimelinePage>
-      <NotificationsPage ux:Name="notifications" router="router" />
-      <PublicTimelinePage ux:Name="publictimeline" router="router" />
-      <SplashPage ux:Name="splash" router="router">
-        <WhileActive Bypass="Never">
-          <Change Target="TopNavBar.Visibility" Value="Collapsed" />
-        </WhileActive>
-      </SplashPage>
-      <LoginPage ux:Name="login" router="router">
-        <WhileActive>
-          <Change Target="TopNavBar.Visibility" Value="Collapsed" />
-        </WhileActive>
-      </LoginPage>
-      <UserProfilePage Title="User info" ux:Template="userprofile" router="router">
-        <WhileActive>
-          <Change Target="MainNav.Visibility" Value="Collapsed" />
-          <Change Target="BackNav.Visibility" Value="Visible" />
-        </WhileActive>
-      </UserProfilePage>
-      <PostPage Title="Post context" ux:Template="postcontext" router="router">
-        <WhileActive>
-          <Change Target="MainNav.Visibility" Value="Collapsed" />
-          <Change Target="BackNav.Visibility" Value="Visible" />
-        </WhileActive>
-      </PostPage>
-    </Navigator>
+		<StackPanel Dock="Top">
+			<Android.StatusBarConfig Color="#1a9df8" IsVisible="True" />
+			<iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
+			<StatusBarBackground Background="#fff" />
+			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Background="#1a9df8">
 
-    <Android>
-      <BottomBarBackground Dock="Bottom" />
-    </Android>
-  </DockPanel>
+				<WhileCanGoBack>
+					<Panel ux:Name="backButton" Dock="Left" Padding="8,0,0,0" HitTestMode="LocalBounds">
+						<FaGoBack Color="#fff" FontSize="20" Dock="Left" Margin="4,8,0,0" />
+						<AddingAnimation>
+							<Change backButton.Opacity="0" Duration=".3" />
+						</AddingAnimation>
+						<RemovingAnimation>
+							<Change backButton.Opacity="0" Duration=".3" />
+						</RemovingAnimation>
+						<Clicked>
+							<GoBack />
+						</Clicked>
+					</Panel>
+				</WhileCanGoBack>
+
+				<Panel HitTestMode="LocalBounds" Clicked="{goWrite}" Padding="0,0,16,0" Dock="Right">
+					<FaWrite Color="#fff" FontSize="20" Alignment="Center" />
+				</Panel>
+
+			</DockPanel>
+		</StackPanel>
+
+		<BottomBarBackground Dock="Bottom" />
+
+		<Navigator DefaultPath="splash">
+			<WritePage Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
+				<WhileActive Bypass="Never">
+					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
+				</WhileActive>
+			</WritePage>
+			<TimelinePage Name="home" Title="Timeline" router="router" TopNavBar="TopNavBar" />
+			<NotificationsPage Name="notifications" Title="Notifications" router="router" TopNavBar="TopNavBar" />
+			<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" />
+			<SplashPage Name="splash" router="router">
+				<WhileActive Bypass="Never">
+					<Change Target="TopNavBar.Visibility" Value="Collapsed" />
+					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
+				</WhileActive>
+			</SplashPage>
+			<LoginPage ux:Template="login" router="router">
+				<WhileActive Bypass="Never">
+					<Change Target="TopNavBar.Visibility" Value="Collapsed" />
+					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
+				</WhileActive>
+			</LoginPage>
+			<UserProfilePage ux:Template="userprofile" router="router" TopNavBar="TopNavBar">
+			</UserProfilePage>
+			<PostPage ux:Template="postcontext" router="router" TopNavBar="TopNavBar" />
+		</Navigator>
+
+		<StackPanel ux:Name="BottomNavBar" Orientation="Horizontal" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Background="#f4f4f4">
+			<Panel HitTestMode="LocalBounds" Clicked="{goHome}" Margin="0,0,42,0">
+				<FaHome Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			</Panel>
+			<Panel HitTestMode="LocalBounds" Clicked="{goNotifications}" Margin="0,0,42,0">
+				<FaReplyAll Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			</Panel>
+			<Panel HitTestMode="LocalBounds" Clicked="{goPublic}">
+				<FaGlobe Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			</Panel>
+		</StackPanel>
+
+	</DockPanel>
 
 </App>

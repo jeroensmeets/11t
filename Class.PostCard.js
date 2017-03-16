@@ -1,66 +1,108 @@
 var _this = this;
 
-var data = require( 'assets/js/data' );
+var api = require( 'assets/js/api' );
 
 var Observable = require("FuseJS/Observable");
+var InterApp = require("FuseJS/InterApp");
+
+var postObj = Observable();
+var postid = 0;
+var userid = 0;
+var username = '';
+
+var isFavourited = Observable( false );
+var isReposted = Observable( false );
+var mentions = false;
+
 var favouriting = Observable( false );
 var reposting = Observable( false );
+var spoilerVisible = Observable( false );
 
-var userid = 0; this.userid.onValueChanged( function( newValue ) { userid = newValue; });
-var acct = 0; this.acct.onValueChanged( function( newValue ) { acct = newValue; });
-var postid = 0; this.postid.onValueChanged( function( newValue ) { postid = newValue; });
-var mentions = 0; this.mentions.onValueChanged( function( newValue ) { mentions = newValue; });
+this.post.onValueChanged( module, function( newValue ) {
 
-var favourited = false; this.favourited.onValueChanged( function( newValue ) { favourited = newValue; });
-var reposted = false; this.reposted.onValueChanged( function( newValue ) { reposted = newValue; });
+	if ( 'undefined' != typeof newValue ) {
+		postObj.value = newValue;
+		postid = newValue.id;
+		userid = newValue.isNotification ? newValue.whodidthis.id : newValue.account.id;
+		username = newValue.isNotification ? newValue.whodidthis.acct : newValue.account.acct;
+		mentions = newValue.mentions;
+		isFavourited.value = newValue.favourited;
+		isReposted.value = newValue.reposted;
+		spoilerVisible.value = ( '' == newValue.spoiler_text );
+	}
+} );
 
-function replyToPost( args ) {
-  // console.log( JSON.stringify( mentions ) );
-  router.push( "write", { postid: postid, firstup: acct, mentions: mentions } );
+function replyToPost() {
+	router.push( "write", { postid: postid, mentions: mentions, firstup: username } );
 }
 
 function rePost( args ) {
-  reposting.value = true;
-  data.rePost( postid, reposted ).then( function() {
-    _this.reposted.value = !_this.reposted.value;
-    reposting.value = false;
-  }).catch( function( err ) {
-    console.log( 'error in rePost' );
-    console.log( JSON.stringify( err ) );
-    reposting.value = false;
-  });
+
+	reposting.value = true;
+	api.rePost( postid, isReposted.value ).then( function() {
+		isReposted.value = !isReposted.value;
+		reposting.value = false;
+	}).catch( function( err ) {
+		console.log( 'error in rePost' );
+		console.log( JSON.stringify( err ) );
+		reposting.value = false;
+	});
+
 }
 
 function favouritePost( args ) {
-  favouriting.value = true;
-  data.favouritePost( postid, favourited ).then( function() {
-    _this.favourited.value = !_this.favourited.value;
-    favouriting.value = false;
-  }).catch( function( err ) {
-    console.log( 'error in favouritePost' );
-    console.log( JSON.stringify( err ) );
-    favouriting.value = false;
-  });
+
+	favouriting.value = true;
+	api.favouritePost( postid, isFavourited.value ).then( function() {
+		isFavourited.value = !isFavourited.value;
+		favouriting.value = false;
+	}).catch( function( err ) {
+		console.log( 'error in favouritePost' );
+		console.log( JSON.stringify( err ) );
+		favouriting.value = false;
+	});
+
 }
 
 function gotoPost() {
-  if ( postid > 0 ) {
-    router.push( "postcontext", { postid: postid } );
-  }
+	if ( postid > 0 ) {
+		router.push( "postcontext", { postid: postid } );
+	}
 }
 
-function gotoUser() {
-  if ( userid > 0 ) {
-    router.push( "userprofile", { userid: userid } );
-  }
+function gotoUser( args ) {
+	if ( userid > 0 ) {
+		router.push( "userprofile", { userid: userid } );
+	}
+}
+
+function wordClicked( args ) {
+
+	// console.log( JSON.stringify( args.data ) );
+	if ( args.data.mention ) {
+		router.push( "userprofile", { userid: args.data.userid } );
+	} else if ( args.data.link ) {
+		InterApp.launchUri( args.data.uri );
+	}
+
+}
+
+function showSpoiler() {
+	spoilerVisible.value = !spoilerVisible.value;
 }
 
 module.exports = {
-  replyToPost: replyToPost,
-  rePost: rePost,
-  reposting: reposting,
-  favouritePost: favouritePost,
-  favouriting: favouriting,
-  gotoUser: gotoUser,
-  gotoPost: gotoPost
+	postObj: postObj,
+	replyToPost: replyToPost,
+	rePost: rePost,
+	isReposted: isReposted,
+	reposting: reposting,
+	favouritePost: favouritePost,
+	isFavourited: isFavourited,
+	favouriting: favouriting,
+	gotoUser: gotoUser,
+	gotoPost: gotoPost,
+	wordClicked: wordClicked,
+	spoilerVisible: spoilerVisible,
+	showSpoiler: showSpoiler
 };

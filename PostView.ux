@@ -1,17 +1,22 @@
 <TransitionPage ux:Class="PostPage">
 
-  <Router ux:Dependency="router" />
-  <JavaScript File="PostView.js" />
+	<Router ux:Dependency="router" />
+	<JavaScript File="PostView.js" />
 
-  <ScrollView LayoutMode="PreserveVisual">
-    <StackPanel Orientation="Vertical">
-      <Each Items="{posts}">
-        <PostCard drawlines="True" preparedcontent="True" favourited="{favourited}" postid="{id}" userid="{account.id}" acct="{account.acct}" mentions="{mentions}" show_actions="True" router="router" />
-      </Each>
-      <WhileEmpty Items="{posts}">
-        <Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No post context found.</Text>
-      </WhileEmpty>
-    </StackPanel>
-  </ScrollView>
+	<Visual ux:Dependency="TopNavBar" />
+	<AlternateRoot ParentNode="TopNavBar">
+		<NavBarTitle>Toot</NavBarTitle>
+	</AlternateRoot>
+
+	<ScrollView LayoutMode="PreserveVisual">
+		<StackPanel Orientation="Vertical">
+			<Each Items="{Clear posts}">
+				<PostCard post="{}" drawlines="true" clickable="true" router="router" />
+			</Each>
+			<WhileTrue Value="{loading}">
+				<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">Loading post context...</Text>
+			</WhileTrue>
+		</StackPanel>
+	</ScrollView>
 
 </TransitionPage>

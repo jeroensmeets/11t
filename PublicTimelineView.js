@@ -1,5 +1,10 @@
-var data = require( 'assets/js/data' );
+var api			= require("assets/js/api");
+
+function setActiveTimeline() {
+	api.setActiveTimeline( 'publictimeline' );
+}
 
 module.exports = {
-  posts: data.posts.publictimeline
+	setActiveTimeline: setActiveTimeline,
+	posts: api.posts.publictimeline
 }

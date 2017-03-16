@@ -1,58 +1,28 @@
 <TransitionPage ux:Class="NotificationsPage">
-  <Router ux:Dependency="router" />
-  <JavaScript File="NotificationsView.js" />
+	<Router ux:Dependency="router" />
+	<JavaScript File="NotificationsView.js" />
+	<Activated Handler="{setActiveTimeline}" />
 
-  <ScrollView LayoutMode="PreserveVisual">
-    <StackPanel Orientation="Vertical" Padding="0,8,0,0">
-      <Each Items="{posts}">
+	<Visual ux:Dependency="TopNavBar" />
+	<AlternateRoot ParentNode="TopNavBar">
+		<NavBarTitle>Notifications</NavBarTitle>
+	</AlternateRoot>
 
-        <StackPanel Orientation="Vertical">
+	<ScrollView LayoutMode="PreserveVisual" SnapMinTransform="false">
+		<StackPanel Orientation="Vertical">
 
-          <WhileTrue Value="{isReblog}">
-            <StackPanel Orientation="Horizontal" Margin="36,0,0,0">
-              <FaRepost Color="#fff" FontSize="16" />
-              <ParagraphText FontSize="14" Color="#fff" Margin="6,0,4,0">{whodidthis} reblogged your post</ParagraphText>
-            </StackPanel>
-            <PostCard show_actions="False" show_dimmed="True" router="router" />
-          </WhileTrue>
+			<ReloadPull />
+			<Each Items="{Read posts}">
+				<PostCard post="{}" clickable="false" router="router" />
+			</Each>
 
-          <WhileTrue Value="{isMention}">
-            <StackPanel Orientation="Horizontal" Margin="36,0,0,0">
-              <FaReply Color="#fff" FontSize="16" />
-              <ParagraphText FontSize="14" Color="#fff" Margin="6,0,4,0">{whodidthis} mentioned you</ParagraphText>
-            </StackPanel>
-            <PostCard postid="{id}" userid="{account.id}" acct="{account.acct}" mentions="{mentions}" show_actions="True" router="router" />
-          </WhileTrue>
+			<WhileFalse Value="{loading}">
+				<WhileEmpty Items="{posts}">
+					<Text Value="No notifications found." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText"></Text>
+				</WhileEmpty>
+			</WhileFalse>
 
-          <WhileTrue Value="{isFavourite}">
-            <StackPanel Orientation="Horizontal" Margin="36,0,0,0">
-              <FaStar Color="#fff" FontSize="16" />
-              <ParagraphText FontSize="14" Color="#fff" Margin="6,0,4,0">{whodidthis} favourited your post</ParagraphText>
-            </StackPanel>
-            <PostCard show_actions="False" show_dimmed="True" router="router" />
-          </WhileTrue>
-
-          <WhileTrue Value="{isFollow}">
-            <DockPanel Margin="36,0,0,0">
-              <FaFollow Color="#fff" FontSize="16" Dock="Left" />
-              <ParagraphText Margin="6,0,4,0" FontSize="14" Color="#fff" TextWrapping="Wrap">{whodidthis} boarded the train and sat down next to you.</ParagraphText>
-            </DockPanel>
-            <DockPanel Margin="0,8,0,8">
-              <Image Url="{avatar}" Width="54" Margin="0,0,8,0" Alignment="TopLeft" Dock="Left" />
-              <ParagraphText FontSize="14" Color="#fff" Value="{note}" TextWrapping="Wrap" />
-            </DockPanel>
-
-            <Rectangle Height="1" Fill="#444" Margin="2,6,8,6" />
-
-          </WhileTrue>
-
-        </StackPanel>
-
-      </Each>
-      <WhileEmpty Items="{posts}">
-        <Text Value="No notifications found." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff"></Text>
-      </WhileEmpty>
-    </StackPanel>
-  </ScrollView>
+		</StackPanel>
+	</ScrollView>
 
 </TransitionPage>

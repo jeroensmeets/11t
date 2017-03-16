@@ -1,0 +1,30 @@
+{
+	"name": "11t",
+	"version": "1.0.10",
+	"description": "App for Mastodon",
+	"main": "SplashView.js",
+	"dependencies": {
+		"oboe": "^2.1.3",
+		"request": "^2.79.0",
+		"http-https": "^1.0.0",
+		"http": "^0.0.0",
+		"https": "^1.0.0",
+		"url": "^0.11.0",
+		"punycode": "^1.4.1",
+		"querystring": "^0.2.0"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeroensmeets/mastodon-app.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/jeroensmeets/mastodon-app/issues"
+	},
+	"homepage": "https://github.com/jeroensmeets/mastodon-app#readme"
+}

@@ -1,15 +1,34 @@
 <TransitionPage ux:Class="PublicTimelinePage">
-  <Router ux:Dependency="router" />
-  <JavaScript File="PublicTimelineView.js" />
+	<Router ux:Dependency="router" />
+	<JavaScript File="PublicTimelineView.js" />
+	<Activated Handler="{setActiveTimeline}" />
 
-  <ScrollView LayoutMode="PreserveVisual">
-    <StackPanel Orientation="Vertical">
-      <Each Items="{posts}">
-        <PostCard favourited="{favourited}" postid="{id}" userid="{account.id}" acct="{account.acct}" mentions="{mentions}" show_actions="True" router="router" />
-      </Each>
-      <WhileEmpty Items="{posts}">
-        <Text Value="No posts for public timeline." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff"></Text>
-      </WhileEmpty>
-    </StackPanel>
-  </ScrollView>
+	<Visual ux:Dependency="TopNavBar" />
+	<AlternateRoot ParentNode="TopNavBar">
+		<NavBarTitle>Federated</NavBarTitle>
+	</AlternateRoot>
+
+	<ScrollView LayoutMode="PreserveVisual" SnapMinTransform="false">
+		<StackPanel Orientation="Vertical">
+			<ReloadPull />
+			<Each Items="{Read posts}">
+				<WhileTrue Value="{isReblog}">
+					<DockPanel Margin="0,8,0,8">
+						<FaRepost Color="#fff" FontSize="16" Margin="36,0,0,0" Dock="Left" />
+						<StackPanel Orientation="Horizontal" Margin="8,1,0,0">
+							<ParagraphText Color="#fff" FontSize="14" Value="{whodidthis}" Margin="0,0,5,0" />
+							<ParagraphText Color="#fff" FontSize="14">reblogged this post</ParagraphText>
+						</StackPanel>
+					</DockPanel>
+				</WhileTrue>
+				<PostCard router="router" />
+			</Each>
+			<WhileFalse Value="{loading}">
+				<WhileEmpty Items="{posts}">
+					<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>
+				</WhileEmpty>
+			</WhileFalse>
+		</StackPanel>
+	</ScrollView>
+
 </TransitionPage>

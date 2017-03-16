@@ -1,22 +1,72 @@
-var data = require( 'assets/js/data' );
-var Observable = require("FuseJS/Observable");
+var api					= require( 'assets/js/api' );
+var Observable			= require( 'FuseJS/Observable' );
 
-var loginButtonVisible = Observable( 'Collapsed' );
+var loginFormVisible	= Observable( 'Collapsed' );
+var error				= Observable();
+var showError			= Observable( false );
 
-if ( data.loadAccessToken() ) {
-  setTimeout( function() { router.goto( 'home' ); }, 2000 );
-} else {
-  // code not loaded, let user log in
-  loginButtonVisible.value = 'Visible';
+var baseurl				= Observable( 'https://mastodon.social/' );
+
+function startLoggedInCheck() {
+
+	api.loadAPIConnectionDataAsync()
+		.then( function( result ) {
+			if ( 'ok' == result ) {
+				setTimeout( function() { router.goto( 'home' ); }, 2000 );
+			} else {
+				showLoginForm();
+			}
+		} )
+		.catch( function() {
+			// auth code not found, let user log in
+			showLoginForm();
+		});
+
+}
+
+function showLoginForm() {
+	loginFormVisible.value = 'Visible';
 }
 
 function startOAuth() {
-  // console.log( 'starting oauth' );
-  router.goto( 'login' );
+
+	showError.value = false;
+
+	if ( ( 'undefined' == typeof baseurl.value ) || ( baseurl.value.length < 8 ) ) {
+		error.value = 'Please specify a URL';
+		showError.value = true;
+		return false;
+	}
+
+	api.saveAPIConnectionData( baseurl.value, false, false, false );
+	router.goto( 'login' );
+	return;
+
+	// step 1: get client id and client secret
+	api.getClientIdSecret( baseurl.value ).then( function( credentials ) {
+
+		// step 2: get access token
+		api.getAccessToken( baseurl.value, credentials.id, credentials.secret, email.value, password.value ).then( function( accesstoken ) {
+
+			// step 3: save credentials and access token
+			api.saveAPIConnectionData( baseurl.value, credentials.id, credentials.secret, accesstoken.access_token );
+
+			// step 4: get home timeline and then go home!
+			api.setActiveTimeline( 'home' );
+			api.loadCurrentTimelineFromAPI();
+			router.goto( 'home' );
+
+		});
+
+	});
+
 }
 
 module.exports = {
-  msg: data.msg,
-  startOAuth: startOAuth,
-  loginButtonVisible: loginButtonVisible
+	startOAuth: startOAuth,
+	loginFormVisible: loginFormVisible,
+	startLoggedInCheck: startLoggedInCheck,
+	error: error,
+	showError: showError,
+	baseurl: baseurl
 };

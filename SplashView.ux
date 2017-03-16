@@ -1,25 +1,42 @@
 <TransitionPage ux:Class="SplashPage">
 
-  <Router ux:Dependency="router" />
-  <JavaScript File="SplashView.js" />
+	<Router ux:Dependency="router" />
+	<JavaScript File="SplashView.js" />
+	<Activated Handler="{startLoggedInCheck}" />
 
-  <Panel>
-    <StackPanel Orientation="Vertical">
-      <Image File="assets/images/logo-mastodon.png" Width="140" Height="140" Margin="0,60,0,80"></Image>
-      <!-- <Text Value="{msg}" Color="#ffffff" Alignment="Center" Font="Italic" /> -->
-      <Button Text="Login" Background="#fff" Color="#009bff" Margin="60" Padding="12" Visibility="{loginButtonVisible}">
-        <Clicked>
-          <Callback Handler="{startOAuth}" />
-        </Clicked>
-      </Button>
-    </StackPanel>
+	<DockPanel Background="#e4e4e4">
+		<StatusBarBackground Background="#e4e4e4" />
+		<iOS.StatusBarConfig Style="Dark" Animation="Slide" IsVisible="True" />
+		<StackPanel Orientation="Vertical" Dock="Top" Margin="16,64,0,0" Visibility="{loginFormVisible}">
 
-    <Panel Alignment="BottomLeft" Padding="12,0,0,24">
-      <StackPanel Orientation="Vertical">
-        <Text Color="#ffffff" FontSize="11" Font="Regular">Built with FuseTools.</Text>
-        <Text Color="#ffffff" FontSize="11" Font="Regular">Font is Noto.</Text>
-        <Text Color="#ffffff" FontSize="11" Font="Regular">Suggestions? bugs? contact me at @jeroensmeets</Text>
-      </StackPanel>
-    </Panel>
-  </Panel>
+			<TextView Font="Regular" FontSize="15" Margin="4,16,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
+				Value="Welcome to 11t, your connection to Mastodon. Please specify the server you would like to use." />
+			<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#fff" TextWrapping="Wrap" Padding="12" Margin="0,0,36,24" Background="#1a9df8">
+				<WhileString Test="IsEmpty">
+					<Text TextWrapping="Wrap" Margin="4">Url of Mastodon instance</Text>
+				</WhileString>
+			</TextInput>
+			<Button Background="#1a9df8" Width="112" Padding="12" Alignment="Left">
+				<Text Value="Login" Color="#fff" />
+				<Clicked>
+					<Callback Handler="{startOAuth}" />
+				</Clicked>
+			</Button>
+			<WhileTrue Value="{showError}">
+				<TextView Font="Italic" FontSize="15" Margin="16,16,0,0" Value="{error}" TextColor="palette.clrHighlight" />
+			</WhileTrue>
+		</StackPanel>
+
+		<StackPanel ux:Name="bottompanel" Orientation="Vertical" Dock="Bottom">
+			<WhileKeyboardVisible>
+				<Change bottompanel.Opacity=".2" />
+			</WhileKeyboardVisible>
+			<StackPanel Orientation="Horizontal">
+				<Image File="assets/images/logo-11t-transparent.png" Width="200" Height="200" Alignment="Left" Margin="0,0,24,0"></Image>
+				<Text Value="11t" Color="palette.clrIcon" Font="Bold" FontSize="51" Alignment="Center" />
+			</StackPanel>
+		</StackPanel>
+
+	</DockPanel>
+
 </TransitionPage>

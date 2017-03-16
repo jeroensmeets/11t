@@ -1,5 +1,10 @@
-var data = require( 'assets/js/data' );
+var api			= require("assets/js/api");
+
+function setActiveTimeline() {
+	api.setActiveTimeline( 'notifications' );
+}
 
 module.exports = {
-  posts: data.posts.notifications
-};
+	setActiveTimeline: setActiveTimeline,
+	posts: api.posts.notifications
+}

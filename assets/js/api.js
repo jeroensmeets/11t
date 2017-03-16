@@ -1,216 +1,973 @@
-var EventEmitter    = require("FuseJS/EventEmitter");
 var Observable      = require("FuseJS/Observable");
-var auth            = require("assets/js/auth");
+var Storage         = require("FuseJS/Storage");
+var EventEmitter    = require("FuseJS/EventEmitter");
 
-var BASE_URL        = 'https://mastodon.social/';
+var loading			= Observable( false );
+var active			= Observable( false );
 
-function sendPost( _txt, _inreplyto, _media_ids, _private, _hidepublic, access_token ) {
+var HtmlEnt         = require( 'assets/js/he/he.js' );
 
-  // POST /api/v1/statuses
-  // Form data:
-  //
-  // status: The text of the status
-  // in_reply_to_id (optional): local ID of the status you want to reply to
-  // media_ids (optional): array of media IDs to attach to the status (maximum 4)
+var oboe			= require( 'oboe' );
 
-  return new Promise( function( resolve, reject ) {
+var FILE_DATACACHE  = 'data.cache.json';
+var BASE_URL        = false;
+var AccessToken     = false;
+var at_file         = "APIconnect.json";
 
-    if ( '' == _txt ) {
-      reject( Error( 'Post content empty (P001)' ) );
-    }
+/**
+ * variable to hold the loaded posts
+ */
+var posts = {
+	home            : Observable(),
+	notifications   : Observable(),
+	publictimeline  : Observable(),
+	user            : Observable(),
+	postcontext		: Observable()
+}
 
-    var _bodyArgs = {};
+var userprofile = Observable();
 
-    _bodyArgs.status = _txt;
+/**
+* load API accesstoken from storage and store it in helper.AccessToken
+* returns true when accesstoken loaded, otherwise false
+* 
+* @return boolean
+*/
+function loadAPIConnectionData( ) {
 
-    if ( _inreplyto > 0 )  {
-      _bodyArgs.in_reply_to_id = _inreplyto;
-    }
+	if ( ( false != AccessToken ) && ( false !== BASE_URL ) ) {
+		// no need to load connection settings, already set
+		return true;
+	}
 
-    if ( _media_ids.length > 0 ) {
-      _bodyArgs.media_ids = _media_ids;
-    }
+	try {
+		var data = Storage.readSync( at_file );
+		data = JSON.parse( data );
 
-    if ( _hidepublic ) {
-      _bodyArgs.visibility = 'unlisted';
-    }
+		AccessToken = data.token;
+		BASE_URL = data.baseurl;
 
-    if ( _private ) {
-      _bodyArgs.visibility = 'private';
-    }
+		return true;
+	}
+	catch( e ) {
+		return false;
+	}
 
-    fetch( BASE_URL + 'api/v1/statuses', {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-            'Authorization': 'Bearer ' + access_token
-        },
-        body: JSON.stringify( _bodyArgs )
-    })
-    .then( function( resp ) {
-        console.log( 'P2: ' + resp.status );
-        if ( 200 == resp.status ) {
-            console.log( 'P3A' );
-            return resp.json();
-        } else {
-            console.log( 'P3B' );
-            reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
-        }
-    })
-    .then( function( json ) {
-      console.log( 'P4' );
-      resolve( json );
-    })
-    .catch( function( err ) {
-      console.log( 'P5' );
-      reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
-    });
-  });
+	return false;
 
 }
 
-function loadPosts( posttype, access_token, id ) {
+/* same as loadAPIConnectionData(), just async */
+function loadAPIConnectionDataAsync( ) {
 
-  var endpoint = '';
-  switch ( posttype ) {
-    case 'home':
-      endpoint = 'api/v1/timelines/home';
-      break;
-    case 'notifications':
-      endpoint = '/api/v1/notifications';
-      break;
-    case 'user':
-      endpoint = '/api/v1/accounts/' + id + '/statuses';
-      break;
-    case 'public':
-    default:
-      endpoint = 'api/v1/timelines/public';
-      break;
-  }
+	// create promise
+	var lacdaEmitter = new EventEmitter( 'loadAPIConnectionDataAsyncEnded' );
 
-  console.log( 'LD1: ' + endpoint );
+	Storage.read( at_file ).
+		then(
 
-  return new Promise( function( resolve, reject ) {
+			// success
+			function( data ) {
 
-    console.log( 'LD2' ); // + access_token );
+				data = JSON.parse( data );
 
-    fetch( BASE_URL + endpoint, {
-        method: 'GET',
-        headers: {
-            'Content-type': 'application/json',
-            'Authorization': 'Bearer ' + access_token
-        }
-    })
-    .then( function( resp ) {
-        console.log( 'LD3: ' + resp.status );
-        if ( 200 == resp.status ) {
-            console.log( 'LD3A' );
-            return resp.json();
-        } else {
-            console.log( 'api.loadPosts returned status ' + resp.status );
-            reject( 'Netwerk error: cannot fetch posts (1003)' );
-        }
-    })
-    .then( function( json ) {
-      // console.log( 'LD4' );
-      resolve( json );
-    })
-    .catch( function( err ) {
-      console.log( 'api.loadPosts caused error' );
-      reject( 'Netwerk error: cannot fetch posts (1004)' );
-    });
-  });
+				if ( ( 'undefined' !== data.token ) && ( 'undefined' !== data.baseurl ) ) {
+
+					AccessToken = data.token;
+					BASE_URL = data.baseurl;
+
+					lacdaEmitter.emit( 'loadAPIConnectionDataAsyncEnded', 'ok' );
+
+				} else {
+
+					lacdaEmitter.emit( 'loadAPIConnectionDataAsyncEnded', 'API connection data not correctly read from storage.' );
+
+				}
+			},
+
+			// error reading file data
+			function( error ) {
+				lacdaEmitter.emit( 'loadAPIConnectionDataAsyncEnded', 'error ' + JSON.stringify( error ) );
+			}
+
+	);
+
+	return lacdaEmitter.promiseOf( 'loadAPIConnectionDataAsyncEnded' );
 
 }
 
-function loadUserProfile( _userid, access_token ) {
+/**
+ * @param  {string} accesstoken to save
+ * @return {boolean} success
+ */
+function saveAPIConnectionData( base_url, clientid, clientsecret, token ) {
 
-  // create promise
-  var upEmitter = new EventEmitter( 'loadUserProfileEnded' );
+	BASE_URL = base_url;
+	AccessToken = token;
 
-  // console.log( _userid );
+	var data = {
+		baseurl			: base_url,
+		clientid		: clientid,
+		clientsecret	: clientsecret,
+		token			: token
+	}
+	// console.log( 'saving connection data', JSON.stringify( data ) );
+	return Storage.writeSync( at_file, JSON.stringify( data ) );
+}
 
-  fetch( BASE_URL + 'api/v1/accounts/' + _userid, {
-      method: 'GET',
-      headers: {
-          'Content-type': 'application/json',
-          'Authorization': 'Bearer ' + access_token
-      }
-  })
-  .then( function( resp ) {
-      // console.log( 'LUP3:' + resp.status );
-      if ( 200 == resp.status ) {
-          // console.log( 'LUP3A' );
-          return resp.json();
-      } else {
-          // console.log( 'LUP3B: ' + JSON.stringify( resp ) );
-          upEmitter.emit( 'loadUserProfileEnded', { err: true, status: resp.status, msg: resp.statusText } );
-      }
-  })
-  .then( function( json ) {
-    // console.log( 'LUP4' );
-    upEmitter.emit( 'loadUserProfileEnded', { err: false, userprofile: json } );
-  })
-  .catch( function( err ) {
-    // console.log( 'LUP5' );
-    // console.log( JSON.stringify( err ) );
-    upEmitter.emit( 'loadUserProfileEnded', { err: true } );
-  });
+/**
+ * @param  {string}		baseurl		url to Mastodon site
+ * @return {array}		{ id: [string], secret: [string] }
+ */
+function getClientIdSecret() {
 
-  return upEmitter.promiseOf( 'loadUserProfileEnded' );
+	return new Promise( function( resolve, reject ) {
+
+		var conf = require( 'assets/js/conf' );
+
+		var _bodyArgs = {
+			'client_name'	: '11t',
+			'redirect_uris'	: conf.redirect_uri,
+			'scopes'		: 'read write follow'
+		};
+
+		if ( false === BASE_URL ) {
+			reject( Error( 'base url not set' ) );
+		}
+
+		fetch( BASE_URL + 'api/v1/apps', {
+			method: 'POST',
+			headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+			body: JSON.stringify( _bodyArgs )
+		})
+		.then( function( resp ) {
+
+			if ( 200 == resp.status ) {
+				return resp.json();
+			} else {
+				reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+			}
+
+		})
+		.then( function( json ) {
+
+			// save client id and secret
+			// TODO use these when token has expired
+			saveAPIConnectionData( BASE_URL, json.client_id, json.client_secret, false );
+
+			resolve( { id: json.client_id, secret: json.client_secret, baseurl: BASE_URL } );
+
+		})
+		.catch( function( err ) {
+			reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+		});
+
+	});
 
 }
 
-function getAccessToken( auth_token ) {
+/**
+ * @param  {string}		base_url		base url of Mastodon instance
+ * @param  {string}		client_id		client id for oAuth
+ * @param  {string}		client_secret	client secret for oAuth
+ * @param  {string}		email			email address for login
+ * @param  {string}		password		password for login
+ * @return {array}		(json)			
+ */
+function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
 
-  return new Promise( function( resolve, reject ) {
+	return new Promise( function( resolve, reject ) {
 
-    // console.log( 'posting request for access_token with auth_token ' + auth_token );
+	    var _bodyArgs = {
+	        'grant_type'    : 'authorization_code',
+	        'redirect_uri'  : redirect_uri,
+	        'code'          : auth_token,
+	        'client_id'     : client_id,
+	        'client_secret' : client_secret
+	    };
 
-    var _headerArgs = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    };
+		// console.log( JSON.stringify( _bodyArgs ) );
 
-    var _bodyArgs = {
-        'grant_type'    : 'authorization_code',
-        // 'redirect_uri'  : encodeURIComponent( auth.redirect_uri ),
-        'redirect_uri'  : auth.redirect_uri,
-        'code'          : auth_token,
-        'client_id'     : auth.client_id,
-        'client_secret' : auth.client_secret
-    };
+		fetch( BASE_URL + 'oauth/token', {
+			method: 'POST',
+			headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+			body: JSON.stringify( _bodyArgs )
+    	})
+		.then( function( resp ) {
 
-    // console.log( JSON.stringify( _bodyArgs ) );
+			if ( 200 == resp.status ) {
+				return resp.json();
+			} else {
+				reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+			}
 
-    fetch( BASE_URL + 'oauth/token', {
-        method: 'POST',
-        headers: _headerArgs,
-        body: JSON.stringify( _bodyArgs ),
-        // body: _args
-    })
-    .then( function( resp ) {
-        // console.log( 'AT3: ' + resp.status );
-        if ( 200 == resp.status ) {
-            // console.log( 'AT3A' );
-            return resp.json();
-        } else {
-            // console.log( 'AT3B' );
-            // console.log( JSON.stringify( resp ) );
-            reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+		})
+		.then( function( json ) {
+			resolve( json );
+		})
+		.catch( function( err ) {
+			reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+		});
+
+	});
+
+}
+
+// different attempts to get streamlining working. no luck so far,
+// leaving this here for now
+
+function streamTimelineOtherTest() {
+
+	var request = require('request');
+	var JSONStream = require('JSONStream');
+	var es = require('event-stream');
+
+	request({
+		url: BASE_URL + 'api/v1/streaming/user',
+		method: 'GET',
+		headers: { 'Authorization' : 'Bearer ' + AccessToken }
+	})
+	.pipe( JSONStream.parse( 'rows.*' ) )
+	.pipe( es.mapSync(function (data) {
+		console.error(data);
+		return data;
+	}));
+
+}
+
+function streamTimeline() {
+
+	oboe( {
+		url: BASE_URL + 'api/v1/streaming/user',
+		method: 'GET',
+		headers: { 'Authorization' : 'Bearer ' + AccessToken },
+		protocol: 'https:'
+	} ).node( '*', function( moduleJson, path ) {
+
+		console.log( JSON.stringify( path[0] ) );
+		console.log( JSON.stringify( moduleJson ) );
+
+	} ).done( function() {
+
+		console.log( 'done' );
+
+	});
+
+}
+
+function streamTimelineDefaultOboe() {
+
+	// var http = require( 'http-https' );
+	var oboe = require( 'oboe' );
+
+	// which protocol? TODO move to saveAPIConnectionData()
+	var url = require('url');
+	var urlparts = url.parse( BASE_URL );
+
+	oboe( {
+		url: BASE_URL + 'api/v1/streaming/user',
+		method: 'GET',
+		protocol: urlparts.protocol,
+		headers: { 'Authorization' : 'Bearer ' + AccessToken },
+		cached: false
+	} )
+	.node('!.*', function( moduleJson, path ) {
+
+		console.log( JSON.stringify( path[0] ) );
+		console.log( JSON.stringify( moduleJson ) );
+
+	} );
+
+}
+
+function streamTimelineXhr() {
+
+	var jsonStream		= new XMLHttpRequest();
+
+	jsonStream.onreadystatechange = function( event ) {
+		console.log( 'response received, readyState is ' + this.readyState + ', status is ' + this.status );
+		console.log( 'object', JSON.stringify( event ) );
+		console.log( 'responseText', this.responseText );
+		console.log( 'statusText', this.statusText );
+	};
+
+	jsonStream.onprogress = function( e ) {
+		console.log( 'progress', JSON.stringify( e ) );
+	};
+
+	jsonStream.onerror = function( e ) {
+		console.log( 'error', JSON.stringify( e ) );
+	};
+
+	jsonStream.onabort = function( e ) {
+		console.log( 'abort', JSON.stringify( e ) );
+	};	
+
+	jsonStream.open( 'GET', BASE_URL + 'api/v1/streaming/user' );
+	jsonStream.setRequestHeader('Authorization', 'Bearer ' + AccessToken );
+	jsonStream.send();
+
+}
+
+/**
+ * @param {string}	_type	which timeline to set and load
+ *
+ * set active timeline and load it from cache
+ * load it from API after 3 seconds
+ * 
+ */
+function setActiveTimeline( _type ) {
+
+	active.value = _type;
+	loadCurrentTimelineFromCache();
+
+	var Timer = require("FuseJS/Timer");
+
+	Timer.create(function() {
+		loadCurrentTimelineFromAPI();
+	}, 3000, false);
+
+}
+
+function loadCurrentTimelineFromAPI() {
+
+	if ( !loading.value && ( false !== active.value ) ) {
+		loadTimeline( active.value );
+	}
+
+}
+
+function loadCurrentTimelineFromCache() {
+
+	Storage.read( active.value + '.' + FILE_DATACACHE )
+    .then( function( fileContents ) {
+        try {
+        	refreshPosts( active.value, JSON.parse( fileContents ), true );
+        } catch( e ) {
+        	// error in parsing cachefile data
+        	console.log( 'error in parsing cachefile data' );
         }
-    })
-    .then( function( json ) {
-      // console.log( 'AT4' );
-      // console.log( json );
-      resolve( json );
-    })
-    .catch( function( err ) {
-      // console.log( 'AT5' );
-      reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+    }, function( error ) {
+        // error in reading from cache
+        console.log( 'error in reading from cache' );
+        console.log( JSON.stringify( error ) );
     });
 
-  });
+}
+
+/**
+ * load timeline (of type _type), store posts in cache and refresh the api.posts object
+ * 
+ * @param  {string}		_type		which timeline to load
+ * @param  {integer}	_id			userid when _type is `user`, or postid when _type is `postcontext`
+ * @param  {object}		_postObj	current post object when _type is `postcontext`
+ * @return no return value
+ */
+function loadTimeline( _type, _id, _postObj ) {
+
+	// if ( 'home' == _type ) {
+	// 	console.log( 'switching to streaming the timeline' );
+	// 	streamTimeline();
+	// 	return;
+	// }
+
+	if ( 'undefined' == typeof posts[ _type ] ) {
+		// TODO probably triggered by splash screen
+		return;
+	}
+
+	loading.value = true;
+	loadAPIConnectionData();
+
+	var _requestparams = {
+		method: 'GET',
+		cache: 'no-store',
+		headers: {
+			'Content-type': 'application/json',
+			'Authorization': 'Bearer ' + AccessToken
+		}
+	};
+
+	var endpoint = '';
+	switch ( _type ) {
+		case 'home':
+			endpoint = 'api/v1/timelines/home';
+			break;
+		case 'notifications':
+			endpoint = 'api/v1/notifications';
+			break;
+		case 'user':
+			posts.user.clear();
+			endpoint = 'api/v1/accounts/' + _id + '/statuses';
+			break;
+		case 'postcontext':
+			endpoint = 'api/v1/statuses/' + _id + '/context';
+			break;
+		case 'publictimeline':
+		default:
+			endpoint = 'api/v1/timelines/public?local=true';
+			break;
+	}
+
+	// console.log( BASE_URL );
+
+	fetch( BASE_URL + endpoint, _requestparams )
+	.then( function( resp ) {
+
+		// console.log( JSON.stringify( resp ) );
+
+		if ( 200 == resp.status ) {
+			return resp.json();
+		} else {
+			loading.value = false;
+		}
+	})
+	.then( function( json ) {
+
+		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
+		if ( 'postcontext' == _type ) {
+			json.ancestors.push( _postObj );
+			json = json.ancestors.concat( json.descendants );
+		}
+
+		refreshPosts( _type, json, false );
+		loading.value = false;
+
+	})
+	.catch( function( err ) {
+		console.log( 'api.loadTimeline caused error' );
+		console.log( JSON.stringify( err ) );
+		loading.value = false;
+	});
+
+}
+
+function refreshPosts( _type, _data, fromcache ) {
+
+	var _mps = [];
+	for ( var i = 0; i < _data.length; i++ ) {
+		// console.log( JSON.stringify( _data[ i ] ) );
+		if ( fromcache ) {
+			console.log( 'from cache, username: ' + _data[i].account.acct + ', ' + _data[i].created_at );
+			_mps.push( _data[i] );
+		} else {
+			console.log( 'from api, username: ' + _data[i].account.acct + ', ' + _data[i].created_at );
+			var _mp = new MastodonPost( _data[i], _type );
+			_mps.push( _mp );
+		}
+	}
+
+	console.log( 'new posts count: ' + _data.length );
+	console.log( 'count in api.posts before: ' + posts[ _type ].length );
+
+	try {
+
+		posts[ _type ].refreshAll(
+			_mps,
+			function( _old, _new ) {
+				return _old.id = _new.id;
+			},
+			function( _old, _new ) {
+				_old = _new;
+			},
+			function( _new ) {
+				return _new;
+			}
+		);
+
+		console.log( 'count in api.posts after: ' + posts[ _type ].length );
+
+		Storage.write( _type + '.' + FILE_DATACACHE, JSON.stringify( posts[ _type ].toArray() ) );
+
+	} catch( e ) {
+		console.log( 'error in refreshPosts:' );
+		console.log( JSON.stringify( e ) );
+	}
+
+}
+
+/**
+ * @param  {integer}	_userid		user to load profile for
+ * @return none
+ */
+function loadUserProfile( _userid ) {
+
+	loading.value = true;
+
+	fetch( BASE_URL + 'api/v1/accounts/' + _userid, {
+		method: 'GET',
+		cache: 'no-store',
+		headers: {
+			'Content-type': 'application/json',
+			'Authorization': 'Bearer ' + AccessToken
+		}
+  	})
+	.then( function( resp ) {
+		if ( 200 == resp.status ) {
+			return resp.json();
+		} else {
+			loading.value = false;
+		}
+	})
+	.then( function( json ) {
+		var _userprofile = json;
+		_userprofile.note = HtmlEnt.decode( _userprofile.note );
+		_userprofile.note = _userprofile.note.replace( /<[^>]+>/ig, '' );
+		userprofile.value = _userprofile;
+	})
+	.catch( function( err ) {
+		loading.value = false;
+  	});
+
+}
+
+/**
+ * @param  {string}		_txt			text of post
+ * @param  {int}		_inreplyto		id of post this is a reply to
+ * @param  {array}		_media_ids		array of attached (and already uploaded) media ids
+ * @param  {boolean}	_private		is post private?
+ * @param  {boolean}	_hidepublic		hide post from public timelines
+ * @param  {boolean} 	_issensitive	set sensitive property
+ * @param  {string}		_spoilertxt		txt to use as spoiler warning
+ * 
+ * @return {promise}	resolves error or json for new post
+ */
+function sendPost( _txt, _inreplyto, _media_ids, _private, _hidepublic, _issensitive, _spoilertxt ) {
+
+	return new Promise( function( resolve, reject ) {
+
+		if ( '' == _txt ) {
+			reject( Error( 'Post content empty (P001)' ) );
+		}
+
+		var _bodyArgs = {};
+
+		_bodyArgs.status = _txt;
+
+		if ( _inreplyto > 0 )  {
+			_bodyArgs.in_reply_to_id = _inreplyto;
+		}
+
+		if ( _media_ids.length > 0 ) {
+			_bodyArgs.media_ids = _media_ids;
+		}
+
+		if ( _hidepublic ) {
+			_bodyArgs.visibility = 'unlisted';
+		}
+
+		if ( _private ) {
+			_bodyArgs.visibility = 'private';
+		}
+
+		if ( _issensitive ) {
+			_bodyArgs.sensitive = true;
+		}
+
+		if ( '' != _spoilertxt ) {
+			_bodyArgs.spoiler_text = _spoilertxt;
+		}
+
+		fetch( BASE_URL + 'api/v1/statuses', {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json',
+				'Authorization': 'Bearer ' + AccessToken
+			},
+			body: JSON.stringify( _bodyArgs )
+		})
+		.then( function( resp ) {
+
+			if ( 200 == resp.status ) {
+				return resp.json();
+			} else {
+				reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+			}
+		})
+		.then( function( json ) {
+			resolve( json );
+		})
+		.catch( function( err ) {
+			console.log( JSON.stringify( err ) );
+			reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+		});
+	});
+
+}
+
+function sendImage( _imgObj ) {
+
+	var Uploader = require("Uploader");
+	return Uploader.send(
+		_imgObj.path,
+		BASE_URL + 'api/v1/media',
+		AccessToken
+	);
+
+}
+
+function favouritePost( _postid, _currentstatus ) {
+
+	// create promise
+	var favEmitter = new EventEmitter( 'favouritePostEnded' );
+	var _apiAction = ( _currentstatus ) ? 'unfavourite' : 'favourite';
+
+	fetch( 'https://mastodon.social/api/v1/statuses/' + _postid + '/' + _apiAction, {
+		method: 'POST',
+		headers: {
+			'Content-type': 'application/json',
+			'Authorization': 'Bearer ' + AccessToken
+		}
+	})
+	.then( function( resp ) {
+		if ( 200 == resp.status ) {
+			return resp.json();
+		} else {
+			favEmitter.emit( 'favouritePostEnded', { err: true } );
+		}
+	})
+	.then( function( json ) {
+		favEmitter.emit( 'favouritePostEnded', { err: false, post: json } );
+	})
+	.catch( function( err ) {
+		favEmitter.emit( 'favouritePostEnded', { err: true } );
+	});
+
+	return favEmitter.promiseOf( 'favouritePostEnded' );
+
+}
+
+function rePost( _postid, _currentstatus ) {
+
+	var _apiAction = ( _currentstatus ) ? 'unreblog' : 'reblog';
+
+	// create promise
+	var repostEmitter = new EventEmitter( 'rePostEnded' );
+
+	fetch( 'https://mastodon.social/api/v1/statuses/' + _postid + '/' + _apiAction, {
+		method: 'POST',
+		headers: {
+			'Content-type': 'application/json',
+			'Authorization': 'Bearer ' + AccessToken.value
+		}
+	})
+	.then( function( resp ) {
+		if ( 200 == resp.status ) {
+			return resp.json();
+		} else {
+			repostEmitter.emit( 'rePostEnded', { err: true } );
+		}
+	})
+	.then( function( json ) {
+		repostEmitter.emit( 'rePostEnded', { err: false, post: json } );
+	})
+	.catch( function( err ) {
+		repostEmitter.emit( 'rePostEnded', { err: true } );
+	});
+
+	return repostEmitter.promiseOf( 'rePostEnded' );
+
+}
+
+function loadPostContext( _postid ) {
+
+	posts.postcontext.clear();
+
+	var _post = getPostById( _postid );
+
+	if ( false !== _post ) {
+		// posts.postcontext.add( _post );
+ 		loadTimeline( 'postcontext', _post.id, _post );
+	}
+
+}
+
+function getPostById( _postid ) {
+
+	// if a post is requested, it should be in one of the posts observables
+	// TODO: get the current route, that would be the most obvious suspect where to find the post
+	for ( var _i in posts ) {
+		// TODO why doesn't this return the post we look for?
+		// var _found = posts[ _i ].where( { id: _postid } );
+		// console.log( _found.length );
+		// if ( _found.length > 0 ) {
+		//   return _found.first().value;
+		// }
+		var _arr = posts[ _i ].toArray();
+		for ( var _j in _arr ) {
+			if ( _postid == _arr[ _j ].id ) {
+				return _arr[ _j ];
+			}
+		}
+	}
+
+	return false;
+}
+
+
+module.exports = {
+	posts: posts,
+	userprofile: userprofile,
+	streamTimeline: streamTimeline,
+	loadTimeline: loadTimeline,
+	loadUserProfile: loadUserProfile,
+	loadPostContext: loadPostContext,
+	loading: loading,
+	setActiveTimeline: setActiveTimeline,
+	loadCurrentTimelineFromAPI: loadCurrentTimelineFromAPI,
+	loadCurrentTimelineFromCache: loadCurrentTimelineFromCache,
+	getClientIdSecret: getClientIdSecret,
+	loadAPIConnectionData: loadAPIConnectionData,
+	loadAPIConnectionDataAsync: loadAPIConnectionDataAsync,
+	saveAPIConnectionData: saveAPIConnectionData,
+	getAccessToken: getAccessToken,
+	sendImage: sendImage,
+	sendPost: sendPost,
+	favouritePost: favouritePost,
+	rePost: rePost,
+	parseUri: parseUri
+}
+
+function MastodonPost( _info, _type ) {
+
+	// processed before?
+	if ( _info.hasOwnProperty( "isNotification" ) ) {
+		return _info;
+	}
+
+	this.isNotification    = ( 'notifications' == _type );
+	this.isReblog          = ( ( 'reblog' == _info.type )  || ( null != _info.reblog ) );
+	this.isMention         = ( 'mention' == _info.type );
+	this.isFavourite       = ( 'favourite' == _info.type );
+	this.isFollow          = ( 'follow' == _info.type );
+
+	if ( this.isNotification ) {
+		this.whodidthis = _info.account;
+	}
+
+	if ( this.isFollow ) {
+
+	    this.avatar = _info.account.avatar;
+	    this.userid = _info.account.id;
+	    this.note   = HtmlEnt.decode( _info.account.note ).replace( /<[^>]+>/ig, '' );
+
+	} else if ( this.isNotification ) {
+
+		_info = _info.status;
+
+	} else if ( this.isReblog ) {
+
+		this.whodidthis = _info.account;
+		_info = _info.reblog;
+
+	}
+
+	if ( !this.isFollow ) {
+
+		for (var i in _info ) {
+			this[ i ] = _info[ i ];
+		}
+
+		// for timelines, remove HTML entities and HTML tags and split in paragraphs
+		this.content = cleanupContent( _info );
+
+		// for post context screen, get words apart
+		this.prepcontent = preparePostContent( _info );
+
+		this.timesince = timeSince( _info.created_at );
+
+		// avatar a gif? animated or not, FuseTools cannot handle it
+		var _avatar = _info.account.avatar.split( '?' );
+		_avatar = ( _avatar.length > 1 ) ? _avatar[ _avatar.length - 2 ] : _avatar[ _avatar.length - 1 ];
+		this.isGifAvatar = ( 'gif' == _avatar.slice( -3 ).toLowerCase() );
+
+	}
+
+	// console.log( JSON.stringify( this ) );
+
+}
+
+function cleanupContent( postdata ) {
+
+	var _text = HtmlEnt.decode( postdata.content );
+
+	// remove links to media attachments
+	if ( postdata.media_attachments.length ) {
+
+		var _uris = getUrisFromText( _text );
+
+		if ( _uris && ( _uris.length > 0 ) ) {
+			for ( var i in _uris ) {
+				var _cleanupuri = _uris[ i ].match( /https?:([^"']+)/ig );
+				if ( postdata.media_attachments.some( function (obj) { return ( _cleanupuri.indexOf( obj.text_url ) > -1 ); } ) ) {
+					_text = _text.replace( _uris[ i ], '' );
+				}
+			}
+		}
+	}
+
+	// paragraphs, but not last one (is empty element)
+	var _paragraphs = _text.split( '</p>' );
+	_paragraphs.splice( -1, 1 );
+
+	var result = [];
+	for ( var i in _paragraphs ) {
+		var _paragraph = _paragraphs[ i ].replace( "<p>", "" );
+		result.push( { paragraph: _paragraph.replace( /<[^>]+>/ig, '' ) } );
+	}
+
+	// in case content has no paragraphs
+	if ( 0 == result.length ) {
+		result.push( { paragraph: _text.replace( /<[^>]+>/ig, '' ) } );
+	}
+
+	return result;
+
+}
+
+// the result of this function is for the view of a single post
+// and should NOT be used on a timeline as it generates memory issues
+function preparePostContent( postdata ) {
+
+	// console.log( JSON.stringify( postdata ) );
+
+	// @<a href=\"http://sn.gunmonkeynet.net/index.php/user/1\">nybill</a> eek, well glad it was finally noticed.
+
+	// replace HTML codes like &amp; and &gt;
+	var _content = HtmlEnt.decode( postdata.content );
+
+	// paragraphs
+
+	// last closing </p> needs no replacement
+	_content = _content.replace(new RegExp('<\/p>$'), '');
+
+	// other closing </p> need some breathing room (for now a placeholder)
+	_content = _content.replace( "</p>", " ]]]] " );
+	// opening <p> can be removed
+	_content = _content.replace( "<p>", "" );
+
+	// temporary replace urls to prevent splitting on spaces in linktext
+	var _uris = getUrisFromText( _content );
+	if ( _uris && ( _uris.length > 0 ) ) {
+		for ( var i in _uris ) {
+			_content = _content.replace( _uris[ i ], '[[[[' + i );
+		}
+	}
+
+	// now remove al HTML tags
+	_content = _content.replace( /<[^>]+>/ig, '' );
+
+	// console.log( ' >>>>>>>>>>>>>>> replaced uris in content with [[[[x' );
+	// console.log( _content );
+	// console.log( ' <<<<<<<<<<<<<<<' );
+
+	var result = [];
+
+	var _words = _content.split( /\s/g );
+
+	for ( var i in _words ) {
+
+		if ( _words[ i ].indexOf( ']]]]' ) > -1 ) {
+
+			result.push( { word: '', clear: true } );
+
+		} else if ( -1 === _words[ i ].indexOf( '[[[[' ) ) {
+
+			// this is not a link, add it as a word
+			// click event in Part.PostCard can send it to the post detail screen
+			result.push( { word: _words[ i ] } );
+
+		} else {
+
+			// link found! but: what kind of link?
+			// bug fix: if e.g. a mention links to another server, it's a link with a @ before it
+			var _charBeforeLink = ( '[[[[' == _words[ i ].substring( 1, 5 ) ) ? _words[ i ].substring( 0, 1 ) : '';
+			var _linkId = Number.parseInt( _words[ i ].match(/\d/g).join('') );
+			if ( !_uris[ _linkId ] ) {
+				continue;
+			}
+			var _linkTxt = _uris[ _linkId ].replace( /<[^>]+>/ig, '' );
+
+			// console.log( _uris[ _linkId ] );
+			// console.log( 'link text: ' + _linkTxt );
+			// console.log( 'start char: ' + _charBeforeLink );
+
+			// first: mentions
+			var _mentioner = postdata.mentions.filter( function (obj) { return ( 0 ==  _linkTxt.indexOf( '@' + obj.acct ) ); } );
+			if ( _mentioner.length > 0 ) {
+				// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- mention' );
+				result.push( { mention: true, word: _linkTxt, makeBold: true, userid: _mentioner[0].id } );
+			} else {
+
+				// not a mention. maybe a hashtag?
+				var _tag = postdata.tags.filter( function (obj) { return '#' + obj.name === _linkTxt; } );
+				if ( _tag.length > 0 ) {
+
+					// TODO add hashtags
+					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- hashtag' );
+					result.push( { word: _linkTxt } );
+
+				} else if ( postdata.media_attachments.some( function (obj) { return _linkTxt == obj.text_url; } ) ) {
+
+					// do not show the urls for media_attachments in the content
+					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- media attachment: ' + _linkTxt );
+
+				} else if ( ( '@' == _charBeforeLink ) || ( '#' == _charBeforeLink ) ) {
+
+					// mentions on some (older Statusnet installations, says https://community.highlandarrow.com/notice/469679 )
+					// are a link with an @ before it. TODO One little thing: no user id from the mentions array
+					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- sumtin\'' );
+					result.push( { word: _charBeforeLink + _linkTxt } );
+
+				} else {
+
+					// everything else not true. probably just a link
+					// click event sends it to the system browser
+					var _linkstart = _uris[ _linkId ].indexOf( 'href="' ) + 6;
+					var _linkend = _uris[ _linkId ].indexOf( '"', _linkstart );
+					var _linkUrl = _uris[ _linkId ].substring( _linkstart, _linkend );
+					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- probably regular link' );
+					result.push( { link: true, word: _linkTxt, uri: _linkUrl, makeBold: true } );
+
+				}
+			}
+		}
+	}
+
+	// console.log( JSON.stringify( result ) );
+
+	return result;
+
+}
+
+function getUrisFromText( _text ) {
+
+	// temporary replace urls to prevent splitting on spaces in linktext
+	var regex = /<[aA].*?\s+href=["']([^"']*)["'][^>]*>(?:<.*?>)*(.*?)(?:<.*?>)?<\/[aA]>/igm ;
+	return _text.match( regex );
+
+}
+
+function timeSince(date) {
+
+	var seconds = Math.floor( ( new Date() - new Date( date ) ) / 1000 );
+
+	var interval = Math.floor(seconds / 31536000);
+	if (interval > 1) { return interval + "y"; }
+
+	interval = Math.floor(seconds / 2592000);
+	if (interval > 1) { return interval + "m"; }
+
+	interval = Math.floor(seconds / 86400);
+	if (interval > 1) { return interval + "d"; }
+
+	interval = Math.floor(seconds / 3600);
+	if (interval > 1) { return interval + "h"; }
+
+	interval = Math.floor(seconds / 60);
+	if (interval > 1) { return interval + "m"; }
+
+	return Math.floor(seconds) + "s";
 
 }
 
@@ -248,11 +1005,3 @@ parseUri.options = {
 		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
 	}
 };
-
-module.exports = {
-  loadPosts: loadPosts,
-  sendPost: sendPost,
-  loadUserProfile: loadUserProfile,
-  parseUri: parseUri,
-  getAccessToken: getAccessToken
-}
