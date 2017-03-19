@@ -11,7 +11,7 @@ var HtmlEnt         = require( 'assets/js/he/he.js' );
 
 var oboe			= require( 'oboe' );
 
-var FILE_DATACACHE  = 'posts.cache.json';
+var FILE_DATACACHE  = '.posts.cache.json';
 var BASE_URL        = false;
 var AccessToken     = false;
 var at_file         = "APIconnect.json";
@@ -29,14 +29,9 @@ var posts = {
 
 function clearPostsObject() {
 
-	posts.home.clear();
-	posts.notifications.clear();
-	posts.publictimeline.clear();
-	posts.user.clear();
-	posts.postcontext.clear();
-
-	for ( var i in posts ) {
-		Storage.deleteSync( i + '.' + FILE_DATACACHE );
+	for ( var index in posts ) {
+		posts[ index ].clear();
+		Storage.deleteSync( index + FILE_DATACACHE );
 	}
 }
 
@@ -45,7 +40,7 @@ function clearPostsObject() {
  */
 function cleanUp() {
 
-	// before version 1.0.12 datacache was at {posttype}.data.cache.json
+	// before version 1.0.12, datacache was in {posttype}.data.cache.json
 	for ( var index in posts ) {
 		Storage.deleteSync( index + '.data.cache.json' );
 	}
@@ -186,6 +181,14 @@ function getClientIdSecret() {
 		});
 
 	});
+
+}
+
+function logOut() {
+
+	deleteAPIConnectionData();
+	clearPostsObject();
+	router.goto( 'splash' );
 
 }
 
@@ -375,7 +378,7 @@ function loadCurrentTimelineFromAPI() {
 
 function loadCurrentTimelineFromCache() {
 
-	Storage.read( active.value + '.' + FILE_DATACACHE )
+	Storage.read( active.value + FILE_DATACACHE )
     .then( function( fileContents ) {
         refreshPosts( active.value, JSON.parse( fileContents ), true );
     }, function( error ) {
@@ -469,37 +472,28 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 		},
 		// update text
 		function( oldItem, newItem ) {
-			oldItem = newItem;
+			oldItem = new MastodonPost( newItem );
 		},
 		// add new
 		function( newItem ) {
-			return newItem
+			return new MastodonPost( newItem );
         }
 	);
 
-	return;
+	Storage.write( posttype + FILE_DATACACHE, JSON.stringify( posts[ posttype ].toArray() ) );
 
-	// TODO should be a better way to check if post alreay exists
-	var postsArray = posts[ posttype ].toArray();
+}
 
-	for ( var i = jsondata.length - 1; i >= 0; i-- ) {
+function MastodonPost( data ) {
 
-		var existingIndex = 0;
-		postsArray.filter( function( obj, ind ) {
-			if ( obj.id === jsondata[ i ].id ) {
-				existingIndex = ind;
-				return obj;
-			}
-		});
-
-		if ( 0 == existingIndex ) {
-			var newPost = isfromcache ? jsondata[ i ] : new MastodonPost( jsondata[ i ], posttype );
-			posts[ posttype ].insertAt( 0, newPost );
-		}
-
+	for ( var i in data ) {
+		this[ i ] = data[ i ];
 	}
 
-	Storage.write( posttype + '.' + FILE_DATACACHE, JSON.stringify( posts[ posttype ].toArray() ) );
+	this.previewcontent = cleanupContent( this );
+	this.hascontent = this.previewcontent.length > 0 || ( '' != this.spoiler_text );
+
+	// console.log( JSON.stringify( data ) );
 
 }
 
@@ -619,22 +613,16 @@ function favouritePost( _postid, _currentstatus ) {
 	var favEmitter = new EventEmitter( 'favouritePostEnded' );
 	var _apiAction = ( _currentstatus ) ? 'unfavourite' : 'favourite';
 
-	fetch( 'https://mastodon.social/api/v1/statuses/' + _postid + '/' + _apiAction, {
+	apiFetch( 'api/v1/statuses/' + _postid + '/' + _apiAction, {
 		method: 'POST',
-		headers: {
-			'Content-type': 'application/json',
-			'Authorization': 'Bearer ' + AccessToken
-		}
-	})
-	.then( function( resp ) {
-		if ( 200 == resp.status ) {
-			return resp.json();
-		} else {
-			favEmitter.emit( 'favouritePostEnded', { err: true } );
-		}
+		headers: { 'Authorization': 'Bearer ' + AccessToken }
 	})
 	.then( function( json ) {
+
+		refreshPosts( active.value, json, false );
+
 		favEmitter.emit( 'favouritePostEnded', { err: false, post: json } );
+
 	})
 	.catch( function( err ) {
 		favEmitter.emit( 'favouritePostEnded', { err: true } );
@@ -666,6 +654,9 @@ function rePost( _postid, _currentstatus ) {
 		}
 	})
 	.then( function( json ) {
+
+		refreshPosts( active.value, json, false );
+
 		repostEmitter.emit( 'rePostEnded', { err: false, post: json } );
 	})
 	.catch( function( err ) {
@@ -733,7 +724,8 @@ module.exports = {
 	favouritePost: favouritePost,
 	rePost: rePost,
 	parseUri: helper.parseUri,
-	cleanUp: cleanUp
+	cleanUp: cleanUp,
+	logOut: logOut
 }
 
 // https://www.fusetools.com/docs/backend/rest-apis
@@ -741,33 +733,33 @@ function apiFetch( path, options ) {
 
 	var url = encodeURI( BASE_URL + path );
 
-	console.log( 'apiFetch: ' + url );
+	// console.log( 'apiFetch: ' + url );
 
 	if ( options === undefined ) {
 		options = {};
 	}
 
 	// If a body is provided, serialize it as JSON and set the Content-Type header
-	if ( options.body !== undefined) {
+	if ( undefined !== options.body ) {
+
 		options = Object.assign( {}, options, {
 			body: JSON.stringify( options.body ),
 			headers: Object.assign( {}, options.headers, {
 				"Content-Type": "application/json"
 			} )
 		} );
+
 	}
 
 	// Fetch the resource and parse the response as JSON
 	return fetch( url, options )
 		.then( function( response ) {
 
-			console.log( 'API path: return status ' + response.status );
+			// console.log( 'API path: return status ' + response.status );
 			if ( 401 == response.status ) {
 
 				// not authorized
-				deleteAPIConnectionData();
-				clearPostsObject();
-				router.goto( 'splash' );
+				logOut();
 
 			} else {
 
@@ -776,65 +768,6 @@ function apiFetch( path, options ) {
 			}
 
 		} );
-
-}
-
-
-
-function MastodonPost( _info, _type ) {
-
-	// processed before?
-	if ( _info.hasOwnProperty( "isNotification" ) ) {
-		return _info;
-	}
-
-	this.isNotification    = ( 'notifications' == _type );
-	this.isReblog          = ( ( 'reblog' == _info.type )  || ( null != _info.reblog ) );
-	this.isMention         = ( 'mention' == _info.type );
-	this.isFavourite       = ( 'favourite' == _info.type );
-	this.isFollow          = ( 'follow' == _info.type );
-
-	if ( this.isNotification ) {
-		this.whodidthis = _info.account;
-	}
-
-	if ( this.isFollow ) {
-
-	    this.avatar = _info.account.avatar;
-	    this.userid = _info.account.id;
-	    this.note   = HtmlEnt.decode( _info.account.note ).replace( /<[^>]+>/ig, '' );
-
-	} else if ( this.isNotification ) {
-
-		_info = _info.status;
-
-	} else if ( this.isReblog ) {
-
-		this.whodidthis = _info.account;
-		_info = _info.reblog;
-
-	}
-
-	if ( !this.isFollow ) {
-
-		for (var i in _info ) {
-			this[ i ] = _info[ i ];
-		}
-
-		// for timelines, remove HTML entities and HTML tags and split in paragraphs
-		this.content = cleanupContent( _info );
-
-		// for post context screen, get words apart
-		this.prepcontent = preparePostContent( _info );
-
-		// avatar a gif? animated or not, FuseTools cannot handle it
-		var _avatar = _info.account.avatar.split( '?' );
-		_avatar = ( _avatar.length > 1 ) ? _avatar[ _avatar.length - 2 ] : _avatar[ _avatar.length - 1 ];
-		this.isGifAvatar = ( 'gif' == _avatar.slice( -3 ).toLowerCase() );
-
-	}
-
-	// console.log( JSON.stringify( this ) );
 
 }
 
@@ -857,14 +790,21 @@ function cleanupContent( postdata ) {
 		}
 	}
 
-	// paragraphs, but not last one (is empty element)
-	var _paragraphs = _text.split( '</p>' );
-	_paragraphs.splice( -1, 1 );
+	// remove empty paragraphs
+	_text = _text.replace( '<p></p>', '' );
+
+	if ( '' == _text.toLowerCase() ) {
+		return [];
+	}
+
+	// get paragraphs, ignore last empty one
+	var paragraphs = _text.split( '</p>' );
+	paragraphs.splice( -1, 1 );
 
 	var result = [];
-	for ( var i in _paragraphs ) {
-		var _paragraph = _paragraphs[ i ].replace( "<p>", "" );
-		result.push( { paragraph: _paragraph.replace( /<[^>]+>/ig, '' ) } );
+	for ( var i in paragraphs ) {
+		var paragraph = paragraphs[ i ].replace( "<p>", "" );
+		result.push( { paragraph: paragraph.replace( /<[^>]+>/ig, '' ) } );
 	}
 
 	// in case content has no paragraphs

@@ -1,0 +1,202 @@
+<StackPanel ux:Class="PostCard" ux:Name="pc" Background="#fff" Margin="0,0,0,6">
+	<Router ux:Dependency="router" />
+	<object ux:Property="post" />
+
+	<bool ux:Property="clickable" />
+	<bool ux:Property="drawlines" />
+
+	<JavaScript File="Class.Post.js" />
+
+	<WhileTrue Value="{sensitive}">
+		<StackPanel Orientation="Horizontal" Margin="0,4,0,8" Alignment="Center">
+			<FaLock Color="palette.clrIcon" FontSize="18" Margin="0,8,4,0" />
+			<TextView Value="sensitive images hidden" Font="Italic" FontSize="14" TextColor="palette.clrTextDimmed" />
+		</StackPanel>
+	</WhileTrue>
+	<WhileFalse Value="{sensitive}">
+		<Panel ClipToBounds="true">
+			<LinearNavigation>
+				<NavigationMotion GotoEasing="CircularOut" GotoDuration="0.3" />
+			</LinearNavigation>
+    		<SwipeNavigate SwipeDirection="Left" />
+    		<Each Items="{Read media_attachments}">
+        		<ImageGallery>
+        			<WhileString Value="{type}" Equals="image">
+        				<Image ux:Name="attachment" Height="280" Url="{preview_url}" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center">
+            				<WhileFailed>
+								<Change attachment.Height="0" />
+							</WhileFailed>
+						</Image>
+					</WhileString>
+					<WhileString Value="{type}" Equals="video">
+						<DockPanel>
+
+							<!-- play button -->
+							<Panel Alignment="Center" ux:Name="videoPlayButton" HitTestMode="LocalBoundsAndChildren" Layer="Overlay">
+
+								<FaVideoPlay Color="palette.clrNavigation" FontSize="54" />
+
+								<Clicked>
+									<Set videoPreview.Visibility="Collapsed" />
+									<Set videoPlayer.Visibility="Visible" />
+									<Set videoPlayButton.Visibility="Collapsed" />
+									<Resume Target="videoPlayer" />
+								</Clicked>
+
+							</Panel>
+
+							<WhileVisibleInScrollView Invert="True">
+								<Pause Target="videoPlayer" />
+							</WhileVisibleInScrollView>
+
+							<Text ux:Name="videoError" Font="Italic" Color="palette.clrTextDimmed" Value="error loading video" Margin="0,16,0,0" Visibility="Collapsed" Alignment="Center" />
+
+							<Image ux:Name="videoPreview" Height="280" Url="{preview_url}" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center" />
+
+							<Video ux:Name="videoPlayer" Height="280" Url="{url}" StretchMode="UniformToFill" ContentAlignment="Center" Visibility="Visible">
+								<ProgressAnimation>
+									<Change progressBar.Width="100" />
+								</ProgressAnimation>
+								<WhileCompleted>
+									<Set videoPreview.Visibility="Visible" />
+									<Set videoPlayer.Visibility="Collapsed" />
+									<Set videoPlayButton.Visibility="Visible" />
+								</WhileCompleted>
+								<WhileFailed>
+									<Set videoPlayer.Visibility="Collapsed" />
+									<Set videoError.Visibility="Visible" />
+								</WhileFailed>
+							</Video>
+
+							<Rectangle ux:Name="progressBar" Dock="Bottom" Fill="#1a9df8" Alignment="Left" Width="0%" Height="2" />
+						</DockPanel>
+					</WhileString>
+				</ImageGallery>
+    		</Each>
+		</Panel>
+	</WhileFalse>
+
+	<StackPanel Margin="8,12,8,0" Orientation="Horizontal">
+
+		<Panel Height="54" Width="54" Margin="0,0,16,0" Clicked="{gotoUser}">
+
+			<Rectangle CornerRadius="6" Width="54" Height="54" Margin="8,0,0,0" Color="#1a9df8">
+				<ImageFill Url="{Read account.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
+			</Rectangle>
+
+		</Panel>
+
+		<StackPanel Orientation="Vertical">
+
+			<DockPanel Clicked="{gotoUser}" Margin="0,8,0,4">
+				<Text Value="{Read account.acct}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Regular" Dock="Left" />
+				<Text Value="{Read account.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrTextDimmed" Margin="8,0,0,0" Dock="Left" />
+			</DockPanel>
+
+			<StackPanel Orientation="Horizontal">
+
+				<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+					<FaReply Color="palette.clrIconDimmed" FontSize="15" />
+					<Clicked Handler="{replyToPost}" />
+				</Panel>
+
+				<!-- can't reblog when marked sensitive -->
+				<WhileString Value="{visibility}" Equals="public" Invert="True">
+					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+						<FaLock Color="palette.clrIconDimmed" FontSize="17" />
+					</Panel>
+				</WhileString>
+
+				<WhileString Value="{visibility}" Equals="public">
+					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
+						<FaRepost ux:Name="icoreblogged" Color="palette.clrIconDimmed" FontSize="17" Margin="0,0,3,0">
+							<WhileTrue Value="{reposting}">
+								<Spin Frequency="1" />
+							</WhileTrue>
+						</FaRepost>
+						<Text FontSize="13" Color="palette.clrIconDimmed" Font="Regular" Value="{reblogs_count}" />
+						<Clicked Handler="{rePost}" />
+						<WhileTrue Value="{reposted}">
+							<Change icoreblogged.Color="palette.clrHighlight" />
+						</WhileTrue>
+					</StackPanel>
+				</WhileString>
+
+				<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
+					<FaStar ux:Name="icostar" Color="palette.clrIconDimmed" FontSize="17" Margin="0,0,3,0">
+						<WhileTrue Value="{favouriting}">
+							<Spin Frequency="1" />
+						</WhileTrue>
+					</FaStar>
+					<Text FontSize="13" Color="palette.clrIconDimmed" Font="Regular" Value="{favourites_count}" />
+					<Clicked Handler="{favouritePost}" />
+					<WhileTrue Value="{favourited}">
+						<Change icostar.Color="palette.clrHighlight" />
+					</WhileTrue>
+				</StackPanel>
+
+				<Text Value="{timeSince}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Italic" />
+
+			</StackPanel>
+
+		</StackPanel>
+
+	</StackPanel>
+
+	<WhileFalse Value="{hascontent}">
+		<!-- just a bit of padding when no content was found -->
+		<Panel Margin="0,16,0,0" />
+	</WhileFalse>
+
+	<WhileTrue Value="{hascontent}">
+
+		<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="24,0,16,0" Padding="12,4,4,0">
+
+			<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
+				<StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{toggleSpoiler}">
+					<Text Value="{Read spoiler_text}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" LoadAsync="True" />
+					<StackPanel Orientation="Horizontal" Margin="2,8,0,8" HitTestMode="LocalBounds">
+						<FaView Color="palette.clrIcon" FontSize="15" Margin="0,0,4,0" Alignment="Center" />
+						<Text Value="show more" Color="palette.clrText" Font="Italic" FontSize="15" Alignment="Center" />
+					</StackPanel>
+				</StackPanel>
+			</WhileString>
+
+			<WhileFalse Value="{Property pc.clickable}">
+				<StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{gotoPost}" Visibility="{spoilerVisible}">
+					<Each Items="{Read previewcontent}">
+						<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,12" LoadAsync="True" />
+					</Each>
+				</StackPanel>
+			</WhileFalse>
+			<WhileTrue Value="{Property pc.clickable}">
+				<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
+					<Each Items="{Read prepcontent}">
+						<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2" LoadAsync="True">
+							<WhileTrue Value="{clear}">
+								<Change word.Margin="0,0,800,8" />
+							</WhileTrue>
+							<WhileTrue Value="{makeBold}">
+								<Change word.Font="Bold" />
+								<Clicked Handler="{wordClicked}" />
+							</WhileTrue>
+						</Text>
+					</Each>
+				</WrapPanel>
+			</WhileTrue>
+
+			<WhileTrue Value="{isReblog}">
+				<Panel Alignment="Right" Margin="0,0,0,8">
+					<Text Value="reposted by {whodidthis.acct}" TextColor="palette.clrText" Font="Italic" FontSize="13" />
+				</Panel>
+			</WhileTrue>
+
+			<WhileTrue Value="{Property pc.drawlines}">
+				<Rectangle Width="1" Margin="0,6,0,12" Color="#777" Layer="Background" Alignment="Left" />
+			</WhileTrue>
+
+		</StackPanel>
+
+	</WhileTrue>
+
+</StackPanel>

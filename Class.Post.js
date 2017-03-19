@@ -1,45 +1,46 @@
-var _this = this;
-
 var api = require( 'assets/js/api' );
 var helper = require( 'assets/js/helper' );
 
-var Observable = require("FuseJS/Observable");
-var InterApp = require("FuseJS/InterApp");
+var _this = this;
 
-var post = this.Parameter.map( function( param ) {
-	return param.post;
-})
+var Observable = require("FuseJS/Observable");
 
 var favouriting = Observable( false );
 var reposting = Observable( false );
-var spoilerVisible = Observable( false );
 
-var timeSince =  Observable('');
 var postid = 0;
 var userid = 0;
-var username = Observable('');
+var username = '';
+var mentions = [];
+
+var spoilerVisible = Observable( false );
+var timeSince =  Observable( '' );
 
 this.post.onValueChanged( module, function( newValue ) {
 
 	if ( 'undefined' != typeof newValue ) {
+
 		spoilerVisible.value = ( '' == newValue.spoiler_text );
 		timeSince.value = helper.timeSince( newValue.created_at );
 		postid = newValue.id;
 		userid = newValue.isNotification ? newValue.whodidthis.id : newValue.account.id;
-		username.value = newValue.isNotification ? newValue.whodidthis.acct : newValue.account.acct;
+		username = newValue.isNotification ? newValue.whodidthis.acct : newValue.account.acct;
+		mentions = newValue.mentions;
+
 	}
 
 } );
 
-function replyToPost() {
-	router.push( "write", { postid: postid, mentions: post.mentions, firstup: username } );
+function replyToPost( ) {
+
+	router.push( "write", { postid: postid, mentions: mentions, firstup: username } );
+
 }
 
-function rePost( args ) {
+function rePost( ) {
 
 	reposting.value = true;
-	api.rePost( postid, post.reposted.value ).then( function() {
-		post.reposted = post.reposted.not();
+	api.rePost( postid, _this.post.value.reposted ).then( function() {
 		reposting.value = false;
 	}).catch( function( err ) {
 		console.log( 'error in rePost' );
@@ -49,11 +50,10 @@ function rePost( args ) {
 
 }
 
-function favouritePost( args ) {
+function favouritePost( ) {
 
 	favouriting.value = true;
-	api.favouritePost( postid, post.favourited.value ).then( function() {
-		post.favourited = post.favourited.not();
+	api.favouritePost( postid, _this.post.value.favourited ).then( function() {
 		favouriting.value = false;
 	}).catch( function( err ) {
 		console.log( 'error in favouritePost' );
@@ -63,32 +63,37 @@ function favouritePost( args ) {
 
 }
 
-function gotoPost() {
-	if ( postid > 0 ) {
-		router.push( "postcontext", { postid: postid } );
-	}
+function gotoPost( ) {
+
+	router.push( "postcontext", { postid: postid } );
+
 }
 
-function gotoUser( args ) {
-	console.log( userid );
-	if ( userid > 0 ) {
-		router.push( "userprofile", { userid: userid } );
-	}
+function gotoUser( ) {
+
+	router.push( "userprofile", { userid: userid } );
+
 }
 
 function wordClicked( args ) {
 
-	// console.log( JSON.stringify( args.data ) );
 	if ( args.data.mention ) {
+
 		router.push( "userprofile", { userid: userid } );
+
 	} else if ( args.data.link ) {
+
+		var InterApp = require("FuseJS/InterApp");
 		InterApp.launchUri( args.data.uri );
+
 	}
 
 }
 
 function showSpoiler() {
+
 	spoilerVisible.value = !spoilerVisible.value;
+
 }
 
 module.exports = {

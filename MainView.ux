@@ -2,6 +2,7 @@
 
 	<float4 ux:Global="palette.clrText" ux:Value="#282b37" />
 	<float4 ux:Global="palette.clrIcon" ux:Value="#282b37" />
+	<float4 ux:Global="palette.clrTextDimmed" ux:Value="#787b87" />
 	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#787b87" />
 	<float4 ux:Global="palette.clrLines" ux:Value="#282b37" />
 	<float4 ux:Global="palette.clrHighlight" ux:Value="#1a9df8" />
@@ -41,9 +42,11 @@
 
 	<Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
 
-	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>  
+	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>
 
-	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>  
+	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>
+
+	<Text ux:Class="FaVideoPlay" Font="fa" FontSize="16">&#xf04b;</Text>
 
 	<JavaScript File="MainView.js" />
 

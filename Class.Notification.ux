@@ -1,146 +1,50 @@
-<StackPanel ux:Class="PostCard" ux:Name="pc" Background="#fff" Margin="0,0,0,4">
+<StackPanel ux:Class="NotificationCard" ux:Name="pc" Background="#fff" Margin="0,0,0,6">
 	<Router ux:Dependency="router" />
 	<object ux:Property="post" />
 
 	<bool ux:Property="clickable" />
 	<bool ux:Property="drawlines" />
 
-	<JavaScript File="Class.PostCard.js" />
-
-	<WhileFalse Value="{isNotification}">
-		<WhileTrue Value="{sensitive}">
-			<StackPanel Orientation="Horizontal" Margin="0,4,0,8" Alignment="Center">
-				<FaLock Color="palette.clrIcon" FontSize="18" Margin="0,8,4,0" />
-				<TextView Value="sensitive images hidden" Font="Italic" FontSize="14" TextColor="palette.clrText" />
-			</StackPanel>
-		</WhileTrue>
-		<WhileFalse Value="{sensitive}">
-			<Panel ClipToBounds="true">
-				<LinearNavigation>
-					<NavigationMotion GotoEasing="CircularOut" GotoDuration="0.3" />
-				</LinearNavigation>
-	    		<SwipeNavigate SwipeDirection="Left" />
-	    		<Each Items="{Read media_attachments}">
-	        		<ImageGallery>
-	        			<WhileString Value="{type}" Equals="image">
-	        				<Image ux:Name="attachment" Height="280" Url="{preview_url}" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center">
-	            				<WhileFailed>
-									<Change attachment.Height="0" />
-								</WhileFailed>
-							</Image>
-						</WhileString>
-						<WhileString Value="{type}" Equals="gifv">
-							<Video Height="280" Url="{url}" StretchMode="UniformToFill" ContentAlignment="Center" />
-						</WhileString>
-	        		</ImageGallery>
-	    		</Each>
-			</Panel>
-		</WhileFalse>
-	</WhileFalse>
+	<JavaScript File="Class.Post.js" />
 
 	<StackPanel Margin="8,12,8,0" Orientation="Horizontal">
 
 		<Panel Height="54" Width="54" Margin="0,0,16,0" Clicked="{gotoUser}">
 
-			<WhileTrue Value="{isNotification}">
-				<Rectangle CornerRadius="6" Width="54" Height="54">
-					<ImageFill Url="{Read whodidthis.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
-				</Rectangle>
-			</WhileTrue>
+			<Rectangle CornerRadius="6" Width="54" Height="54">
+				<ImageFill Url="{Read whodidthis.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
+			</Rectangle>
 
-			<WhileFalse Value="{isNotification}">
-				<Rectangle CornerRadius="6" Width="54" Height="54" Margin="8,0,0,0" Color="#1a9df8">
-					<ImageFill Url="{Read account.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
-				</Rectangle>
-			</WhileFalse>
 		</Panel>
 
 		<StackPanel Orientation="Vertical">
 
-			<WhileFalse Value="{isNotification}">
-				<DockPanel Clicked="{gotoUser}" Margin="0,8,0,4">
-					<Text Value="{Read account.acct}" FontSize="13" TextColor="palette.clrText" Font="Regular" Dock="Left" />
-					<Text Value="{Read account.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" Margin="8,0,0,0" Dock="Left" />
-				</DockPanel>
-			</WhileFalse>
+			<DockPanel Clicked="{gotoUser}" Margin="0,4,0,4">
+				<Text Value="{Read whodidthis.acct}" FontSize="13" TextColor="palette.clrText" Font="Regular" Dock="Left" />
+				<Text Value="{Read whodidthis.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" Margin="8,0,0,0" Dock="Left" />
+			</DockPanel>
 
-			<WhileTrue Value="{isNotification}">
-				<DockPanel Clicked="{gotoUser}" Margin="0,4,0,4">
-					<Text Value="{Read whodidthis.acct}" FontSize="13" TextColor="palette.clrText" Font="Regular" Dock="Left" />
-					<Text Value="{Read whodidthis.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" Margin="8,0,0,0" Dock="Left" />
-				</DockPanel>
+			<StackPanel Orientation="Horizontal">
+				<WhileTrue Value="{isFollow}">
+					<FaFollow Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
+					<Text Value="joins you on your travels" Color="palette.clrText" Font="Regular" FontSize="13" />
+				</WhileTrue>
 
-				<StackPanel Orientation="Horizontal">
-					<WhileTrue Value="{isFollow}">
-						<FaFollow Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
-						<Text Value="joins you on your travels" Color="palette.clrText" Font="Regular" FontSize="13" />
-					</WhileTrue>
+				<WhileTrue Value="{isReblog}">
+					<FaRepost Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
+					<Text Value="reposted your post" Color="palette.clrText" Font="Regular" FontSize="13" />
+				</WhileTrue>
 
-					<WhileTrue Value="{isReblog}">
-						<FaRepost Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
-						<Text Value="reposted your post" Color="palette.clrText" Font="Regular" FontSize="13" />
-					</WhileTrue>
+				<WhileTrue Value="{isMention}">
+					<FaReply Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
+					<Text Value="mentioned you" Color="palette.clrText" Font="Regular" FontSize="13" />
+				</WhileTrue>
 
-					<WhileTrue Value="{isMention}">
-						<FaReply Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
-						<Text Value="mentioned you" Color="palette.clrText" Font="Regular" FontSize="13" />
-					</WhileTrue>
-
-					<WhileTrue Value="{isFavourite}">
-						<FaStar Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
-						<Text Value="favourited your post" Color="palette.clrText" Font="Regular" FontSize="13" />
-					</WhileTrue>
-				</StackPanel>
-			</WhileTrue>
-
-			<WhileFalse Value="{isNotification}">
-				<StackPanel Orientation="Horizontal">
-
-					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-						<FaReply Color="palette.clrIconDimmed" FontSize="15" />
-						<Clicked Handler="{replyToPost}" />
-					</Panel>
-
-					<!-- can't reblog when marked sensitive -->
-					<WhileString Value="{visibility}" Equals="public" Invert="True">
-						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-							<FaLock Color="palette.clrIconDimmed" FontSize="17" />
-						</Panel>
-					</WhileString>
-
-					<WhileString Value="{visibility}" Equals="public">
-						<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
-							<FaRepost ux:Name="icoreblogged" Color="palette.clrIconDimmed" FontSize="17" Margin="0,0,3,0">
-								<WhileTrue Value="{reposting}">
-									<Spin Frequency="1" />
-								</WhileTrue>
-							</FaRepost>
-							<Text FontSize="13" Color="palette.clrIconDimmed" Font="Regular" Value="{reblogs_count}" />
-							<Clicked Handler="{rePost}" />
-							<WhileTrue Value="{post.reposted}">
-								<Change icoreblogged.Color="palette.clrHighlight" />
-							</WhileTrue>
-						</StackPanel>
-					</WhileString>
-
-					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
-						<FaStar ux:Name="icostar" Color="palette.clrIconDimmed" FontSize="17" Margin="0,0,3,0">
-							<WhileTrue Value="{favouriting}">
-								<Spin Frequency="1" />
-							</WhileTrue>
-						</FaStar>
-						<Text FontSize="13" Color="palette.clrIconDimmed" Font="Regular" Value="{favourites_count}" />
-						<Clicked Handler="{favouritePost}" />
-						<WhileTrue Value="{post.favourited}">
-							<Change icostar.Color="palette.clrHighlight" />
-						</WhileTrue>
-					</StackPanel>
-
-					<Text Value="{timeSince}" FontSize="13" TextColor="palette.clrText" Font="Italic" />
-
-				</StackPanel>
-
-			</WhileFalse>
+				<WhileTrue Value="{isFavourite}">
+					<FaStar Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
+					<Text Value="favourited your post" Color="palette.clrText" Font="Regular" FontSize="13" />
+				</WhileTrue>
+			</StackPanel>
 
 		</StackPanel>
 
@@ -179,18 +83,6 @@
 					</Text>
 				</Each>
 			</WrapPanel>
-		</WhileTrue>
-
-		<WhileFalse Value="{isNotification}">
-			<WhileTrue Value="{isReblog}">
-				<Panel Alignment="Right" Margin="0,0,0,8">
-					<Text Value="reposted by {whodidthis.acct}" TextColor="palette.clrText" Font="Italic" FontSize="13" />
-				</Panel>
-			</WhileTrue>
-		</WhileFalse>
-
-		<WhileTrue Value="{Property pc.drawlines}">
-			<Rectangle Width="1" Margin="0,6,0,12" Color="#777" Layer="Background" Alignment="Left" />
 		</WhileTrue>
 
 	</StackPanel>
