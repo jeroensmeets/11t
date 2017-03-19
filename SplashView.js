@@ -1,4 +1,5 @@
 var api					= require( 'assets/js/api' );
+
 var Observable			= require( 'FuseJS/Observable' );
 
 var loginFormVisible	= Observable( 'Collapsed' );
@@ -8,6 +9,9 @@ var showError			= Observable( false );
 var baseurl				= Observable( 'https://mastodon.social/' );
 
 function startLoggedInCheck() {
+
+	// remove old cache files
+	api.cleanUp();
 
 	api.loadAPIConnectionDataAsync()
 		.then( function( result ) {
@@ -38,7 +42,19 @@ function startOAuth() {
 		return false;
 	}
 
-	api.saveAPIConnectionData( baseurl.value, false, false, false );
+	// check baseurl
+	var urlparts = api.parseUri( baseurl.value );
+
+	if ( 'https' != urlparts.protocol ) {
+		error.value = 'Only servers running on SSL are supported.';
+		showError.value = true;
+		return false;
+	}
+
+	var bu = "https://" + urlparts.host + urlparts.path;
+	if ( bu.substr( -1 ) != '/' ) { bu += '/'; }
+
+	api.saveAPIConnectionData( bu, false, false, false );
 	router.goto( 'login' );
 	return;
 

@@ -32,7 +32,7 @@
 				<Change bottompanel.Opacity=".2" />
 			</WhileKeyboardVisible>
 			<StackPanel Orientation="Horizontal">
-				<Image File="assets/images/logo-11t-transparent.png" Width="200" Height="200" Alignment="Left" Margin="0,0,24,0"></Image>
+				<Image File="assets/images/logo-11t-transparent.png" Width="200" Height="200" Alignment="Left" Margin="0,0,24,0" Clicked="{startLoggedInCheck}"></Image>
 				<Text Value="11t" Color="palette.clrIcon" Font="Bold" FontSize="51" Alignment="Center" />
 			</StackPanel>
 		</StackPanel>

@@ -14,7 +14,7 @@
 				<StackPanel Orientation="Vertical" Margin="16,6,0,0">
 					<Text Value="{Clear account.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" />
 					<Text Value="@{Clear account.acct}" FontSize="13" Font="Regular" TextColor="palette.clrText" Margin="0,0,0,6" />
-					<MastodonButton text="Follow" Clicked="{followUser}" Margin="0,0,0,12" />
+					<!-- <MastodonButton text="Follow" Clicked="{followUser}" Margin="0,0,0,12" /> -->
 					<MastodonButton text="Mention" Clicked="{mentionUser}" Margin="0,0,0,12" />
 				</StackPanel>
 			</StackPanel>

@@ -1,3 +1,5 @@
+var helper			= require( 'assets/js/helper.js' );
+
 var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
 var EventEmitter    = require("FuseJS/EventEmitter");
@@ -9,7 +11,7 @@ var HtmlEnt         = require( 'assets/js/he/he.js' );
 
 var oboe			= require( 'oboe' );
 
-var FILE_DATACACHE  = 'data.cache.json';
+var FILE_DATACACHE  = 'posts.cache.json';
 var BASE_URL        = false;
 var AccessToken     = false;
 var at_file         = "APIconnect.json";
@@ -23,6 +25,31 @@ var posts = {
 	publictimeline  : Observable(),
 	user            : Observable(),
 	postcontext		: Observable()
+}
+
+function clearPostsObject() {
+
+	posts.home.clear();
+	posts.notifications.clear();
+	posts.publictimeline.clear();
+	posts.user.clear();
+	posts.postcontext.clear();
+
+	for ( var i in posts ) {
+		Storage.deleteSync( i + '.' + FILE_DATACACHE );
+	}
+}
+
+/**
+ * remove old cache files with different data structures
+ */
+function cleanUp() {
+
+	// before version 1.0.12 datacache was at {posttype}.data.cache.json
+	for ( var index in posts ) {
+		Storage.deleteSync( index + '.data.cache.json' );
+	}
+
 }
 
 var userprofile = Observable();
@@ -115,6 +142,12 @@ function saveAPIConnectionData( base_url, clientid, clientsecret, token ) {
 	return Storage.writeSync( at_file, JSON.stringify( data ) );
 }
 
+function deleteAPIConnectionData() {
+
+	return Storage.deleteSync( at_file );
+
+}
+
 /**
  * @param  {string}		baseurl		url to Mastodon site
  * @return {array}		{ id: [string], secret: [string] }
@@ -125,30 +158,18 @@ function getClientIdSecret() {
 
 		var conf = require( 'assets/js/conf' );
 
-		var _bodyArgs = {
-			'client_name'	: '11t',
-			'redirect_uris'	: conf.redirect_uri,
-			'scopes'		: 'read write follow'
-		};
-
 		if ( false === BASE_URL ) {
 			reject( Error( 'base url not set' ) );
 		}
 
-		fetch( BASE_URL + 'api/v1/apps', {
+		apiFetch( 'api/v1/apps', {
 			method: 'POST',
-			headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-			body: JSON.stringify( _bodyArgs )
-		})
-		.then( function( resp ) {
-
-			if ( 200 == resp.status ) {
-				return resp.json();
-			} else {
-				reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+			body: {
+				'client_name'	: '11t',
+				'redirect_uris'	: conf.redirect_uri,
+				'scopes'		: 'read write follow'
 			}
-
-		})
+		} )
 		.then( function( json ) {
 
 			// save client id and secret
@@ -159,7 +180,9 @@ function getClientIdSecret() {
 
 		})
 		.catch( function( err ) {
-			reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+
+			reject( Error( 'Netwerk error: cannot get client id/secret' ) );
+
 		});
 
 	});
@@ -176,40 +199,53 @@ function getClientIdSecret() {
  */
 function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
 
-	return new Promise( function( resolve, reject ) {
+	return apiFetch( 'oauth/token', {
 
-	    var _bodyArgs = {
-	        'grant_type'    : 'authorization_code',
-	        'redirect_uri'  : redirect_uri,
-	        'code'          : auth_token,
-	        'client_id'     : client_id,
-	        'client_secret' : client_secret
-	    };
+		method: 'POST',
+		body: {
+			'grant_type'    : 'authorization_code',
+			'redirect_uri'  : redirect_uri,
+			'code'          : auth_token,
+			'client_id'     : client_id,
+			'client_secret' : client_secret
+	    }
 
-		// console.log( JSON.stringify( _bodyArgs ) );
+	} );
 
-		fetch( BASE_URL + 'oauth/token', {
-			method: 'POST',
-			headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-			body: JSON.stringify( _bodyArgs )
-    	})
-		.then( function( resp ) {
+	// return new Promise( function( resolve, reject ) {
 
-			if ( 200 == resp.status ) {
-				return resp.json();
-			} else {
-				reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
-			}
+	//     var _bodyArgs = {
+	//         'grant_type'    : 'authorization_code',
+	//         'redirect_uri'  : redirect_uri,
+	//         'code'          : auth_token,
+	//         'client_id'     : client_id,
+	//         'client_secret' : client_secret
+	//     };
 
-		})
-		.then( function( json ) {
-			resolve( json );
-		})
-		.catch( function( err ) {
-			reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
-		});
+	// 	// console.log( JSON.stringify( _bodyArgs ) );
 
-	});
+	// 	fetch( BASE_URL + 'oauth/token', {
+	// 		method: 'POST',
+	// 		headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+	// 		body: JSON.stringify( _bodyArgs )
+ //    	})
+	// 	.then( function( resp ) {
+
+	// 		if ( 200 == resp.status ) {
+	// 			return resp.json();
+	// 		} else {
+	// 			reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
+	// 		}
+
+	// 	})
+	// 	.then( function( json ) {
+	// 		resolve( json );
+	// 	})
+	// 	.catch( function( err ) {
+	// 		reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
+	// 	});
+
+	// });
 
 }
 
@@ -323,9 +359,9 @@ function setActiveTimeline( _type ) {
 
 	var Timer = require("FuseJS/Timer");
 
-	Timer.create(function() {
+	Timer.create( function() {
 		loadCurrentTimelineFromAPI();
-	}, 3000, false);
+	}, 3000, false );
 
 }
 
@@ -341,12 +377,7 @@ function loadCurrentTimelineFromCache() {
 
 	Storage.read( active.value + '.' + FILE_DATACACHE )
     .then( function( fileContents ) {
-        try {
-        	refreshPosts( active.value, JSON.parse( fileContents ), true );
-        } catch( e ) {
-        	// error in parsing cachefile data
-        	console.log( 'error in parsing cachefile data' );
-        }
+        refreshPosts( active.value, JSON.parse( fileContents ), true );
     }, function( error ) {
         // error in reading from cache
         console.log( 'error in reading from cache' );
@@ -371,22 +402,13 @@ function loadTimeline( _type, _id, _postObj ) {
 	// 	return;
 	// }
 
-	if ( 'undefined' == typeof posts[ _type ] ) {
+	if ( undefined === posts[ _type ] ) {
 		// TODO probably triggered by splash screen
 		return;
 	}
 
 	loading.value = true;
 	loadAPIConnectionData();
-
-	var _requestparams = {
-		method: 'GET',
-		cache: 'no-store',
-		headers: {
-			'Content-type': 'application/json',
-			'Authorization': 'Bearer ' + AccessToken
-		}
-	};
 
 	var endpoint = '';
 	switch ( _type ) {
@@ -409,20 +431,15 @@ function loadTimeline( _type, _id, _postObj ) {
 			break;
 	}
 
-	// console.log( BASE_URL );
-
-	fetch( BASE_URL + endpoint, _requestparams )
-	.then( function( resp ) {
-
-		// console.log( JSON.stringify( resp ) );
-
-		if ( 200 == resp.status ) {
-			return resp.json();
-		} else {
-			loading.value = false;
-		}
-	})
+	apiFetch(
+		endpoint, {
+		headers: { 'Authorization': 'Bearer ' + AccessToken }
+	} )
 	.then( function( json ) {
+
+		console.log( 'json received' );
+
+		loading.value = false;
 
 		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
 		if ( 'postcontext' == _type ) {
@@ -431,58 +448,58 @@ function loadTimeline( _type, _id, _postObj ) {
 		}
 
 		refreshPosts( _type, json, false );
-		loading.value = false;
 
-	})
-	.catch( function( err ) {
-		console.log( 'api.loadTimeline caused error' );
-		console.log( JSON.stringify( err ) );
-		loading.value = false;
-	});
+	} );
+
+	// .catch( function( err ) {
+	// 	console.log( 'api.loadTimeline caused error' );
+	// 	console.log( JSON.stringify( err ) );
+	// 	loading.value = false;
+	// } );
 
 }
 
-function refreshPosts( _type, _data, fromcache ) {
+function refreshPosts( posttype, jsondata, isfromcache ) {
 
-	var _mps = [];
-	for ( var i = 0; i < _data.length; i++ ) {
-		// console.log( JSON.stringify( _data[ i ] ) );
-		if ( fromcache ) {
-			console.log( 'from cache, username: ' + _data[i].account.acct + ', ' + _data[i].created_at );
-			_mps.push( _data[i] );
-		} else {
-			console.log( 'from api, username: ' + _data[i].account.acct + ', ' + _data[i].created_at );
-			var _mp = new MastodonPost( _data[i], _type );
-			_mps.push( _mp );
-		}
-	}
+	posts[ posttype ].refreshAll(
+		jsondata,
+		// compare on ID
+		function( oldItem, newItem ) {
+			return oldItem.id == newItem.id;
+		},
+		// update text
+		function( oldItem, newItem ) {
+			oldItem = newItem;
+		},
+		// add new
+		function( newItem ) {
+			return newItem
+        }
+	);
 
-	console.log( 'new posts count: ' + _data.length );
-	console.log( 'count in api.posts before: ' + posts[ _type ].length );
+	return;
 
-	try {
+	// TODO should be a better way to check if post alreay exists
+	var postsArray = posts[ posttype ].toArray();
 
-		posts[ _type ].refreshAll(
-			_mps,
-			function( _old, _new ) {
-				return _old.id = _new.id;
-			},
-			function( _old, _new ) {
-				_old = _new;
-			},
-			function( _new ) {
-				return _new;
+	for ( var i = jsondata.length - 1; i >= 0; i-- ) {
+
+		var existingIndex = 0;
+		postsArray.filter( function( obj, ind ) {
+			if ( obj.id === jsondata[ i ].id ) {
+				existingIndex = ind;
+				return obj;
 			}
-		);
+		});
 
-		console.log( 'count in api.posts after: ' + posts[ _type ].length );
+		if ( 0 == existingIndex ) {
+			var newPost = isfromcache ? jsondata[ i ] : new MastodonPost( jsondata[ i ], posttype );
+			posts[ posttype ].insertAt( 0, newPost );
+		}
 
-		Storage.write( _type + '.' + FILE_DATACACHE, JSON.stringify( posts[ _type ].toArray() ) );
-
-	} catch( e ) {
-		console.log( 'error in refreshPosts:' );
-		console.log( JSON.stringify( e ) );
 	}
+
+	Storage.write( posttype + '.' + FILE_DATACACHE, JSON.stringify( posts[ posttype ].toArray() ) );
 
 }
 
@@ -494,21 +511,11 @@ function loadUserProfile( _userid ) {
 
 	loading.value = true;
 
-	fetch( BASE_URL + 'api/v1/accounts/' + _userid, {
-		method: 'GET',
-		cache: 'no-store',
+	apiFetch( 'api/v1/accounts/' + _userid, {
 		headers: {
-			'Content-type': 'application/json',
 			'Authorization': 'Bearer ' + AccessToken
 		}
   	})
-	.then( function( resp ) {
-		if ( 200 == resp.status ) {
-			return resp.json();
-		} else {
-			loading.value = false;
-		}
-	})
 	.then( function( json ) {
 		var _userprofile = json;
 		_userprofile.note = HtmlEnt.decode( _userprofile.note );
@@ -725,8 +732,54 @@ module.exports = {
 	sendPost: sendPost,
 	favouritePost: favouritePost,
 	rePost: rePost,
-	parseUri: parseUri
+	parseUri: helper.parseUri,
+	cleanUp: cleanUp
 }
+
+// https://www.fusetools.com/docs/backend/rest-apis
+function apiFetch( path, options ) {
+
+	var url = encodeURI( BASE_URL + path );
+
+	console.log( 'apiFetch: ' + url );
+
+	if ( options === undefined ) {
+		options = {};
+	}
+
+	// If a body is provided, serialize it as JSON and set the Content-Type header
+	if ( options.body !== undefined) {
+		options = Object.assign( {}, options, {
+			body: JSON.stringify( options.body ),
+			headers: Object.assign( {}, options.headers, {
+				"Content-Type": "application/json"
+			} )
+		} );
+	}
+
+	// Fetch the resource and parse the response as JSON
+	return fetch( url, options )
+		.then( function( response ) {
+
+			console.log( 'API path: return status ' + response.status );
+			if ( 401 == response.status ) {
+
+				// not authorized
+				deleteAPIConnectionData();
+				clearPostsObject();
+				router.goto( 'splash' );
+
+			} else {
+
+				return response.json();
+
+			}
+
+		} );
+
+}
+
+
 
 function MastodonPost( _info, _type ) {
 
@@ -774,8 +827,6 @@ function MastodonPost( _info, _type ) {
 		// for post context screen, get words apart
 		this.prepcontent = preparePostContent( _info );
 
-		this.timesince = timeSince( _info.created_at );
-
 		// avatar a gif? animated or not, FuseTools cannot handle it
 		var _avatar = _info.account.avatar.split( '?' );
 		_avatar = ( _avatar.length > 1 ) ? _avatar[ _avatar.length - 2 ] : _avatar[ _avatar.length - 1 ];
@@ -794,7 +845,7 @@ function cleanupContent( postdata ) {
 	// remove links to media attachments
 	if ( postdata.media_attachments.length ) {
 
-		var _uris = getUrisFromText( _text );
+		var _uris = helper.getUrisFromText( _text );
 
 		if ( _uris && ( _uris.length > 0 ) ) {
 			for ( var i in _uris ) {
@@ -829,8 +880,6 @@ function cleanupContent( postdata ) {
 // and should NOT be used on a timeline as it generates memory issues
 function preparePostContent( postdata ) {
 
-	// console.log( JSON.stringify( postdata ) );
-
 	// @<a href=\"http://sn.gunmonkeynet.net/index.php/user/1\">nybill</a> eek, well glad it was finally noticed.
 
 	// replace HTML codes like &amp; and &gt;
@@ -847,7 +896,7 @@ function preparePostContent( postdata ) {
 	_content = _content.replace( "<p>", "" );
 
 	// temporary replace urls to prevent splitting on spaces in linktext
-	var _uris = getUrisFromText( _content );
+	var _uris = helper.getUrisFromText( _content );
 	if ( _uris && ( _uris.length > 0 ) ) {
 		for ( var i in _uris ) {
 			_content = _content.replace( _uris[ i ], '[[[[' + i );
@@ -934,74 +983,6 @@ function preparePostContent( postdata ) {
 		}
 	}
 
-	// console.log( JSON.stringify( result ) );
-
 	return result;
 
 }
-
-function getUrisFromText( _text ) {
-
-	// temporary replace urls to prevent splitting on spaces in linktext
-	var regex = /<[aA].*?\s+href=["']([^"']*)["'][^>]*>(?:<.*?>)*(.*?)(?:<.*?>)?<\/[aA]>/igm ;
-	return _text.match( regex );
-
-}
-
-function timeSince(date) {
-
-	var seconds = Math.floor( ( new Date() - new Date( date ) ) / 1000 );
-
-	var interval = Math.floor(seconds / 31536000);
-	if (interval > 1) { return interval + "y"; }
-
-	interval = Math.floor(seconds / 2592000);
-	if (interval > 1) { return interval + "m"; }
-
-	interval = Math.floor(seconds / 86400);
-	if (interval > 1) { return interval + "d"; }
-
-	interval = Math.floor(seconds / 3600);
-	if (interval > 1) { return interval + "h"; }
-
-	interval = Math.floor(seconds / 60);
-	if (interval > 1) { return interval + "m"; }
-
-	return Math.floor(seconds) + "s";
-
-}
-
-// parseUri 1.2.2
-// (c) Steven Levithan <stevenlevithan.com>
-// MIT License
-
-http://blog.stevenlevithan.com/archives/parseuri
-
-function parseUri(str) {
-	var	o   = parseUri.options,
-		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
-		uri = {},
-		i   = 14;
-
-	while (i--) uri[o.key[i]] = m[i] || "";
-
-	uri[o.q.name] = {};
-	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-		if ($1) uri[o.q.name][$1] = $2;
-	});
-
-	return uri;
-};
-
-parseUri.options = {
-	strictMode: false,
-	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-	q:   {
-		name:   "queryKey",
-		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-	},
-	parser: {
-		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-	}
-};

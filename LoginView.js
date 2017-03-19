@@ -1,6 +1,6 @@
 var api = require( 'assets/js/api' );
 var conf = require( 'assets/js/conf' );
-var helper = require( 'assets/js/helper' );
+
 var Observable = require("FuseJS/Observable");
 
 var oAuthUri = Observable( '' );
@@ -47,8 +47,8 @@ function webViewUrlChanged( ) {
 		return;
 	}
 
-	var uriparts = helper.parseUri( oAuthUri.value );
-	var redirecturiparts = helper.parseUri( conf.redirect_uri );
+	var uriparts = api.parseUri( oAuthUri.value );
+	var redirecturiparts = api.parseUri( conf.redirect_uri );
 
 	console.log( '+++++++++++++' );
 	console.log( '+ url in webview has changed' );

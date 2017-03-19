@@ -37,7 +37,6 @@
 	<Text ux:Class="FaRepost" Font="fa" FontSize="16">&#xf079;</Text>
 	<Text ux:Class="FaMore" Font="fa" FontSize="16">&#xf141;</Text>
 	<Text ux:Class="FaLock" Font="fa" FontSize="16">&#xf023;</Text>
-
 	<Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 
 	<Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>

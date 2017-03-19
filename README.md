@@ -27,8 +27,9 @@ You need the brilliant [FuseTools](https://www.fusetools.com/) and the code in t
 ### Compliments ###
 
 Font: [Noto](https://www.google.com/get/noto/).
+
 The elephant in the room: [Tineke Meirink](https://www.tinekemeirink.nl/).
 
 ### Contact ###
 
-I'm [@jeroensmeets](https://mastodon.social/web/accounts/8779) on Mastodon. And also on that dinosaur called Twitter.
+I'm [@jeroensmeets@mastodon.social](https://mastodon.social/web/accounts/8779). And also on that dinosaur called Twitter.
