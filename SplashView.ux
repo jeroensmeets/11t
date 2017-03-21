@@ -11,7 +11,7 @@
 
 			<TextView Font="Regular" FontSize="15" Margin="4,16,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
 				Value="Welcome to 11t, your connection to Mastodon. Please specify the server you would like to use." />
-			<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#fff" TextWrapping="Wrap" Padding="12" Margin="0,0,36,24" Background="#1a9df8">
+			<TextInput ux:Name="inputbaseurl" Value="{baseurl}" PlaceholderColor="#ccc" TextColor="#fff" TextWrapping="Wrap" Padding="12" Margin="0,0,36,24" Background="#1a9df8">
 				<WhileString Test="IsEmpty">
 					<Text TextWrapping="Wrap" Margin="4">Url of Mastodon instance</Text>
 				</WhileString>

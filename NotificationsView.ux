@@ -13,7 +13,7 @@
 
 			<ReloadPull />
 			<Each Items="{posts}">
-				<NotificationCard post="{}" router="router" />
+				<NotificationCard post="{}" clickable="false" router="router" />
 			</Each>
 
 			<WhileFalse Value="{loading}">

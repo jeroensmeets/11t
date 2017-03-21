@@ -10,7 +10,7 @@
 
 	<ScrollView LayoutMode="PreserveVisual">
 		<StackPanel Orientation="Vertical">
-			<Each Items="{Clear posts}">
+			<Each Items="{posts}">
 				<PostCard post="{}" drawlines="true" clickable="true" router="router" />
 			</Each>
 			<WhileTrue Value="{loading}">

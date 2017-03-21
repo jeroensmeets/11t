@@ -217,7 +217,9 @@
 			</WhileTrue>
 
 			<WhileTrue Value="{Property pc.drawlines}">
-				<Rectangle Width="1" Margin="0,6,0,12" Color="#777" Layer="Background" Alignment="Left" />
+				<WhileFalse Value="{last}">
+					<Rectangle Width="1" Margin="0,6,0,12" Color="#777" Layer="Background" Alignment="Left" />
+				</WhileFalse>
 			</WhileTrue>
 
 		</StackPanel>

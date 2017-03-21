@@ -26,9 +26,10 @@ this.post.onValueChanged( module, function( newValue ) {
 
 	if ( 'undefined' != typeof newValue ) {
 
+		postid = ( 'notifications' == newValue.posttype ) ? newValue.status.id : newValue.id;
+
 		timeSince.value = helper.timeSince( newValue.created_at );
 		multipleMedia.value = newValue.media_attachments && ( newValue.media_attachments.length > 1 );
-		postid = newValue.id;
 		userid = newValue.account.id;
 		username = newValue.account.acct;
 		mentions = newValue.mentions;
@@ -75,6 +76,8 @@ function favouritePost( ) {
 }
 
 function gotoPost( ) {
+
+	console.log( postid );
 
 	router.push( "postcontext", { postid: postid } );
 

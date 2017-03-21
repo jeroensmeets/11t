@@ -496,6 +496,8 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 
 function MastodonPost( data, posttype ) {
 
+	this.posttype = posttype;
+
 	this.isRepost = ( null !== data.reblog ) && ( 'notifications' != posttype );
 
 	if ( this.isRepost ) {
@@ -522,6 +524,10 @@ function MastodonPost( data, posttype ) {
 
 	// strip content clean for timelines
 	this.previewcontent = cleanupContent( this, posttype );
+
+	if ( 'postcontext' == posttype ) {
+		this.prepcontent = preparePostContent( this );
+	}
 
 	// template needs info if there is no content to remove content box and just a little white space
 	this.hascontent = this.previewcontent.length > 0 || ( '' != this.spoiler_text );
