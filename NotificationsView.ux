@@ -12,8 +12,8 @@
 		<StackPanel Orientation="Vertical">
 
 			<ReloadPull />
-			<Each Items="{Read posts}">
-				<PostCard post="{}" clickable="false" router="router" />
+			<Each Items="{posts}">
+				<NotificationCard post="{}" clickable="false" router="router" />
 			</Each>
 
 			<WhileFalse Value="{loading}">

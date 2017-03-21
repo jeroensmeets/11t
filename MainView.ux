@@ -41,12 +41,11 @@
 	<Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 
 	<Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
-
 	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>
-
 	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>
-
+	<Text ux:Class="FaLoading" Font="fa" FontSize="16">&#xf110;</Text>
 	<Text ux:Class="FaVideoPlay" Font="fa" FontSize="16">&#xf04b;</Text>
+	<Text ux:Class="FaMultipleMedia" Font="fa" FontSize="16">&#xf009;</Text>
 
 	<JavaScript File="MainView.js" />
 

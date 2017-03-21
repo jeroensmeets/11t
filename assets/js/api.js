@@ -370,9 +370,21 @@ function setActiveTimeline( _type ) {
 
 function loadCurrentTimelineFromAPI() {
 
-	if ( !loading.value && ( false !== active.value ) ) {
-		loadTimeline( active.value );
+	console.log( 'loading posts for timeline ' + active.value );
+
+	if ( loading.value ) {
+		// api is already out to fetch posts
+		console.log( 'api request is underway, not starting another fetch request' );
+		return;
 	}
+
+	if ( false === active.value ) {
+		// probably a reload in FuseTools preview
+		setActiveTimeline( 'home' );
+		return;
+	}
+
+	loadTimeline( active.value );
 
 }
 
@@ -440,8 +452,6 @@ function loadTimeline( _type, _id, _postObj ) {
 	} )
 	.then( function( json ) {
 
-		console.log( 'json received' );
-
 		loading.value = false;
 
 		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
@@ -472,11 +482,11 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 		},
 		// update text
 		function( oldItem, newItem ) {
-			oldItem = new MastodonPost( newItem );
+			oldItem = new MastodonPost( newItem, posttype );
 		},
 		// add new
 		function( newItem ) {
-			return new MastodonPost( newItem );
+			return new MastodonPost( newItem, posttype );
         }
 	);
 
@@ -484,16 +494,39 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 
 }
 
-function MastodonPost( data ) {
+function MastodonPost( data, posttype ) {
 
-	for ( var i in data ) {
-		this[ i ] = data[ i ];
+	this.isRepost = ( null !== data.reblog ) && ( 'notifications' != posttype );
+
+	if ( this.isRepost ) {
+
+		// account details for user that did the repost
+		this.whoacct = data.account.acct;
+		this.whoname = data.account.display_name;
+		this.whoavatar = data.account.avatar;
+		this.whoid = data.account.id;
+
+		// copy original post data
+		for ( var i in data.reblog ) {
+			this[ i ] = data.reblog[ i ];
+		}
+
+	} else {
+
+		// copy post data
+		for ( var i in data ) {
+			this[ i ] = data[ i ];
+		}
+
 	}
 
-	this.previewcontent = cleanupContent( this );
+	// strip content clean for timelines
+	this.previewcontent = cleanupContent( this, posttype );
+
+	// template needs info if there is no content to remove content box and just a little white space
 	this.hascontent = this.previewcontent.length > 0 || ( '' != this.spoiler_text );
 
-	// console.log( JSON.stringify( data ) );
+	// console.log( JSON.stringify( this ) );
 
 }
 
@@ -771,19 +804,21 @@ function apiFetch( path, options ) {
 
 }
 
-function cleanupContent( postdata ) {
+function cleanupContent( postdata, posttype ) {
 
-	var _text = HtmlEnt.decode( postdata.content );
+	var _source = ( 'notifications' == posttype ) ? postdata.status : postdata;
+
+	var _text = HtmlEnt.decode( _source.content );
 
 	// remove links to media attachments
-	if ( postdata.media_attachments.length ) {
+	if ( _source.media_attachments.length ) {
 
 		var _uris = helper.getUrisFromText( _text );
 
 		if ( _uris && ( _uris.length > 0 ) ) {
 			for ( var i in _uris ) {
 				var _cleanupuri = _uris[ i ].match( /https?:([^"']+)/ig );
-				if ( postdata.media_attachments.some( function (obj) { return ( _cleanupuri.indexOf( obj.text_url ) > -1 ); } ) ) {
+				if ( _source.media_attachments.some( function (obj) { return ( _cleanupuri.indexOf( obj.text_url ) > -1 ); } ) ) {
 					_text = _text.replace( _uris[ i ], '' );
 				}
 			}

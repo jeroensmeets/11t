@@ -8,25 +8,38 @@ var Observable = require("FuseJS/Observable");
 var favouriting = Observable( false );
 var reposting = Observable( false );
 
+var who = this.Parameter.map( function( param ) {
+	return param.who;
+});
+
 var postid = 0;
 var userid = 0;
+var rebloggerid = 0;
 var username = '';
 var mentions = [];
 
-var spoilerVisible = Observable( false );
+var multipleMedia = Observable( false );
+var mediaSensitive = Observable();
 var timeSince =  Observable( '' );
 
 this.post.onValueChanged( module, function( newValue ) {
 
+	console.log( JSON.stringify( newValue ) );
+
 	if ( 'undefined' != typeof newValue ) {
 
-		spoilerVisible.value = ( '' == newValue.spoiler_text );
 		timeSince.value = helper.timeSince( newValue.created_at );
+		multipleMedia.value = newValue.media_attachments && ( newValue.media_attachments.length > 1 );
 		postid = newValue.id;
-		userid = newValue.isNotification ? newValue.whodidthis.id : newValue.account.id;
-		username = newValue.isNotification ? newValue.whodidthis.acct : newValue.account.acct;
+		userid = newValue.account.id;
+		username = newValue.account.acct;
 		mentions = newValue.mentions;
 
+		mediaSensitive.value = newValue.sensitive;
+
+		if ( newValue.isRepost ) {
+			rebloggerid = newValue.whoid;
+		}
 	}
 
 } );
@@ -75,6 +88,14 @@ function gotoUser( ) {
 
 }
 
+function gotoReblogger() {
+
+	if ( rebloggerid > 0 ) {
+		router.push( "userprofile", { userid: rebloggerid } );
+	}
+
+}
+
 function wordClicked( args ) {
 
 	if ( args.data.mention ) {
@@ -90,12 +111,6 @@ function wordClicked( args ) {
 
 }
 
-function showSpoiler() {
-
-	spoilerVisible.value = !spoilerVisible.value;
-
-}
-
 module.exports = {
 	replyToPost: replyToPost,
 	rePost: rePost,
@@ -103,9 +118,9 @@ module.exports = {
 	favouritePost: favouritePost,
 	favouriting: favouriting,
 	gotoUser: gotoUser,
+	gotoReblogger: gotoReblogger,
 	gotoPost: gotoPost,
 	wordClicked: wordClicked,
-	spoilerVisible: spoilerVisible,
-	showSpoiler: showSpoiler,
+	multipleMedia: multipleMedia,
 	timeSince: timeSince
 };
