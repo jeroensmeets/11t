@@ -12,7 +12,7 @@
 		<Panel Height="54" Width="54" Margin="0,0,16,0" Clicked="{gotoUser}">
 
 			<Rectangle CornerRadius="6" Width="54" Height="54">
-				<ImageFill Url="{Read whoavatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
+				<ImageFill Url="{account.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
 			</Rectangle>
 
 		</Panel>
@@ -20,30 +20,30 @@
 		<StackPanel Orientation="Vertical">
 
 			<DockPanel Clicked="{gotoUser}" Margin="0,4,0,4">
-				<Text Value="{Read whoacct}" FontSize="13" TextColor="palette.clrText" Font="Regular" Dock="Left" />
-				<Text Value="{Read whoname}" FontSize="13" Font="Bold" TextColor="palette.clrText" Margin="8,0,0,0" Dock="Left" />
+				<Text Value="{account.acct}" FontSize="13" TextColor="palette.clrText" Font="Regular" Dock="Left" />
+				<Text Value="{account.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" Margin="8,0,0,0" Dock="Left" />
 			</DockPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<WhileTrue Value="{isFollow}">
+				<WhileString Value="{type}" Equals="follow">
 					<FaFollow Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
 					<Text Value="joins you on your travels" Color="palette.clrText" Font="Regular" FontSize="13" />
-				</WhileTrue>
+				</WhileString>
 
-				<WhileTrue Value="{isReblog}">
+				<WhileString Value="{type}" Equals="reblog">
 					<FaRepost Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
 					<Text Value="reposted your post" Color="palette.clrText" Font="Regular" FontSize="13" />
-				</WhileTrue>
+				</WhileString>
 
-				<WhileTrue Value="{isMention}">
+				<WhileString Value="{type}" Equals="mention">
 					<FaReply Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
 					<Text Value="mentioned you" Color="palette.clrText" Font="Regular" FontSize="13" />
-				</WhileTrue>
+				</WhileString>
 
-				<WhileTrue Value="{isFavourite}">
+				<WhileString Value="{type}" Equals="favourite">
 					<FaStar Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
 					<Text Value="favourited your post" Color="palette.clrText" Font="Regular" FontSize="13" />
-				</WhileTrue>
+				</WhileString>
 			</StackPanel>
 
 		</StackPanel>
@@ -62,28 +62,11 @@
 			</StackPanel>
 		</WhileString>
 
-		<WhileFalse Value="{Property pc.clickable}">
-			<StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{gotoPost}">
-				<Each Items="{content}">
-					<Text Value="{Read paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,12" LoadAsync="True" />
-				</Each>
-			</StackPanel>
-		</WhileFalse>
-		<WhileTrue Value="{Property pc.clickable}">
-			<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{showContent}">
-				<Each Items="{Read prepcontent}">
-					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2" LoadAsync="True">
-						<WhileTrue Value="{clear}">
-							<Change word.Margin="0,0,800,8" />
-						</WhileTrue>
-						<WhileTrue Value="{makeBold}">
-							<Change word.Font="Bold" />
-							<Clicked Handler="{wordClicked}" />
-						</WhileTrue>
-					</Text>
-				</Each>
-			</WrapPanel>
-		</WhileTrue>
+		<StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{gotoPost}">
+			<Each Items="{previewcontent}">
+				<Text Value="{Read paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,12" LoadAsync="True" />
+			</Each>
+		</StackPanel>
 
 	</StackPanel>
 

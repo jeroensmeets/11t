@@ -24,8 +24,6 @@ var timeSince =  Observable( '' );
 
 this.post.onValueChanged( module, function( newValue ) {
 
-	console.log( JSON.stringify( newValue ) );
-
 	if ( 'undefined' != typeof newValue ) {
 
 		timeSince.value = helper.timeSince( newValue.created_at );

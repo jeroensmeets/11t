@@ -11,21 +11,12 @@
 	<ScrollView LayoutMode="PreserveVisual" SnapMinTransform="false">
 		<StackPanel Orientation="Vertical">
 			<ReloadPull />
-			<Each Items="{Read posts}">
-				<WhileTrue Value="{isReblog}">
-					<DockPanel Margin="0,8,0,8">
-						<FaRepost Color="#fff" FontSize="16" Margin="36,0,0,0" Dock="Left" />
-						<StackPanel Orientation="Horizontal" Margin="8,1,0,0">
-							<ParagraphText Color="#fff" FontSize="14" Value="{whodidthis}" Margin="0,0,5,0" />
-							<ParagraphText Color="#fff" FontSize="14">reblogged this post</ParagraphText>
-						</StackPanel>
-					</DockPanel>
-				</WhileTrue>
-				<PostCard router="router" />
+			<Each Items="{posts}">
+				<PostCard post="{}" clickable="false" router="router" />
 			</Each>
 			<WhileFalse Value="{loading}">
 				<WhileEmpty Items="{posts}">
-					<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">No posts found.</Text>
+					<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText">No posts found.</Text>
 				</WhileEmpty>
 			</WhileFalse>
 		</StackPanel>
