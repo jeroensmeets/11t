@@ -9,9 +9,7 @@ I connect to Mastodon on [mastodon.social](https://mastodon.social/), but everyo
 You are absolutely right! I'm building this app from scratch, so please have some patience.
 
 ## iOS ##
-If you use an Apple device, send me an e-mail at jeroen at jeroensmeets dot net. Important: I need you AppleID, i.e. the address that you use for logging into the App Store.
-
-As long as there are spots open for the iOS test group, I'll add you to the beta group.
+Signups for iOS are closed for now. Please hang on, the first public version is right around the corner.
 
 ## Android ##
 For Android, you can [visit this link](https://play.google.com/apps/testing/com.jeroensmeets.mastodon) on your mobile.
