@@ -18,6 +18,9 @@ var rebloggerid = 0;
 var username = '';
 var mentions = [];
 
+var isRepost = Observable( false );
+var isFavourite = Observable( false );
+
 var multipleMedia = Observable( false );
 var mediaSensitive = Observable();
 var timeSince =  Observable( '' );
@@ -26,6 +29,10 @@ this.post.onValueChanged( module, function( newValue ) {
 
 	if ( 'undefined' != typeof newValue ) {
 
+		if ( ( 'notifications' == newValue.posttype ) && ( 'follow' == newValue.type ) ) {
+			return;
+		}
+
 		postid = ( 'notifications' == newValue.posttype ) ? newValue.status.id : newValue.id;
 
 		timeSince.value = helper.timeSince( newValue.created_at );
@@ -33,6 +40,9 @@ this.post.onValueChanged( module, function( newValue ) {
 		userid = newValue.account.id;
 		username = newValue.account.acct;
 		mentions = newValue.mentions;
+
+		isRepost.value = newValue.reposted;
+		isFavourite.value = newValue.favourited;
 
 		mediaSensitive.value = newValue.sensitive;
 
@@ -54,6 +64,7 @@ function rePost( ) {
 	reposting.value = true;
 	api.rePost( postid, _this.post.value.reposted ).then( function() {
 		reposting.value = false;
+		isRepost.value = !isRepost.value;
 	}).catch( function( err ) {
 		console.log( 'error in rePost' );
 		console.log( JSON.stringify( err ) );
@@ -67,6 +78,7 @@ function favouritePost( ) {
 	favouriting.value = true;
 	api.favouritePost( postid, _this.post.value.favourited ).then( function() {
 		favouriting.value = false;
+		isFavourite.value = !isFavourite.value;
 	}).catch( function( err ) {
 		console.log( 'error in favouritePost' );
 		console.log( JSON.stringify( err ) );
@@ -116,8 +128,10 @@ module.exports = {
 	replyToPost: replyToPost,
 	rePost: rePost,
 	reposting: reposting,
+	isRepost: isRepost,
 	favouritePost: favouritePost,
 	favouriting: favouriting,
+	isFavourite: isFavourite,
 	gotoUser: gotoUser,
 	gotoReblogger: gotoReblogger,
 	gotoPost: gotoPost,

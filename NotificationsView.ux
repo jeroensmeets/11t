@@ -1,16 +1,14 @@
 <TransitionPage ux:Class="NotificationsPage">
 	<Router ux:Dependency="router" />
 	<JavaScript File="NotificationsView.js" />
-	<Activated Handler="{setActiveTimeline}" />
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
 		<NavBarTitle>Notifications</NavBarTitle>
 	</AlternateRoot>
 
-	<ScrollView LayoutMode="PreserveVisual" SnapMinTransform="false">
+	<ScrollView LayoutMode="PreserveVisual">
 		<StackPanel Orientation="Vertical">
-
 			<ReloadPull />
 			<Each Items="{posts}">
 				<NotificationCard post="{}" clickable="false" router="router" />

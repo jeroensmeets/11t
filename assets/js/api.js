@@ -9,8 +9,6 @@ var active			= Observable( false );
 
 var HtmlEnt         = require( 'assets/js/he/he.js' );
 
-var oboe			= require( 'oboe' );
-
 var FILE_DATACACHE  = '.posts.cache.json';
 var BASE_URL        = false;
 var AccessToken     = false;
@@ -59,6 +57,7 @@ function loadAPIConnectionData( ) {
 
 	if ( ( false != AccessToken ) && ( false !== BASE_URL ) ) {
 		// no need to load connection settings, already set
+		console.log( 'connection settings loaded from cache' );
 		return true;
 	}
 
@@ -215,137 +214,6 @@ function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
 
 	} );
 
-	// return new Promise( function( resolve, reject ) {
-
-	//     var _bodyArgs = {
-	//         'grant_type'    : 'authorization_code',
-	//         'redirect_uri'  : redirect_uri,
-	//         'code'          : auth_token,
-	//         'client_id'     : client_id,
-	//         'client_secret' : client_secret
-	//     };
-
-	// 	// console.log( JSON.stringify( _bodyArgs ) );
-
-	// 	fetch( BASE_URL + 'oauth/token', {
-	// 		method: 'POST',
-	// 		headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-	// 		body: JSON.stringify( _bodyArgs )
- //    	})
-	// 	.then( function( resp ) {
-
-	// 		if ( 200 == resp.status ) {
-	// 			return resp.json();
-	// 		} else {
-	// 			reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
-	// 		}
-
-	// 	})
-	// 	.then( function( json ) {
-	// 		resolve( json );
-	// 	})
-	// 	.catch( function( err ) {
-	// 		reject( Error( 'Netwerk error: cannot fetch posts (1004)' ) );
-	// 	});
-
-	// });
-
-}
-
-// different attempts to get streamlining working. no luck so far,
-// leaving this here for now
-
-function streamTimelineOtherTest() {
-
-	var request = require('request');
-	var JSONStream = require('JSONStream');
-	var es = require('event-stream');
-
-	request({
-		url: BASE_URL + 'api/v1/streaming/user',
-		method: 'GET',
-		headers: { 'Authorization' : 'Bearer ' + AccessToken }
-	})
-	.pipe( JSONStream.parse( 'rows.*' ) )
-	.pipe( es.mapSync(function (data) {
-		console.error(data);
-		return data;
-	}));
-
-}
-
-function streamTimeline() {
-
-	oboe( {
-		url: BASE_URL + 'api/v1/streaming/user',
-		method: 'GET',
-		headers: { 'Authorization' : 'Bearer ' + AccessToken },
-		protocol: 'https:'
-	} ).node( '*', function( moduleJson, path ) {
-
-		console.log( JSON.stringify( path[0] ) );
-		console.log( JSON.stringify( moduleJson ) );
-
-	} ).done( function() {
-
-		console.log( 'done' );
-
-	});
-
-}
-
-function streamTimelineDefaultOboe() {
-
-	// var http = require( 'http-https' );
-	var oboe = require( 'oboe' );
-
-	// which protocol? TODO move to saveAPIConnectionData()
-	var url = require('url');
-	var urlparts = url.parse( BASE_URL );
-
-	oboe( {
-		url: BASE_URL + 'api/v1/streaming/user',
-		method: 'GET',
-		protocol: urlparts.protocol,
-		headers: { 'Authorization' : 'Bearer ' + AccessToken },
-		cached: false
-	} )
-	.node('!.*', function( moduleJson, path ) {
-
-		console.log( JSON.stringify( path[0] ) );
-		console.log( JSON.stringify( moduleJson ) );
-
-	} );
-
-}
-
-function streamTimelineXhr() {
-
-	var jsonStream		= new XMLHttpRequest();
-
-	jsonStream.onreadystatechange = function( event ) {
-		console.log( 'response received, readyState is ' + this.readyState + ', status is ' + this.status );
-		console.log( 'object', JSON.stringify( event ) );
-		console.log( 'responseText', this.responseText );
-		console.log( 'statusText', this.statusText );
-	};
-
-	jsonStream.onprogress = function( e ) {
-		console.log( 'progress', JSON.stringify( e ) );
-	};
-
-	jsonStream.onerror = function( e ) {
-		console.log( 'error', JSON.stringify( e ) );
-	};
-
-	jsonStream.onabort = function( e ) {
-		console.log( 'abort', JSON.stringify( e ) );
-	};	
-
-	jsonStream.open( 'GET', BASE_URL + 'api/v1/streaming/user' );
-	jsonStream.setRequestHeader('Authorization', 'Bearer ' + AccessToken );
-	jsonStream.send();
-
 }
 
 /**
@@ -355,16 +223,22 @@ function streamTimelineXhr() {
  * load it from API after 3 seconds
  * 
  */
-function setActiveTimeline( _type ) {
+function setActiveTimeline( timelineType, loadFromAPI ) {
 
-	active.value = _type;
+	console.log( 'timeline type: ' + timelineType );
+	console.log( 'loadFromAPI: ' + loadFromAPI );
+
+	active.value = timelineType;
 	loadCurrentTimelineFromCache();
 
-	var Timer = require("FuseJS/Timer");
+	var cacheEmpty = posts[ timelineType ] && ( posts[ timelineType ].length == 0 );
 
-	Timer.create( function() {
+	console.log( 'cache empty? ' + cacheEmpty );
+	if ( loadFromAPI || cacheEmpty ) {
+
 		loadCurrentTimelineFromAPI();
-	}, 3000, false );
+
+	}
 
 }
 
@@ -411,12 +285,6 @@ function loadCurrentTimelineFromCache() {
  */
 function loadTimeline( _type, _id, _postObj ) {
 
-	// if ( 'home' == _type ) {
-	// 	console.log( 'switching to streaming the timeline' );
-	// 	streamTimeline();
-	// 	return;
-	// }
-
 	if ( undefined === posts[ _type ] ) {
 		// TODO probably triggered by splash screen
 		return;
@@ -452,27 +320,24 @@ function loadTimeline( _type, _id, _postObj ) {
 	} )
 	.then( function( json ) {
 
-		loading.value = false;
-
 		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
 		if ( 'postcontext' == _type ) {
 			json.ancestors.push( _postObj );
 			json = json.ancestors.concat( json.descendants );
 		}
 
+		// posts loaded, refresh timeline
 		refreshPosts( _type, json, false );
 
-	} );
+		loading.value = false;
 
-	// .catch( function( err ) {
-	// 	console.log( 'api.loadTimeline caused error' );
-	// 	console.log( JSON.stringify( err ) );
-	// 	loading.value = false;
-	// } );
+	} );
 
 }
 
 function refreshPosts( posttype, jsondata, isfromcache ) {
+
+	console.log( 'refreshing ' + posttype + ' posts, ' + jsondata.length + ' received.' );
 
 	posts[ posttype ].refreshAll(
 		jsondata,
@@ -480,7 +345,7 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 		function( oldItem, newItem ) {
 			return oldItem.id == newItem.id;
 		},
-		// update text
+		// update
 		function( oldItem, newItem ) {
 			oldItem = new MastodonPost( newItem, posttype );
 		},
@@ -490,7 +355,11 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
         }
 	);
 
+	console.log( 'saving the data to cache' );
+
 	Storage.write( posttype + FILE_DATACACHE, JSON.stringify( posts[ posttype ].toArray() ) );
+
+	console.log( 'array now has ' + posts[ posttype ].length + ' items.' );
 
 }
 
@@ -522,12 +391,18 @@ function MastodonPost( data, posttype ) {
 
 	}
 
+	console.log( 1 );
+
 	// strip content clean for timelines
 	this.previewcontent = cleanupContent( this, posttype );
+
+	console.log( 2 );
 
 	if ( 'postcontext' == posttype ) {
 		this.prepcontent = preparePostContent( this );
 	}
+
+	console.log( 3 );
 
 	// template needs info if there is no content to remove content box and just a little white space
 	this.hascontent = this.previewcontent.length > 0 || ( '' != this.spoiler_text );
@@ -745,7 +620,6 @@ function getPostById( _postid ) {
 module.exports = {
 	posts: posts,
 	userprofile: userprofile,
-	streamTimeline: streamTimeline,
 	loadTimeline: loadTimeline,
 	loadUserProfile: loadUserProfile,
 	loadPostContext: loadPostContext,
@@ -812,9 +686,19 @@ function apiFetch( path, options ) {
 
 function cleanupContent( postdata, posttype ) {
 
+	if ( 'follow' == postdata.type ) {
+		return '';
+	}
+
+	console.log( 'cleanupContent ' + 1 );
+
 	var _source = ( 'notifications' == posttype ) ? postdata.status : postdata;
 
+	console.log( JSON.stringify( postdata ) );
+
 	var _text = HtmlEnt.decode( _source.content );
+
+	console.log( 'cleanupContent ' + 2 );
 
 	// remove links to media attachments
 	if ( _source.media_attachments.length ) {
@@ -830,6 +714,8 @@ function cleanupContent( postdata, posttype ) {
 			}
 		}
 	}
+
+	console.log( 'cleanupContent ' + 3 );
 
 	// remove empty paragraphs
 	_text = _text.replace( '<p></p>', '' );
@@ -861,8 +747,6 @@ function cleanupContent( postdata, posttype ) {
 // and should NOT be used on a timeline as it generates memory issues
 function preparePostContent( postdata ) {
 
-	// @<a href=\"http://sn.gunmonkeynet.net/index.php/user/1\">nybill</a> eek, well glad it was finally noticed.
-
 	// replace HTML codes like &amp; and &gt;
 	var _content = HtmlEnt.decode( postdata.content );
 
@@ -886,10 +770,6 @@ function preparePostContent( postdata ) {
 
 	// now remove al HTML tags
 	_content = _content.replace( /<[^>]+>/ig, '' );
-
-	// console.log( ' >>>>>>>>>>>>>>> replaced uris in content with [[[[x' );
-	// console.log( _content );
-	// console.log( ' <<<<<<<<<<<<<<<' );
 
 	var result = [];
 
@@ -918,10 +798,6 @@ function preparePostContent( postdata ) {
 			}
 			var _linkTxt = _uris[ _linkId ].replace( /<[^>]+>/ig, '' );
 
-			// console.log( _uris[ _linkId ] );
-			// console.log( 'link text: ' + _linkTxt );
-			// console.log( 'start char: ' + _charBeforeLink );
-
 			// first: mentions
 			var _mentioner = postdata.mentions.filter( function (obj) { return ( 0 ==  _linkTxt.indexOf( '@' + obj.acct ) ); } );
 			if ( _mentioner.length > 0 ) {
@@ -946,7 +822,6 @@ function preparePostContent( postdata ) {
 
 					// mentions on some (older Statusnet installations, says https://community.highlandarrow.com/notice/469679 )
 					// are a link with an @ before it. TODO One little thing: no user id from the mentions array
-					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- sumtin\'' );
 					result.push( { word: _charBeforeLink + _linkTxt } );
 
 				} else {
@@ -956,7 +831,6 @@ function preparePostContent( postdata ) {
 					var _linkstart = _uris[ _linkId ].indexOf( 'href="' ) + 6;
 					var _linkend = _uris[ _linkId ].indexOf( '"', _linkstart );
 					var _linkUrl = _uris[ _linkId ].substring( _linkstart, _linkend );
-					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- probably regular link' );
 					result.push( { link: true, word: _linkTxt, uri: _linkUrl, makeBold: true } );
 
 				}

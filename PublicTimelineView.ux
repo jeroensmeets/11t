@@ -8,7 +8,7 @@
 		<NavBarTitle>Federated</NavBarTitle>
 	</AlternateRoot>
 
-	<ScrollView LayoutMode="PreserveVisual" SnapMinTransform="false">
+	<ScrollView LayoutMode="PreserveVisual">
 		<StackPanel Orientation="Vertical">
 			<ReloadPull />
 			<Each Items="{posts}">

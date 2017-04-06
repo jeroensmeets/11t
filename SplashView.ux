@@ -2,7 +2,7 @@
 
 	<Router ux:Dependency="router" />
 	<JavaScript File="SplashView.js" />
-	<Activated Handler="{startLoggedInCheck}" />
+	<Activated Handler="{startLoggedInCheck}" Bypass="Never" />
 
 	<DockPanel Background="#e4e4e4">
 		<StatusBarBackground Background="#e4e4e4" />

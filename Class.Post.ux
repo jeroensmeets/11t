@@ -1,4 +1,4 @@
-<StackPanel ux:Class="PostCard" ux:Name="pc" Background="#fff" Margin="0,0,0,6">
+<StackPanel ux:Class="PostCard" ux:Name="pc" Background="#fff" Margin="0,0,0,6" Padding="0,0,0,12">
 	<Router ux:Dependency="router" />
 	<object ux:Property="post" />
 
@@ -10,7 +10,7 @@
 	<WhileTrue Value="{mediaSensitive}">
 		<StackPanel ux:Name="mediaMessageHidden" Orientation="Horizontal" Alignment="Center" HitTestMode="LocalBoundsAndChildren">
 			<FaLock Color="palette.clrIconDimmed" FontSize="18" Margin="0,16,4,0" />
-			<Text Value="media marked sensitive" Font="Italic" FontSize="14" TextColor="palette.clrTextDimmed" Margin="6,14,0,0" />
+			<TextView Value="media marked sensitive" Font="Italic" FontSize="14" TextColor="palette.clrTextDimmed" Margin="6,14,0,0" />
 			<Clicked>
 				<Set mediaContainer.Visibility="Visible" />
 				<Set mediaMessageHidden.Visibility="Collapsed" />
@@ -138,7 +138,7 @@
 						</FaRepost>
 						<Text FontSize="13" Color="palette.clrIconDimmed" Font="Regular" Value="{reblogs_count}" />
 						<Clicked Handler="{rePost}" />
-						<WhileTrue Value="{reposted}">
+						<WhileTrue Value="{isRepost}">
 							<Change icoreblogged.Color="palette.clrHighlight" />
 						</WhileTrue>
 					</StackPanel>
@@ -152,7 +152,7 @@
 					</FaStar>
 					<Text FontSize="13" Color="palette.clrIconDimmed" Font="Regular" Value="{favourites_count}" />
 					<Clicked Handler="{favouritePost}" />
-					<WhileTrue Value="{favourited}">
+					<WhileTrue Value="{isFavourite}">
 						<Change icostar.Color="palette.clrHighlight" />
 					</WhileTrue>
 				</StackPanel>
@@ -227,7 +227,7 @@
 	</WhileTrue>
 
 	<WhileTrue Value="{isRepost}">
-		<Panel Alignment="Right" Margin="0,0,24,8" Clicked="{gotoReblogger}">
+		<Panel Alignment="Right" Margin="0,0,24,0" Clicked="{gotoReblogger}">
 			<Text Value="reblogged by {whoacct}" TextColor="palette.clrText" Font="Italic" FontSize="13" />
 		</Panel>
 	</WhileTrue>

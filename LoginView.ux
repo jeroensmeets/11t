@@ -1,7 +1,7 @@
 <TransitionPage ux:Class="LoginPage">
 	<Router ux:Dependency="router" />
 	<JavaScript File="LoginView.js" />
-	<Activated Handler="{setOAuthUri}" />
+	<Activated Handler="{setOAuthUri}" Bypass="Never" />
 
 	<NativeViewHost ux:Name="_nativeViewHost" Visibility="{webviewVisible}">
     	<WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}">

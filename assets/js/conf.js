@@ -1,3 +1,3 @@
 module.exports = {
-  redirect_uri    : "http://mastodon.jeroensmeets.net/"
+  redirect_uri    : "https://mastodon.jeroensmeets.net/"
 }

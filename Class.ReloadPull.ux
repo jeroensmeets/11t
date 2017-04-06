@@ -1,5 +1,9 @@
 <Panel ux:Name="showLoading" ux:Class="ReloadPull" ClipToBounds="true" Height="0" MinHeight="0">
 
+	<LayoutAnimation>
+		<Resize Y="1" RelativeTo="SizeChange" Duration="0.1" />
+	</LayoutAnimation>
+
 	<FaRefresh Color="palette.clrIcon" FontSize="14" Alignment="Center">
 		<WhileActive>
 			<Spin Frequency="1" />
@@ -15,7 +19,7 @@
 	    </State>
 	    <State ux:Binding="Loading">
 	        <!-- active while loading -->
-	        <Change showLoading.Height="32" Easing="QuadraticInOut" EasingBack="QuadraticInOut" DurationBack=".75" />
+	        <!-- <Set showLoading.Height="32" /> -->
 	    </State>
 	</PullToReload>
 

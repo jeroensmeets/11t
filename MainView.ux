@@ -58,7 +58,7 @@
 			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Background="#1a9df8">
 
 				<WhileCanGoBack>
-					<Panel ux:Name="backButton" Dock="Left" Padding="8,0,0,0" HitTestMode="LocalBounds">
+					<Panel ux:Name="backButton" Padding="8,0,0,0" HitTestMode="LocalBounds" Alignment="Left">
 						<FaGoBack Color="#fff" FontSize="20" Dock="Left" Margin="4,8,0,0" />
 						<AddingAnimation>
 							<Change backButton.Opacity="0" Duration=".3" />
@@ -72,9 +72,19 @@
 					</Panel>
 				</WhileCanGoBack>
 
-				<Panel HitTestMode="LocalBounds" Clicked="{goWrite}" Padding="0,0,16,0" Dock="Right">
-					<FaWrite Color="#fff" FontSize="20" Alignment="Center" />
-				</Panel>
+				<StackPanel Orientation="Horizontal" Layer="Background" Alignment="Right">
+					<Panel Padding="0,0,16,0" Dock="Right">
+						<FaRefresh ux:Name="loadingIcon" Color="#1a9df8" FontSize="16" Alignment="Center">
+							<WhileTrue Value="{loading}">
+								<Spin Frequency="1" />
+								<Change loadingIcon.Color="#fff" />
+							</WhileTrue>
+						</FaRefresh>
+					</Panel>
+					<Panel HitTestMode="LocalBounds" Clicked="{goWrite}" Padding="0,0,12,0">
+						<FaWrite Color="#fff" FontSize="20" Alignment="Center" />
+					</Panel>
+				</StackPanel>
 
 			</DockPanel>
 		</StackPanel>

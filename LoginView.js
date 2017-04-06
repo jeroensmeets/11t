@@ -50,11 +50,11 @@ function webViewUrlChanged( ) {
 	var uriparts = api.parseUri( oAuthUri.value );
 	var redirecturiparts = api.parseUri( conf.redirect_uri );
 
-	console.log( '+++++++++++++' );
-	console.log( '+ url in webview has changed' );
-	console.log( '+ visibility of webview is ' + webviewVisible.value );
-	console.log( '+ host of webview is ' + uriparts.host );
-	console.log( '+++++++++++++' );
+	// console.log( '+++++++++++++' );
+	// console.log( '+ url in webview has changed' );
+	// console.log( '+ visibility of webview is ' + webviewVisible.value );
+	// console.log( '+ host of webview is ' + uriparts.host );
+	// console.log( '+++++++++++++' );
 
 	if ( redirecturiparts.host != uriparts.host ) {
 		// returning as host is not the redirect_uri set in assets/js/conf.js
@@ -96,8 +96,10 @@ function webViewUrlChanged( ) {
 			// "expires_in":7200,
 			// "refresh_token":"f2188c4165d912524e04c6496d10f06803cc08ed50271a0b0a73061e3ac1c06c",
 			// "scope":"public"}
-			console.log( 'received access token data: ' + JSON.stringify( access_token ) );
+			// console.log( 'received access token data: ' + JSON.stringify( access_token ) );
 			api.saveAPIConnectionData( ClientIdSecret.baseurl, ClientIdSecret.id, ClientIdSecret.secret, access_token.access_token );
+
+			api.setActiveTimeline( 'home' );
 			router.goto( 'home' );
 
 		}).catch( function( error ) {

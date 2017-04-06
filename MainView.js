@@ -7,14 +7,17 @@ function goWrite() {
 }
 
 function goHome() {
+	api.setActiveTimeline( 'home', false );
 	gotoPage( 'home' );
 }
 
 function goNotifications() {
+	api.setActiveTimeline( 'notifications', false );
 	gotoPage( 'notifications' );
 }
 
 function goPublic() {
+	api.setActiveTimeline( 'publictimeline', false );
 	gotoPage( 'publictimeline' );
 }
 
@@ -36,10 +39,10 @@ function gotoPage( _pageid, _pushit ) {
 
 }
 
-var Lifecycle = require('FuseJS/Lifecycle');
-Lifecycle.on("enteringInteractive", function() {
-	// app activated
-});
+// var Lifecycle = require('FuseJS/Lifecycle');
+// Lifecycle.on("enteringInteractive", function() {
+// 	// app activated
+// });
 
 module.exports = {
 	goHome: goHome,

@@ -15,8 +15,10 @@ function startLoggedInCheck() {
 
 	api.loadAPIConnectionDataAsync()
 		.then( function( result ) {
+			console.log( result );
 			if ( 'ok' == result ) {
-				setTimeout( function() { router.goto( 'home' ); }, 2000 );
+				api.setActiveTimeline( 'home', false );
+				router.goto( 'home' );
 			} else {
 				showLoginForm();
 			}
@@ -68,8 +70,7 @@ function startOAuth() {
 			api.saveAPIConnectionData( baseurl.value, credentials.id, credentials.secret, accesstoken.access_token );
 
 			// step 4: get home timeline and then go home!
-			api.setActiveTimeline( 'home' );
-			api.loadCurrentTimelineFromAPI();
+			api.setActiveTimeline( 'home', true );
 			router.goto( 'home' );
 
 		});

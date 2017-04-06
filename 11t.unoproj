@@ -14,7 +14,7 @@
 	"Description": "An app to connect to Mastodon",
 	"Copyright": "Run with it!",
 	"Version": "1.0",
-	"VersionCode": 13,
+	"VersionCode": 14,
 	"Mobile": {
 		"Orientations": "Portrait"
 	},
@@ -41,9 +41,9 @@
 		"PreviewPackage": "com.jeroensmeets.mastodon.preview",
 		"Key": {
 			"Alias": "application",
-			"AliasPassword": "CMn4HoppGNffxWR6f92oQ$HG",
+			"AliasPassword": "CMn4HoppGNffxWR6f92oQ\\$HG",
 			"Store": "release.keystore",
-			"StorePassword": "CMn4HoppGNffxWR6f92oQ$HG"
+			"StorePassword": "CMn4HoppGNffxWR6f92oQ\\$HG"
 		},
 		"Icons": {
 			"LDPI": "assets/images/android/ldpi/ic_launcher.png",
@@ -53,12 +53,5 @@
 			"XXHDPI": "assets/images/android/xxhdpi/ic_launcher.png",
 			"XXXHDPI": "assets/images/android/xxxhdpi/ic_launcher.png"
 		}
-	},
-	"Projects": [
-		"NPM-Packages/11t_modules.unoproj"
-	],
-	"Excludes": [
-		"node_modules",
-		"NPM-Packages"
-	]
+	}
 }
