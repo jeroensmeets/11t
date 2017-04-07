@@ -26,8 +26,16 @@ You need the brilliant [FuseTools](https://www.fusetools.com/) and the code in t
 
 Font: [Noto](https://www.google.com/get/noto/).
 
-The elephant in the room: [Tineke Meirink](https://www.tinekemeirink.nl/).
+Drawing of blue elephant: [Tineke Meirink](https://www.tinekemeirink.nl/).
 
 ### Contact ###
 
 I'm [@jeroensmeets@mastodon.social](https://mastodon.social/web/accounts/8779). And also on that dinosaur called Twitter.
+
+### Screenshots ###
+
+![Splashscreen screenshot](assets/images/store/screenshot_notifications.png?raw=true "Splashscreen screenshot")
+
+![Timeline screenshot](assets/images/store/screenshot_timeline.png?raw=true "Timeline screenshot")
+
+![Notifications screenshot](assets/images/store/screenshot_notifications.png?raw=true "Notifications screenshot")
