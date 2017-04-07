@@ -16,6 +16,11 @@ function goNotifications() {
 	gotoPage( 'notifications' );
 }
 
+function goFavourites() {
+	api.setActiveTimeline( 'favourites', false );
+	gotoPage( 'favourites' );
+}
+
 function goPublic() {
 	api.setActiveTimeline( 'publictimeline', false );
 	gotoPage( 'publictimeline' );
@@ -47,6 +52,7 @@ function gotoPage( _pageid, _pushit ) {
 module.exports = {
 	goHome: goHome,
 	goNotifications: goNotifications,
+	goFavourites: goFavourites,
 	goWrite: goWrite,
 	goPublic: goPublic,
 	loading: api.loading,

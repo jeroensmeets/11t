@@ -21,6 +21,7 @@ var posts = {
 	home            : Observable(),
 	notifications   : Observable(),
 	publictimeline  : Observable(),
+	favourites		: Observable(),
 	user            : Observable(),
 	postcontext		: Observable()
 }
@@ -301,6 +302,9 @@ function loadTimeline( _type, _id, _postObj ) {
 		case 'notifications':
 			endpoint = 'api/v1/notifications';
 			break;
+		case 'favourites':
+			endpoint = '/api/v1/favourites';
+			break;
 		case 'user':
 			posts.user.clear();
 			endpoint = 'api/v1/accounts/' + _id + '/statuses';
@@ -324,10 +328,10 @@ function loadTimeline( _type, _id, _postObj ) {
 		// console.log( JSON.stringify( json ) );
 
 		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
-		// if ( 'postcontext' == _type ) {
-		// 	json.ancestors.push( _postObj );
-		// 	json = json.ancestors.concat( json.descendants );
-		// }
+		if ( 'postcontext' == _type ) {
+			json.ancestors.push( _postObj );
+			json = json.ancestors.concat( json.descendants );
+		}
 
 		// posts loaded, refresh timeline
 		refreshPosts( _type, json, false );

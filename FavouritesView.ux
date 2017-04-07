@@ -1,0 +1,24 @@
+<TransitionPage ux:Class="FavouritesPage">
+	<Router ux:Dependency="router" />
+	<JavaScript File="FavouritesView.js" />
+
+	<Visual ux:Dependency="TopNavBar" />
+	<AlternateRoot ParentNode="TopNavBar">
+		<NavBarTitle>Favourites</NavBarTitle>
+	</AlternateRoot>
+
+	<ScrollView LayoutMode="PreserveVisual">
+		<StackPanel Orientation="Vertical">
+			<ReloadPull />
+			<Each Items="{posts}">
+				<PostCard post="{}" clickable="false" router="router" />
+			</Each>
+			<WhileFalse Value="{loading}">
+				<WhileEmpty Items="{posts}">
+					<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText">No favourites found.</Text>
+				</WhileEmpty>
+			</WhileFalse>
+		</StackPanel>
+	</ScrollView>
+
+</TransitionPage>

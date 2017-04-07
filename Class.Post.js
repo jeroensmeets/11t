@@ -363,6 +363,7 @@ function preparePostContent( postdata ) {
 module.exports = {
 
 	accountData: accountData,
+	timeSince: timeSince,
 
 	hasContent: hasContent,
 	multipleMedia: multipleMedia,
@@ -391,15 +392,6 @@ module.exports = {
 	wordClicked: wordClicked,
 
 };
-
-/*
-	multipleMedia: multipleMedia,
-	timeSince: timeSince,
-	cleanContent: cleanContent,
-	preparePostContent: preparePostContent
-*/
-
-
 
 /*
 function MastodonPost( data, posttype ) {
