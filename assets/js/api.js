@@ -320,24 +320,30 @@ function loadTimeline( _type, _id, _postObj ) {
 	} )
 	.then( function( json ) {
 
+		console.log( 'returned from apiFetch back in api.loadTimeline' );
+		// console.log( JSON.stringify( json ) );
+
 		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
-		if ( 'postcontext' == _type ) {
-			json.ancestors.push( _postObj );
-			json = json.ancestors.concat( json.descendants );
-		}
+		// if ( 'postcontext' == _type ) {
+		// 	json.ancestors.push( _postObj );
+		// 	json = json.ancestors.concat( json.descendants );
+		// }
 
 		// posts loaded, refresh timeline
 		refreshPosts( _type, json, false );
 
 		loading.value = false;
 
-	} );
+	} )
+	.catch( function( err ) {
+		console.log( 'returned from apiFetch back in api.loadTimeline with error: ' );
+		console.log( JSON.stringify( err ) );
+		loading.value = false;
+	});
 
 }
 
 function refreshPosts( posttype, jsondata, isfromcache ) {
-
-	console.log( 'refreshing ' + posttype + ' posts, ' + jsondata.length + ' received.' );
 
 	posts[ posttype ].refreshAll(
 		jsondata,
@@ -347,67 +353,15 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 		},
 		// update
 		function( oldItem, newItem ) {
-			oldItem = new MastodonPost( newItem, posttype );
+			oldItem = newItem;
 		},
 		// add new
 		function( newItem ) {
-			return new MastodonPost( newItem, posttype );
+			return newItem;
         }
 	);
 
-	console.log( 'saving the data to cache' );
-
 	Storage.write( posttype + FILE_DATACACHE, JSON.stringify( posts[ posttype ].toArray() ) );
-
-	console.log( 'array now has ' + posts[ posttype ].length + ' items.' );
-
-}
-
-function MastodonPost( data, posttype ) {
-
-	this.posttype = posttype;
-
-	this.isRepost = ( null !== data.reblog ) && ( 'notifications' != posttype );
-
-	if ( this.isRepost ) {
-
-		// account details for user that did the repost
-		this.whoacct = data.account.acct;
-		this.whoname = data.account.display_name;
-		this.whoavatar = data.account.avatar;
-		this.whoid = data.account.id;
-
-		// copy original post data
-		for ( var i in data.reblog ) {
-			this[ i ] = data.reblog[ i ];
-		}
-
-	} else {
-
-		// copy post data
-		for ( var i in data ) {
-			this[ i ] = data[ i ];
-		}
-
-	}
-
-	console.log( 1 );
-
-	// strip content clean for timelines
-	this.previewcontent = cleanupContent( this, posttype );
-
-	console.log( 2 );
-
-	if ( 'postcontext' == posttype ) {
-		this.prepcontent = preparePostContent( this );
-	}
-
-	console.log( 3 );
-
-	// template needs info if there is no content to remove content box and just a little white space
-	this.hascontent = this.previewcontent.length > 0 || ( '' != this.spoiler_text );
-
-	// console.log( JSON.stringify( this ) );
 
 }
 
@@ -664,180 +618,46 @@ function apiFetch( path, options ) {
 
 	}
 
-	// Fetch the resource and parse the response as JSON
-	return fetch( url, options )
-		.then( function( response ) {
+	// fetch has no timeout, wrap it in a promise
+	// https://www.fusetools.com/community/forums/show_and_tell/fetch_timeout
+	var FETCH_TIMEOUT = 5000;
+	return new Promise( function( resolve, reject ) {
 
-			// console.log( 'API path: return status ' + response.status );
-			if ( 401 == response.status ) {
+		var timeout = setTimeout(function() {
+			reject( new Error( 'Request timed out' ) );
+		}, FETCH_TIMEOUT );
 
-				// not authorized
-				logOut();
+		fetch( url, options )
+			.then( function( response ) {
 
-			} else {
-
-				return response.json();
-
-			}
-
-		} );
-
-}
-
-function cleanupContent( postdata, posttype ) {
-
-	if ( 'follow' == postdata.type ) {
-		return '';
-	}
-
-	console.log( 'cleanupContent ' + 1 );
-
-	var _source = ( 'notifications' == posttype ) ? postdata.status : postdata;
-
-	console.log( JSON.stringify( postdata ) );
-
-	var _text = HtmlEnt.decode( _source.content );
-
-	console.log( 'cleanupContent ' + 2 );
-
-	// remove links to media attachments
-	if ( _source.media_attachments.length ) {
-
-		var _uris = helper.getUrisFromText( _text );
-
-		if ( _uris && ( _uris.length > 0 ) ) {
-			for ( var i in _uris ) {
-				var _cleanupuri = _uris[ i ].match( /https?:([^"']+)/ig );
-				if ( _source.media_attachments.some( function (obj) { return ( _cleanupuri.indexOf( obj.text_url ) > -1 ); } ) ) {
-					_text = _text.replace( _uris[ i ], '' );
-				}
-			}
-		}
-	}
-
-	console.log( 'cleanupContent ' + 3 );
-
-	// remove empty paragraphs
-	_text = _text.replace( '<p></p>', '' );
-
-	if ( '' == _text.toLowerCase() ) {
-		return [];
-	}
-
-	// get paragraphs, ignore last empty one
-	var paragraphs = _text.split( '</p>' );
-	paragraphs.splice( -1, 1 );
-
-	var result = [];
-	for ( var i in paragraphs ) {
-		var paragraph = paragraphs[ i ].replace( "<p>", "" );
-		result.push( { paragraph: paragraph.replace( /<[^>]+>/ig, '' ) } );
-	}
-
-	// in case content has no paragraphs
-	if ( 0 == result.length ) {
-		result.push( { paragraph: _text.replace( /<[^>]+>/ig, '' ) } );
-	}
-
-	return result;
-
-}
-
-// the result of this function is for the view of a single post
-// and should NOT be used on a timeline as it generates memory issues
-function preparePostContent( postdata ) {
-
-	// replace HTML codes like &amp; and &gt;
-	var _content = HtmlEnt.decode( postdata.content );
-
-	// paragraphs
-
-	// last closing </p> needs no replacement
-	_content = _content.replace(new RegExp('<\/p>$'), '');
-
-	// other closing </p> need some breathing room (for now a placeholder)
-	_content = _content.replace( "</p>", " ]]]] " );
-	// opening <p> can be removed
-	_content = _content.replace( "<p>", "" );
-
-	// temporary replace urls to prevent splitting on spaces in linktext
-	var _uris = helper.getUrisFromText( _content );
-	if ( _uris && ( _uris.length > 0 ) ) {
-		for ( var i in _uris ) {
-			_content = _content.replace( _uris[ i ], '[[[[' + i );
-		}
-	}
-
-	// now remove al HTML tags
-	_content = _content.replace( /<[^>]+>/ig, '' );
-
-	var result = [];
-
-	var _words = _content.split( /\s/g );
-
-	for ( var i in _words ) {
-
-		if ( _words[ i ].indexOf( ']]]]' ) > -1 ) {
-
-			result.push( { word: '', clear: true } );
-
-		} else if ( -1 === _words[ i ].indexOf( '[[[[' ) ) {
-
-			// this is not a link, add it as a word
-			// click event in Part.PostCard can send it to the post detail screen
-			result.push( { word: _words[ i ] } );
-
-		} else {
-
-			// link found! but: what kind of link?
-			// bug fix: if e.g. a mention links to another server, it's a link with a @ before it
-			var _charBeforeLink = ( '[[[[' == _words[ i ].substring( 1, 5 ) ) ? _words[ i ].substring( 0, 1 ) : '';
-			var _linkId = Number.parseInt( _words[ i ].match(/\d/g).join('') );
-			if ( !_uris[ _linkId ] ) {
-				continue;
-			}
-			var _linkTxt = _uris[ _linkId ].replace( /<[^>]+>/ig, '' );
-
-			// first: mentions
-			var _mentioner = postdata.mentions.filter( function (obj) { return ( 0 ==  _linkTxt.indexOf( '@' + obj.acct ) ); } );
-			if ( _mentioner.length > 0 ) {
-				// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- mention' );
-				result.push( { mention: true, word: _linkTxt, makeBold: true, userid: _mentioner[0].id } );
-			} else {
-
-				// not a mention. maybe a hashtag?
-				var _tag = postdata.tags.filter( function (obj) { return '#' + obj.name === _linkTxt; } );
-				if ( _tag.length > 0 ) {
-
-					// TODO add hashtags
-					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- hashtag' );
-					result.push( { word: _linkTxt } );
-
-				} else if ( postdata.media_attachments.some( function (obj) { return _linkTxt == obj.text_url; } ) ) {
-
-					// do not show the urls for media_attachments in the content
-					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- media attachment: ' + _linkTxt );
-
-				} else if ( ( '@' == _charBeforeLink ) || ( '#' == _charBeforeLink ) ) {
-
-					// mentions on some (older Statusnet installations, says https://community.highlandarrow.com/notice/469679 )
-					// are a link with an @ before it. TODO One little thing: no user id from the mentions array
-					result.push( { word: _charBeforeLink + _linkTxt } );
-
+				clearTimeout( timeout );
+				if ( response && 200 == response.status ) {
+					return response.json();
+				} else if ( 401 == response.status ) {
+					// not authorized
+					logOut();
 				} else {
-
-					// everything else not true. probably just a link
-					// click event sends it to the system browser
-					var _linkstart = _uris[ _linkId ].indexOf( 'href="' ) + 6;
-					var _linkend = _uris[ _linkId ].indexOf( '"', _linkstart );
-					var _linkUrl = _uris[ _linkId ].substring( _linkstart, _linkend );
-					result.push( { link: true, word: _linkTxt, uri: _linkUrl, makeBold: true } );
-
+					reject( new Error( 'Response error' ) );
 				}
-			}
-		}
-	}
+			} )
+			.then( function( responseObject ) {
+				// process results
+				resolve( responseObject );
+			})
+			.catch( function( err ) {
+				reject( err );
+			});
 
-	return result;
+	});
+
+	// .then(function( result ) {
+	// 	// request succeed
+	// 	resolve( result );
+	// 	console.log( 'request succeeded' );
+	// })
+	// .catch(function( err ) {
+	// 	// error: response error, request timeout or runtime error
+	// 	console.log( 'error in API call: ' + JSON.stringify( err ) );
+	// });
 
 }

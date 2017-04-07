@@ -1,7 +1,6 @@
 <TransitionPage ux:Class="PublicTimelinePage">
 	<Router ux:Dependency="router" />
 	<JavaScript File="PublicTimelineView.js" />
-	<Activated Handler="{setActiveTimeline}" />
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">

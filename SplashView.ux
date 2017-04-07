@@ -4,39 +4,43 @@
 	<JavaScript File="SplashView.js" />
 	<Activated Handler="{startLoggedInCheck}" Bypass="Never" />
 
-	<DockPanel Background="#e4e4e4">
+<!-- 	<Panel Background="#e4e4e4">
 		<StatusBarBackground Background="#e4e4e4" />
-		<iOS.StatusBarConfig Style="Dark" Animation="Slide" IsVisible="True" />
-		<StackPanel Orientation="Vertical" Dock="Top" Margin="16,64,0,0" Visibility="{loginFormVisible}">
+		<iOS.StatusBarConfig Style="Dark" Animation="Slide" IsVisible="True" /> -->
+		<StackPanel Orientation="Vertical" Dock="Top" Padding="16,64,0,0" Visibility="{loginFormVisible}">
 
 			<TextView Font="Regular" FontSize="15" Margin="4,16,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
 				Value="Welcome to 11t, your connection to Mastodon. Please specify the server you would like to use." />
-			<TextInput ux:Name="inputbaseurl" Value="{baseurl}" PlaceholderColor="#ccc" TextColor="#fff" TextWrapping="Wrap" Padding="12" Margin="0,0,36,24" Background="#1a9df8">
-				<WhileString Test="IsEmpty">
-					<Text TextWrapping="Wrap" Margin="4">Url of Mastodon instance</Text>
-				</WhileString>
+			<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#fff" TextWrapping="Wrap"  Height="40" Padding="2" Margin="0,0,36,24" Background="#1a9df8" TextAlignment="Center">
+				<Rectangle Layer="Background">
+					<Stroke Width="1" Color="#fff" />
+				</Rectangle>
 			</TextInput>
-			<Button Background="#1a9df8" Width="112" Padding="12" Alignment="Left">
-				<Text Value="Login" Color="#fff" />
+			<Button Background="#1a9df8" Width="112" Height="40" Padding="2" Alignment="Left">
+				<Text Value="Login" Color="#fff" Alignment="Center" />
 				<Clicked>
 					<Callback Handler="{startOAuth}" />
 				</Clicked>
+				<Rectangle Layer="Background">
+					<Stroke Width="1" Color="#fff" />
+				</Rectangle>
 			</Button>
 			<WhileTrue Value="{showError}">
 				<TextView Font="Italic" FontSize="15" Margin="16,16,0,0" Value="{error}" TextColor="palette.clrHighlight" />
 			</WhileTrue>
+
+			<ImageFill File="assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" />
+
 		</StackPanel>
 
-		<StackPanel ux:Name="bottompanel" Orientation="Vertical" Dock="Bottom">
+<!-- 
+		<Panel ux:Name="bottompanel" Dock="Bottom">
 			<WhileKeyboardVisible>
 				<Change bottompanel.Opacity=".2" />
 			</WhileKeyboardVisible>
-			<StackPanel Orientation="Horizontal">
-				<Image File="assets/images/logo-11t-transparent.png" Width="200" Height="200" Alignment="Left" Margin="0,0,24,0" Clicked="{startLoggedInCheck}"></Image>
-				<Text Value="11t" Color="palette.clrIcon" Font="Bold" FontSize="51" Alignment="Center" />
-			</StackPanel>
-		</StackPanel>
-
-	</DockPanel>
+			<Text Value="11t" Color="#fff" Font="Bold" FontSize="51" Alignment="Left" />
+		</Panel> -->
+ 
+<!-- 	</DockPanel> -->
 
 </TransitionPage>

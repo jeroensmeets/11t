@@ -5,6 +5,6 @@ function setActiveTimeline() {
 }
 
 module.exports = {
-	setActiveTimeline: setActiveTimeline,
-	posts: api.posts.notifications
+	posts: api.posts.notifications,
+	setActiveTimeline: setActiveTimeline
 }
