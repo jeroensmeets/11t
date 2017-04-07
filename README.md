@@ -34,8 +34,8 @@ I'm [@jeroensmeets@mastodon.social](https://mastodon.social/web/accounts/8779). 
 
 ### Screenshots ###
 
-![Splashscreen screenshot](assets/images/store/screenshot_notifications.png?raw=true "Splashscreen screenshot")
+![Splashscreen screenshot](assets/images/store/resized/screenshot_notifications.png?raw=true "Splashscreen screenshot")
 
-![Timeline screenshot](assets/images/store/screenshot_timeline.png?raw=true "Timeline screenshot")
+![Timeline screenshot](assets/images/store/resized/screenshot_timeline.png?raw=true "Timeline screenshot")
 
-![Notifications screenshot](assets/images/store/screenshot_notifications.png?raw=true "Notifications screenshot")
+![Notifications screenshot](assets/images/store/resized/screenshot_notifications.png?raw=true "Notifications screenshot")
