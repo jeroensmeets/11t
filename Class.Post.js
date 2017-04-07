@@ -10,9 +10,9 @@ var _this = this;
 var favouriting = Observable( false );
 var reposting = Observable( false );
 
-var post = this.Parameter.map( function( param ) {
-	return param.post;
-} );
+// var post = this.Parameter.map( function( param ) {
+// 	return param.post;
+// } );
 
 var isRepost = Observable( false );
 
@@ -21,6 +21,7 @@ var clickableContent = Observable();
 var clickableBio = Observable();
 
 var postid = 0;
+var postObj = false;
 var userid = 0;
 var rebloggerId = 0;
 var username = '';
@@ -88,6 +89,7 @@ this.post.onValueChanged( module, function( newValue ) {
 
 		hasContent.value = cleanContent.length > 0 || ( '' != status.spoiler_text );
 
+		postObj = status;
 	}
 
 } );
@@ -128,7 +130,7 @@ function favouritePost( ) {
 
 function gotoPost( ) {
 
-	router.push( "postcontext", { postid: postid } );
+	router.push( "postcontext", { post: postObj } );
 
 }
 

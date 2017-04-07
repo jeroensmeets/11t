@@ -1,20 +1,19 @@
 var api = require( 'assets/js/api' );
 
-var postid = this.Parameter.map( function( param ) {
-  return param.postid;
+var post = this.Parameter.map( function( param ) {
+  return param.post;
 });
 
-var postlength = api.posts.postcontext.length;
-var posts = api.posts.postcontext.map( function( item, index ) {
-    item.last = ( index == postlength - 1 );
-    return item;
-});
+post.onValueChanged( module, function( newValue ) {
 
-postid.addSubscriber( function() {
-	api.loadPostContext( postid.value );
+	if ( 'undefined' != typeof newValue ) {
+		api.loadPostContext( newValue );
+	}
+
 });
 
 module.exports = {
-	posts: posts,
+	// posts: posts,
+	posts: api.posts.postcontext,
 	loading: api.loading
 };

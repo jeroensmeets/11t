@@ -58,7 +58,6 @@ function loadAPIConnectionData( ) {
 
 	if ( ( false != AccessToken ) && ( false !== BASE_URL ) ) {
 		// no need to load connection settings, already set
-		console.log( 'connection settings loaded from cache' );
 		return true;
 	}
 
@@ -234,7 +233,6 @@ function setActiveTimeline( timelineType, loadFromAPI ) {
 
 	var cacheEmpty = posts[ timelineType ] && ( posts[ timelineType ].length == 0 );
 
-	console.log( 'cache empty? ' + cacheEmpty );
 	if ( loadFromAPI || cacheEmpty ) {
 
 		loadCurrentTimelineFromAPI();
@@ -245,11 +243,8 @@ function setActiveTimeline( timelineType, loadFromAPI ) {
 
 function loadCurrentTimelineFromAPI() {
 
-	console.log( 'loading posts for timeline ' + active.value );
-
 	if ( loading.value ) {
 		// api is already out to fetch posts
-		console.log( 'api request is underway, not starting another fetch request' );
 		return;
 	}
 
@@ -281,7 +276,7 @@ function loadCurrentTimelineFromCache() {
  * 
  * @param  {string}		_type		which timeline to load
  * @param  {integer}	_id			userid when _type is `user`, or postid when _type is `postcontext`
- * @param  {object}		_postObj	current post object when _type is `postcontext`
+ * @param  {object}		_postObj	post shown in PostContext screen
  * @return no return value
  */
 function loadTimeline( _type, _id, _postObj ) {
@@ -324,13 +319,11 @@ function loadTimeline( _type, _id, _postObj ) {
 	} )
 	.then( function( json ) {
 
-		console.log( 'returned from apiFetch back in api.loadTimeline' );
-		// console.log( JSON.stringify( json ) );
-
 		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
 		if ( 'postcontext' == _type ) {
 			json.ancestors.push( _postObj );
 			json = json.ancestors.concat( json.descendants );
+			json[ json.length - 1 ][ 'last' ] = true;
 		}
 
 		// posts loaded, refresh timeline
@@ -539,16 +532,11 @@ function rePost( _postid, _currentstatus ) {
 
 }
 
-function loadPostContext( _postid ) {
+function loadPostContext( post ) {
 
 	posts.postcontext.clear();
 
-	var _post = getPostById( _postid );
-
-	if ( false !== _post ) {
-		// posts.postcontext.add( _post );
- 		loadTimeline( 'postcontext', _post.id, _post );
-	}
+ 	loadTimeline( 'postcontext', post.id, post );
 
 }
 
@@ -604,8 +592,6 @@ function apiFetch( path, options ) {
 
 	var url = encodeURI( BASE_URL + path );
 
-	// console.log( 'apiFetch: ' + url );
-
 	if ( options === undefined ) {
 		options = {};
 	}
@@ -649,6 +635,7 @@ function apiFetch( path, options ) {
 				resolve( responseObject );
 			})
 			.catch( function( err ) {
+				console.log( 'apiFetch: error ' + JSON.stringify( err ) );
 				reject( err );
 			});
 
