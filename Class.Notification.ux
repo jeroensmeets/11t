@@ -70,7 +70,7 @@
 
 		<StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{gotoPost}">
 			<Each Items="{cleanContent}">
-				<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Italic" Margin="0,0,8,12"/>
+				<Text ux:Name="notifContent" Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,12" />
 			</Each>
 		</StackPanel>
 

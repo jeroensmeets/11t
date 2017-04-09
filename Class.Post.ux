@@ -29,13 +29,13 @@
 			<NavigationMotion GotoEasing="CircularOut" GotoDuration="0.3" />
 		</LinearNavigation>
 		<SwipeNavigate SwipeDirection="Left" />
-		<Each Items="{Read media_attachments}">
+		<Each Items="{media}">
     		<ImageGallery>
     			<WhileString Value="{type}" Equals="image">
     				<Panel Height="280">
     					<FaLoading ux:Name="imageIsLoading" Color="palette.clrIconDimmed" FontSize="54" Alignment="Center" Layer="Overlay" Visibility="Collapsed">
     						<WhileActive>
-    							<Spin Frequency=".4" />
+    							<Spin Frequency="1" />
     						</WhileActive>
     					</FaLoading>
 

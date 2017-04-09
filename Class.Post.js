@@ -38,6 +38,7 @@ var userHasFavourited = Observable( false );
 
 var cleanContent = Observable();
 var clickableContent = Observable();
+var media = Observable();
 
 var hasContent = Observable( false );
 
@@ -52,6 +53,8 @@ this.post.onValueChanged( module, function( newValue ) {
 
 			if ( 'follow' == newValue.type ) {
 
+				userid = newValue.account.id;
+				username = newValue.account.acct;
 				clickableBio = prepareBio( newValue.account.note );
 				return;
 
@@ -86,6 +89,10 @@ this.post.onValueChanged( module, function( newValue ) {
 
 		cleanContent = cleanupContent( status );
 		clickableContent = preparePostContent( status );
+
+		for ( var i = 0; i < status.media_attachments.length; i++ ) {
+			media.add( status.media_attachments[ i ] );
+		}
 
 		hasContent.value = cleanContent.length > 0 || ( '' != status.spoiler_text );
 
@@ -368,11 +375,13 @@ module.exports = {
 	timeSince: timeSince,
 
 	hasContent: hasContent,
-	multipleMedia: multipleMedia,
 
 	cleanContent: cleanContent,
 	clickableContent: clickableContent,
 	clickableBio: clickableBio,
+
+	media: media,
+	multipleMedia: multipleMedia,
 
 	isRepost: isRepost,
 	gotoReblogger: gotoReblogger,
@@ -391,7 +400,7 @@ module.exports = {
 	gotoUser: gotoUser,
 	gotoPost: gotoPost,
 
-	wordClicked: wordClicked,
+	wordClicked: wordClicked
 
 };
 

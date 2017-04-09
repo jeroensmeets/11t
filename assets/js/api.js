@@ -47,6 +47,7 @@ function cleanUp() {
 }
 
 var userprofile = Observable();
+var userrelationship = Observable();
 
 /**
 * load API accesstoken from storage and store it in helper.AccessToken
@@ -368,6 +369,8 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
  */
 function loadUserProfile( _userid ) {
 
+	userprofile.clear();
+	userrelationship.clear();
 	loading.value = true;
 
 	apiFetch( 'api/v1/accounts/' + _userid, {
@@ -385,7 +388,50 @@ function loadUserProfile( _userid ) {
 		loading.value = false;
   	});
 
+	console.log( 'get relationship (async) for user ' + _userid );
+
+	apiFetch( '/api/v1/accounts/relationships?id=' + _userid, {
+		headers: {
+			'Authorization': 'Bearer ' + AccessToken
+		}
+  	})
+	.then( function( json ) {
+		// {"id":54837,"following":false,"followed_by":false,"blocking":false,"muting":false,"requested":false}
+		console.log( JSON.stringify( json ) );
+		// if ( json.length > 0 ) {
+			userrelationship.value = json.shift();
+			console.log( 'response from API for relationship: ' + JSON.stringify( userrelationship.value ) );
+		// }
+	})
+	.catch( function( err ) {
+		loading.value = false;
+  	});
+
 }
+
+function followUser( _userid, _isfollowing ) {
+
+	return new Promise( function( resolve, reject ) {
+
+		var followAction = _isfollowing ? 'unfollow' : 'follow';
+		apiFetch( '/api/v1/accounts/' + _userid + '/' + followAction, {
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + AccessToken
+			}
+		} )
+		.then( function( json ) {
+			console.log( 'api call to ' + followAction + ' user ' + _userid + ' returned with response: ' + JSON.stringify( json ) );
+			resolve( json );
+		})
+		.catch( function( err ) {
+			reject( err );
+		});
+
+	} );
+
+}
+
 
 /**
  * @param  {string}		_txt			text of post
@@ -566,6 +612,8 @@ function getPostById( _postid ) {
 module.exports = {
 	posts: posts,
 	userprofile: userprofile,
+	userrelationship: userrelationship,
+	followUser: followUser,
 	loadTimeline: loadTimeline,
 	loadUserProfile: loadUserProfile,
 	loadPostContext: loadPostContext,
@@ -625,8 +673,11 @@ function apiFetch( path, options ) {
 					return response.json();
 				} else if ( 401 == response.status ) {
 					// not authorized
+					// TODO show message that user will be redirected
 					logOut();
 				} else {
+					console.log( 'apiFetch error for path ' + path );
+					console.log( JSON.stringify( response ) );
 					reject( new Error( 'Response error' ) );
 				}
 			} )
@@ -635,7 +686,6 @@ function apiFetch( path, options ) {
 				resolve( responseObject );
 			})
 			.catch( function( err ) {
-				console.log( 'apiFetch: error ' + JSON.stringify( err ) );
 				reject( err );
 			});
 

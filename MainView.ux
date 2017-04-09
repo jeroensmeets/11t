@@ -29,6 +29,7 @@
 	<Text ux:Class="FaBell" Font="fa">&#xf0a2;</Text>
 	<Text ux:Class="FaList" Font="fa">&#xf022;</Text>
 	<Text ux:Class="FaGlobe" Font="fa">&#xf0ac;</Text>
+	<Text ux:Class="FaUsers" Font="fa">&#xf0c0;</Text>
 	<Text ux:Class="FaHome" Font="fa">&#xf015;</Text>
 
 	<!-- icons for actions per post -->
@@ -129,7 +130,7 @@
 				<FaStar Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
 			</Panel>
 			<Panel HitTestMode="LocalBounds" Clicked="{goPublic}">
-				<FaGlobe Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+				<FaUsers Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
 			</Panel>
 		</StackPanel>
 
