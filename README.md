@@ -4,15 +4,11 @@
 
 I connect to Mastodon on [mastodon.social](https://mastodon.social/), but everyone can start her own server. 11t lets you use any Mastodon instance.
 
-### I hear there's a beta test? ###
-
-You are absolutely right! I'm building this app from scratch, so please have some patience.
-
 ## iOS ##
-Signups for iOS are closed for now. Please hang on, the first public version is right around the corner.
+App is under review by Apple.
 
 ## Android ##
-For Android, you can [visit this link](https://play.google.com/apps/testing/com.jeroensmeets.mastodon) on your mobile.
+The app is [in the Play Store](https://play.google.com/store/apps/details?id=com.jeroensmeets.mastodon).
 
 ### How do I pronounce 11t? ###
 
