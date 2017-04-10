@@ -226,8 +226,8 @@ function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
  */
 function setActiveTimeline( timelineType, loadFromAPI ) {
 
-	console.log( 'timeline type: ' + timelineType );
-	console.log( 'loadFromAPI: ' + loadFromAPI );
+	// console.log( 'timeline type: ' + timelineType );
+	// console.log( 'loadFromAPI: ' + loadFromAPI );
 
 	active.value = timelineType;
 	loadCurrentTimelineFromCache();
@@ -388,7 +388,7 @@ function loadUserProfile( _userid ) {
 		loading.value = false;
   	});
 
-	console.log( 'get relationship (async) for user ' + _userid );
+	// console.log( 'get relationship (async) for user ' + _userid );
 
 	apiFetch( '/api/v1/accounts/relationships?id=' + _userid, {
 		headers: {
@@ -397,10 +397,10 @@ function loadUserProfile( _userid ) {
   	})
 	.then( function( json ) {
 		// {"id":54837,"following":false,"followed_by":false,"blocking":false,"muting":false,"requested":false}
-		console.log( JSON.stringify( json ) );
+		// console.log( JSON.stringify( json ) );
 		// if ( json.length > 0 ) {
 			userrelationship.value = json.shift();
-			console.log( 'response from API for relationship: ' + JSON.stringify( userrelationship.value ) );
+			// console.log( 'response from API for relationship: ' + JSON.stringify( userrelationship.value ) );
 		// }
 	})
 	.catch( function( err ) {
@@ -421,7 +421,7 @@ function followUser( _userid, _isfollowing ) {
 			}
 		} )
 		.then( function( json ) {
-			console.log( 'api call to ' + followAction + ' user ' + _userid + ' returned with response: ' + JSON.stringify( json ) );
+			// console.log( 'api call to ' + followAction + ' user ' + _userid + ' returned with response: ' + JSON.stringify( json ) );
 			resolve( json );
 		})
 		.catch( function( err ) {

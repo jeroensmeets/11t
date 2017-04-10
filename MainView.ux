@@ -104,6 +104,7 @@
 			<NotificationsPage Name="notifications" Title="Notifications" router="router" TopNavBar="TopNavBar" />
 			<FavouritesPage Name="favourites" router="router" TopNavBar="TopNavBar" />
 			<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" />
+			<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar" />
 			<SplashPage Name="splash" router="router">
 				<WhileActive Bypass="Never">
 					<Change Target="TopNavBar.Visibility" Value="Collapsed" />

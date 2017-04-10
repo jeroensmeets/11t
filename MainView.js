@@ -1,5 +1,4 @@
 var Observable	= require("FuseJS/Observable");
-
 var api			= require("assets/js/api");
 
 function goWrite() {
@@ -26,6 +25,10 @@ function goPublic() {
 	gotoPage( 'publictimeline' );
 }
 
+function goSettings() {
+	router.push( 'settings' );
+}
+
 function gotoPage( _pageid, _pushit ) {
 
 	if ( 0 == arguments ) {
@@ -44,10 +47,21 @@ function gotoPage( _pageid, _pushit ) {
 
 }
 
-// var Lifecycle = require('FuseJS/Lifecycle');
-// Lifecycle.on("enteringInteractive", function() {
-// 	// app activated
-// });
+// toast
+var toastVisible = Observable( false );
+var toastText = Observable( '' );
+
+function showToast( text ) {
+
+	toastText.value = text;
+	toastVisible.value = true;
+
+	setTimeout( function() {
+		toastText.value = '';
+		toastVisible.value = false;
+	}, 2000 );
+
+}
 
 module.exports = {
 	goHome: goHome,
@@ -55,6 +69,11 @@ module.exports = {
 	goFavourites: goFavourites,
 	goWrite: goWrite,
 	goPublic: goPublic,
+	goSettings: goSettings,
 	loading: api.loading,
-	refreshCurrentTimeline: api.loadCurrentTimelineFromAPI
+	refreshCurrentTimeline: api.loadCurrentTimelineFromAPI,
+
+	showToast: showToast,
+	toastText: toastText,
+	toastVisible: toastVisible
 }

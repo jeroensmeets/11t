@@ -22,8 +22,6 @@ api.userrelationship.addSubscriber( function( newValue ) {
 
 	if ( 'undefined' != typeof newValue.value ) {
 
-		console.log( JSON.stringify( newValue.value ) );
-
 		amFollowing = newValue.value.following;
 		following.value = amFollowing ? 'Unfollow' : 'Follow';
 

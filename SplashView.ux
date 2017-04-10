@@ -4,10 +4,9 @@
 	<JavaScript File="SplashView.js" />
 	<Activated Handler="{startLoggedInCheck}" Bypass="Never" />
 
-<!-- 	<Panel Background="#e4e4e4">
-		<StatusBarBackground Background="#e4e4e4" />
-		<iOS.StatusBarConfig Style="Dark" Animation="Slide" IsVisible="True" /> -->
 		<StackPanel Orientation="Vertical" Dock="Top" Padding="16,64,0,0" Visibility="{loginFormVisible}">
+
+			<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
 
 			<TextView Font="Regular" FontSize="15" Margin="4,16,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
 				Value="Welcome to 11t, your connection to Mastodon. Please specify the server you would like to use." />
@@ -25,9 +24,6 @@
 					<Stroke Width="1" Color="#fff" />
 				</Rectangle>
 			</Button>
-			<WhileTrue Value="{showError}">
-				<TextView Font="Italic" FontSize="15" Margin="16,16,0,0" Value="{error}" TextColor="palette.clrHighlight" />
-			</WhileTrue>
 
 			<ImageFill File="assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" />
 

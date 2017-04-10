@@ -1,10 +1,8 @@
 var api					= require( 'assets/js/api' );
-
 var Observable			= require( 'FuseJS/Observable' );
 
 var loginFormVisible	= Observable( 'Collapsed' );
-var error				= Observable();
-var showError			= Observable( false );
+var error				= Observable('');
 
 var baseurl				= Observable( 'https://mastodon.social/' );
 
@@ -36,11 +34,8 @@ function showLoginForm() {
 
 function startOAuth() {
 
-	showError.value = false;
-
 	if ( ( 'undefined' == typeof baseurl.value ) || ( baseurl.value.length < 8 ) ) {
-		error.value = 'Please specify a URL';
-		showError.value = true;
+		error.value = 'Please specify a valid URL';
 		return false;
 	}
 
@@ -48,8 +43,7 @@ function startOAuth() {
 	var urlparts = api.parseUri( baseurl.value );
 
 	if ( 'https' != urlparts.protocol ) {
-		error.value = 'Only servers running on SSL are supported.';
-		showError.value = true;
+		error.value = 'Only https connections are supported';
 		return false;
 	}
 
@@ -65,6 +59,5 @@ module.exports = {
 	loginFormVisible: loginFormVisible,
 	startLoggedInCheck: startLoggedInCheck,
 	error: error,
-	showError: showError,
 	baseurl: baseurl
 };
