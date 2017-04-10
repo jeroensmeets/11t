@@ -59,7 +59,7 @@
 			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Background="#1a9df8">
 
 				<WhileCanGoBack>
-					<Panel ux:Name="backButton" Padding="8,0,0,0" HitTestMode="LocalBounds" Alignment="Left">
+					<Panel ux:Name="backButton" Padding="8,0,0,0" Alignment="Left">
 						<FaGoBack Color="#fff" FontSize="20" Dock="Left" Margin="4,8,0,0" />
 						<AddingAnimation>
 							<Change backButton.Opacity="0" Duration=".3" />

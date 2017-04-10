@@ -1,12 +1,12 @@
 <Page ux:Class="TransitionPage" Transition="None">
 	<ResourceString Key="PageTitle" Value="{pagetitle}" />
     <EnteringAnimation>
-        <Move X="1" RelativeTo="Size" Duration="0.4" Easing="BackOut" />
+        <Move X="1" RelativeTo="Size" Duration="0.4" Easing="CubicInOut" />
     </EnteringAnimation>
     <ExitingAnimation>
-        <Move X="-1" RelativeTo="Size" Duration="0.4" Easing="BackOut" />
+        <Move X="-1" RelativeTo="Size" Duration="0.4" Easing="CubicInOut" />
     </ExitingAnimation>
     <RemovingAnimation>
-        <Move X="-1" RelativeTo="Size" Duration="0.4" Easing="BackOut" />
+        <Move X="-1" RelativeTo="Size" Duration="0.4" Easing="CubicInOut" />
     </RemovingAnimation>
 </Page>

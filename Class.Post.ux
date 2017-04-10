@@ -184,7 +184,7 @@
 			</StackPanel>
 		</WhileString>
 
-		<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="32,0,16,0" Padding="12,4,4,0">
+		<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="32,0,16,0" Padding="12,8,4,0">
 
 			<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
 				<Change postcontent.Visibility="Collapsed" />
