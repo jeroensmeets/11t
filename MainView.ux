@@ -41,13 +41,14 @@
 	<Text ux:Class="FaLock" Font="fa" FontSize="16">&#xf023;</Text>
 	<Text ux:Class="FaFollow" Font="fa" FontSize="16">&#xf0f2;</Text>
 	<Text ux:Class="FaEnvelope" Font="fa" FontSize="16">&#xf0e0;</Text>
+	<Text ux:Class="FaSettings" Font="fa" FontSize="16">&#xf013;</Text>
 
 	<Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
 	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>
 	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>
 	<Text ux:Class="FaLoading" Font="fa" FontSize="16">&#xf1ce;</Text>
 	<Text ux:Class="FaVideoPlay" Font="fa" FontSize="16">&#xf04b;</Text>
-	<Text ux:Class="FaMultipleMedia" Font="fa" FontSize="16">&#xf009;</Text>
+	<Text ux:Class="FaMultipleMedia" Font="fa" FontSize="16">&#xf013;</Text>
 
 	<JavaScript File="MainView.js" />
 
@@ -120,20 +121,23 @@
 			<PostPage ux:Template="postcontext" router="router" TopNavBar="TopNavBar" />
 		</Navigator>
 
-		<StackPanel ux:Name="BottomNavBar" Orientation="Horizontal" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Background="#f4f4f4">
-			<Panel HitTestMode="LocalBounds" Clicked="{goHome}" Margin="0,0,42,0">
+		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Background="#f4f4f4">
+			<Panel HitTestMode="LocalBounds" Clicked="{goHome}">
 				<FaHome Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
 			</Panel>
-			<Panel HitTestMode="LocalBounds" Clicked="{goNotifications}" Margin="0,0,42,0">
+			<Panel HitTestMode="LocalBounds" Clicked="{goNotifications}">
 				<FaReplyAll Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
 			</Panel>
-			<Panel HitTestMode="LocalBounds" Clicked="{goFavourites}" Margin="0,0,42,0">
+			<Panel HitTestMode="LocalBounds" Clicked="{goFavourites}">
 				<FaStar Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
 			</Panel>
 			<Panel HitTestMode="LocalBounds" Clicked="{goPublic}">
 				<FaUsers Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
 			</Panel>
-		</StackPanel>
+			<Panel HitTestMode="LocalBounds" Clicked="{goSettings}">
+				<FaSettings Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			</Panel>
+		</Grid>
 
 	</DockPanel>
 

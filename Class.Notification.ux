@@ -36,8 +36,16 @@
 				</WhileString>
 
 				<WhileString Value="{type}" Equals="mention">
-					<FaReply Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
-					<Text Value="mentioned you" Color="palette.clrText" Font="Regular" FontSize="13" />
+
+					<WhileString Value="{status.visibility}" Equals="direct">
+						<FaEnvelope Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
+						<Text Value="sent you private message" Color="palette.clrText" Font="Regular" FontSize="13" />
+					</WhileString>
+
+					<WhileString Value="{status.visibility}" Equals="direct" Invert="true">
+						<FaReply Color="palette.clrNavigation" FontSize="17" Margin="0,0,6,0" />
+						<Text Value="mentioned you" Color="palette.clrText" Font="Regular" FontSize="13" />
+					</WhileString>
 				</WhileString>
 
 				<WhileString Value="{type}" Equals="favourite">
@@ -70,7 +78,14 @@
 
 		<StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{gotoPost}">
 			<Each Items="{cleanContent}">
-				<Text ux:Name="notifContent" Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,12" />
+				<Text ux:Name="notifContent" Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,12">
+					<WhileString Value="{type}" Equals="reblog">
+						<Change notifContent.Font="Italic" />
+					</WhileString>
+					<WhileString Value="{type}" Equals="favourite">
+						<Change notifContent.Font="Italic" />
+					</WhileString>
+				</Text>
 			</Each>
 		</StackPanel>
 
