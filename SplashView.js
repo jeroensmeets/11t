@@ -53,29 +53,10 @@ function startOAuth() {
 		return false;
 	}
 
-	var bu = "https://" + urlparts.host + urlparts.path;
-	if ( bu.substr( -1 ) != '/' ) { bu += '/'; }
+	var bu = "https://" + urlparts.host + '/' + urlparts.path;
 
 	api.saveAPIConnectionData( bu, false, false, false );
 	router.goto( 'login' );
-	return;
-
-	// step 1: get client id and client secret
-	api.getClientIdSecret( baseurl.value ).then( function( credentials ) {
-
-		// step 2: get access token
-		api.getAccessToken( baseurl.value, credentials.id, credentials.secret, email.value, password.value ).then( function( accesstoken ) {
-
-			// step 3: save credentials and access token
-			api.saveAPIConnectionData( baseurl.value, credentials.id, credentials.secret, accesstoken.access_token );
-
-			// step 4: get home timeline and then go home!
-			api.setActiveTimeline( 'home', true );
-			router.goto( 'home' );
-
-		});
-
-	});
 
 }
 
