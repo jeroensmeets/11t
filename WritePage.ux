@@ -12,13 +12,13 @@
 		<Panel>
 			<StackPanel Orientation="Vertical" Margin="8,8,8,32">
 				<WhileTrue Value="{useSpoilerText}">
-					<TextView Value="{spoilerText}" Height="64" Background="#ddd" TextWrapping="Wrap" Margin="0,0,0,8" Padding="4">
+					<TextView Value="{spoilerText}" Height="64" Background="#ddd" TextWrapping="Wrap" Margin="0,0,0,8" Padding="4" AutoCapitalizationHint="Sentences">
 						<WhileString Test="IsEmpty">
 							<Text TextWrapping="Wrap" Margin="4">Content warning</Text>
 						</WhileString>
 					</TextView>
 				</WhileTrue>
-				<TextView Value="{txtToToot}" Height="120" Background="#ddd" TextWrapping="Wrap" Padding="4">
+				<TextView Value="{txtToToot}" Height="120" Background="#ddd" TextWrapping="Wrap" Padding="4" AutoCapitalizationHint="Sentences">
 					<WhileString Test="IsEmpty">
 						<Text TextWrapping="Wrap" Margin="4">What's on your mind?</Text>
 					</WhileString>
