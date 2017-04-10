@@ -27,7 +27,7 @@
 					<Switch Value="{useSpoilerText}"></Switch>
 					<Text Value="hide behind content warning" Color="palette.clrText" Font="Italic" Alignment="CenterLeft"></Text>
 				</Grid>
-				<Grid Columns="1*,4*" Margin="8,16,8,8">
+				<Grid Columns="1*,4*" Margin="8">
 					<Switch Value="{isPrivate}"></Switch>
 					<Text Value="private post" Color="palette.clrText" Font="Italic" Alignment="CenterLeft"></Text>
 				</Grid>

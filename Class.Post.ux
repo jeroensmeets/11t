@@ -123,10 +123,20 @@
 				</Panel>
 
 				<!-- can't reblog when marked sensitive -->
-				<WhileString Value="{visibility}" Equals="public" Invert="True">
-					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-						<FaLock Color="palette.clrIconDimmed" FontSize="17" />
-					</Panel>
+				<WhileString Value="{visibility}" Equals="public" Invert="true">
+
+					<WhileString Value="{visibility}" Equals="direct">
+						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+							<FaEnvelope Color="palette.clrIconDimmed" FontSize="17" />
+						</Panel>
+					</WhileString>
+
+					<WhileString Value="{visibility}" Equals="direct" Invert="true">
+						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+							<FaLock Color="palette.clrIconDimmed" FontSize="17" />
+						</Panel>
+					</WhileString>
+
 				</WhileString>
 
 				<WhileString Value="{visibility}" Equals="public">
