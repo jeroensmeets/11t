@@ -54,6 +54,8 @@
 
 	<DockPanel Background="#f4f4f4">
 
+		<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
+
 		<StackPanel Dock="Top">
 			<Android.StatusBarConfig Color="#1a9df8" IsVisible="True" />
 			<iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
@@ -84,7 +86,7 @@
 							</WhileTrue>
 						</FaRefresh>
 					</Panel>
-					<Panel HitTestMode="LocalBounds" Clicked="{goWrite}" Padding="0,0,12,0">
+					<Panel ux:Name="writeIcon" HitTestMode="LocalBounds" Clicked="{goWrite}" Padding="0,0,12,0" Visibility="Visible">
 						<FaWrite Color="#fff" FontSize="20" Alignment="Center" />
 					</Panel>
 				</StackPanel>
@@ -111,15 +113,16 @@
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</SplashPage>
-			<LoginPage ux:Template="login" router="router">
+			<LoginPage ux:Template="login" TopNavBar="TopNavBar" router="router">
 				<WhileActive Bypass="Never">
-					<Change Target="TopNavBar.Visibility" Value="Collapsed" />
+					<Change Target="writeIcon.Visibility" Value="Collapsed" />
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</LoginPage>
 			<UserProfilePage ux:Template="userprofile" router="router" TopNavBar="TopNavBar">
 			</UserProfilePage>
 			<PostPage ux:Template="postcontext" router="router" TopNavBar="TopNavBar" />
+			<FixedContentPage ux:Template="fixedcontent" router="router" TopNavBar="TopNavBar" />
 		</Navigator>
 
 		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Background="#f4f4f4">

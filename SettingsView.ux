@@ -9,6 +9,8 @@
 
 	<StackPanel Orientation="Vertical" Dock="Top">
 
+		<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
+
 		<Panel ux:Name="settingPanel" ux:Class="SettingOption">
 			<string ux:Property="t" />
 			<Text Value="{Property settingPanel.t}" Font="Regular" FontSize="17" TextColor="palette.clrText" Alignment="CenterLeft" Margin="12" />
@@ -16,6 +18,7 @@
 		</Panel>
 
 		<SettingOption t="About 11t" Clicked="{showAboutPage}" />
+		<SettingOption t="Log out" Clicked="{logOut}" />
 
 		<ImageFill File="assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" />
 

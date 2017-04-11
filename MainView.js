@@ -47,21 +47,32 @@ function gotoPage( _pageid, _pushit ) {
 
 }
 
-// toast
-var toastVisible = Observable( false );
-var toastText = Observable( '' );
+// // toast
+// var toastVisible = Observable( false );
+// var toastText = Observable( '' );
 
-function showToast( text ) {
+// function showToast() {
 
-	toastText.value = text;
-	toastVisible.value = true;
+// 	toastText.value = api.error;
+// 	toastVisible.value = true;
 
-	setTimeout( function() {
-		toastText.value = '';
-		toastVisible.value = false;
-	}, 2000 );
+// 	setTimeout( function() {
+// 		toastText.value = '';
+// 		toastVisible.value = false;
+// 	}, 2000 );
 
-}
+// }
+
+// setting this value to true is enough to make the app logout and go back to the splash screen
+api.returntosplash.addSubscriber( function( newValue ) {
+
+	if ( true === newValue.value ) {
+		api.logOut();
+		api.setError( 'You are not logged in' );
+		router.goto( 'splash' );
+	}
+
+})
 
 module.exports = {
 	goHome: goHome,
@@ -73,7 +84,7 @@ module.exports = {
 	loading: api.loading,
 	refreshCurrentTimeline: api.loadCurrentTimelineFromAPI,
 
-	showToast: showToast,
-	toastText: toastText,
-	toastVisible: toastVisible
+	// showToast: showToast,
+	error: api.error,
+	// toastVisible: toastVisible
 }

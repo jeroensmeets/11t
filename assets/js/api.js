@@ -4,6 +4,9 @@ var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
 var EventEmitter    = require("FuseJS/EventEmitter");
 
+var error 			= Observable( '' );
+var returntosplash	= Observable( false );
+
 var loading			= Observable( false );
 var active			= Observable( false );
 
@@ -46,6 +49,10 @@ function cleanUp() {
 
 }
 
+function setError( message ) {
+	error.value = message;
+}
+
 var userprofile = Observable();
 var userrelationship = Observable();
 
@@ -57,7 +64,10 @@ var userrelationship = Observable();
 */
 function loadAPIConnectionData( ) {
 
-	if ( ( false != AccessToken ) && ( false !== BASE_URL ) ) {
+	console.log( 'access token is ' + AccessToken );
+	console.log( 'base url is ' + BASE_URL );
+
+	if ( ( false !== AccessToken ) && ( false !== BASE_URL ) ) {
 		// no need to load connection settings, already set
 		return true;
 	}
@@ -69,7 +79,7 @@ function loadAPIConnectionData( ) {
 		AccessToken = data.token;
 		BASE_URL = data.baseurl;
 
-		return true;
+		return ( false !== AccessToken ) && ( false !== BASE_URL );
 	}
 	catch( e ) {
 		return false;
@@ -188,7 +198,9 @@ function logOut() {
 
 	deleteAPIConnectionData();
 	clearPostsObject();
-	router.goto( 'splash' );
+
+	BASE_URL = false;
+	AccessToken = false;
 
 }
 
@@ -226,8 +238,10 @@ function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
  */
 function setActiveTimeline( timelineType, loadFromAPI ) {
 
-	// console.log( 'timeline type: ' + timelineType );
-	// console.log( 'loadFromAPI: ' + loadFromAPI );
+	if ( !BASE_URL || !AccessToken ) {
+		error.value = 'You\'re not logged in.';
+		returntosplash.value = true;
+	}
 
 	active.value = timelineType;
 	loadCurrentTimelineFromCache();
@@ -240,9 +254,17 @@ function setActiveTimeline( timelineType, loadFromAPI ) {
 
 	}
 
+	// formally not correct, as we don't know if API calls went ok
+	return true;
+
 }
 
 function loadCurrentTimelineFromAPI() {
+
+	if ( false === BASE_URL || false === AccessToken ) {
+		error.value = 'You\'re not logged in.';
+		returntosplash.value = true;
+	}
 
 	if ( loading.value ) {
 		// api is already out to fetch posts
@@ -299,7 +321,7 @@ function loadTimeline( _type, _id, _postObj ) {
 			endpoint = 'api/v1/notifications';
 			break;
 		case 'favourites':
-			endpoint = '/api/v1/favourites';
+			endpoint = 'api/v1/favourites';
 			break;
 		case 'user':
 			posts.user.clear();
@@ -390,7 +412,7 @@ function loadUserProfile( _userid ) {
 
 	// console.log( 'get relationship (async) for user ' + _userid );
 
-	apiFetch( '/api/v1/accounts/relationships?id=' + _userid, {
+	apiFetch( 'api/v1/accounts/relationships?id=' + _userid, {
 		headers: {
 			'Authorization': 'Bearer ' + AccessToken
 		}
@@ -414,7 +436,7 @@ function followUser( _userid, _isfollowing ) {
 	return new Promise( function( resolve, reject ) {
 
 		var followAction = _isfollowing ? 'unfollow' : 'follow';
-		apiFetch( '/api/v1/accounts/' + _userid + '/' + followAction, {
+		apiFetch( 'api/v1/accounts/' + _userid + '/' + followAction, {
 			method: 'POST',
 			headers: {
 				Authorization: 'Bearer ' + AccessToken
@@ -550,19 +572,9 @@ function rePost( _postid, _currentstatus ) {
 	// create promise
 	var repostEmitter = new EventEmitter( 'rePostEnded' );
 
-	fetch( 'https://mastodon.social/api/v1/statuses/' + _postid + '/' + _apiAction, {
+	apiFetch( 'api/v1/statuses/' + _postid + '/' + _apiAction, {
 		method: 'POST',
-		headers: {
-			'Content-type': 'application/json',
-			'Authorization': 'Bearer ' + AccessToken.value
-		}
-	})
-	.then( function( resp ) {
-		if ( 200 == resp.status ) {
-			return resp.json();
-		} else {
-			repostEmitter.emit( 'rePostEnded', { err: true } );
-		}
+		headers: { 'Authorization': 'Bearer ' + AccessToken.value }
 	})
 	.then( function( json ) {
 
@@ -618,6 +630,9 @@ module.exports = {
 	loadUserProfile: loadUserProfile,
 	loadPostContext: loadPostContext,
 	loading: loading,
+	error: error,
+	setError: setError,
+	returntosplash: returntosplash,
 	setActiveTimeline: setActiveTimeline,
 	loadCurrentTimelineFromAPI: loadCurrentTimelineFromAPI,
 	loadCurrentTimelineFromCache: loadCurrentTimelineFromCache,
@@ -665,6 +680,8 @@ function apiFetch( path, options ) {
 			reject( new Error( 'Request timed out' ) );
 		}, FETCH_TIMEOUT );
 
+		console.log( url );
+
 		fetch( url, options )
 			.then( function( response ) {
 
@@ -673,12 +690,13 @@ function apiFetch( path, options ) {
 					return response.json();
 				} else if ( 401 == response.status ) {
 					// not authorized
-					// TODO show message that user will be redirected
 					logOut();
+					// TODO show message by handling this reject()
+					reject( '401 not authorized' );
 				} else {
 					console.log( 'apiFetch error for path ' + path );
 					console.log( JSON.stringify( response ) );
-					reject( new Error( 'Response error' ) );
+					reject( 'Response error' );
 				}
 			} )
 			.then( function( responseObject ) {

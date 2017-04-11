@@ -2,7 +2,6 @@ var api					= require( 'assets/js/api' );
 var Observable			= require( 'FuseJS/Observable' );
 
 var loginFormVisible	= Observable( 'Collapsed' );
-var error				= Observable('');
 
 var baseurl				= Observable( 'https://mastodon.social/' );
 
@@ -11,20 +10,37 @@ function startLoggedInCheck() {
 	// remove old cache files
 	api.cleanUp();
 
-	api.loadAPIConnectionDataAsync()
-		.then( function( result ) {
-			console.log( result );
-			if ( 'ok' == result ) {
-				api.setActiveTimeline( 'home', false );
-				router.goto( 'home' );
-			} else {
-				showLoginForm();
-			}
-		} )
-		.catch( function() {
-			// auth code not found, let user log in
-			showLoginForm();
-		});
+	if ( api.loadAPIConnectionData() ) {
+
+		console.log( 'checking if logged in: yes!' );
+		api.setActiveTimeline( 'home', false );
+		router.goto( 'home' );
+
+	} else {
+
+		console.log( 'checking if logged in: no!' );
+		showLoginForm();
+
+	}
+
+
+	// api.loadAPIConnectionDataAsync()
+	// 	.then( function( result ) {
+
+	// 		if ( 'ok' == result ) {
+	// 			api.setActiveTimeline( 'home', false );
+	// 			router.goto( 'home' );
+	// 		} else {
+	// 			showLoginForm();
+	// 		}
+
+	// 	} )
+	// 	.catch( function() {
+
+	// 		// auth code not found, let user log in
+	// 		showLoginForm();
+
+	// 	});
 
 }
 
@@ -35,7 +51,7 @@ function showLoginForm() {
 function startOAuth() {
 
 	if ( ( 'undefined' == typeof baseurl.value ) || ( baseurl.value.length < 8 ) ) {
-		error.value = 'Please specify a valid URL';
+		api.setError( 'Please specify a valid URL' );
 		return false;
 	}
 
@@ -43,14 +59,16 @@ function startOAuth() {
 	var urlparts = api.parseUri( baseurl.value );
 
 	if ( 'https' != urlparts.protocol ) {
-		error.value = 'Only https connections are supported';
+		api.setError( 'Only https connections are supported' );
 		return false;
 	}
 
-	var bu = "https://" + urlparts.host + '/' + urlparts.path;
+	var path = ( '' == urlparts.path ) ? '/' : urlparts.path;
+
+	var bu = "https://" + urlparts.host + path;
 
 	api.saveAPIConnectionData( bu, false, false, false );
-	router.goto( 'login' );
+	router.push( 'login' );
 
 }
 
@@ -58,6 +76,5 @@ module.exports = {
 	startOAuth: startOAuth,
 	loginFormVisible: loginFormVisible,
 	startLoggedInCheck: startLoggedInCheck,
-	error: error,
 	baseurl: baseurl
 };

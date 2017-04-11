@@ -9,6 +9,7 @@
 
 	<ScrollView LayoutMode="PreserveVisual">
 		<StackPanel Orientation="Vertical">
+
 			<ReloadPull />
 			<Each Items="{posts}">
 				<PostCard post="{}" clickable="false" router="router" />

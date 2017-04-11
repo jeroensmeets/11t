@@ -61,6 +61,7 @@ this.post.onValueChanged( module, function( newValue ) {
 			} else {
 
 				status = newValue.status;
+				accountData = newValue.account;
 
 			}
 

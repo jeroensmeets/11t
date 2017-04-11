@@ -4,9 +4,7 @@
 	<JavaScript File="SplashView.js" />
 	<Activated Handler="{startLoggedInCheck}" Bypass="Never" />
 
-		<StackPanel Orientation="Vertical" Dock="Top" Padding="16,64,0,0" Visibility="{loginFormVisible}">
-
-			<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
+		<StackPanel Orientation="Vertical" Dock="Top" Padding="16,64,0,0">
 
 			<TextView Font="Regular" FontSize="15" Margin="4,16,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
 				Value="Welcome to 11t, your connection to Mastodon. Please specify the server you would like to use." />

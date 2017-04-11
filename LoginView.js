@@ -9,6 +9,7 @@ var webviewVisible = Observable( 'Collapsed' );
 var ClientIdSecret = false;
 
 function showWebview() {
+	api.setError( 'Connecting to Mastodon instance...' );
 	webviewVisible.value = 'Visible';
 }
 
