@@ -1,0 +1,33 @@
+<Panel ux:Name="toast" ux:Class="Toast" Layer="Overlay" Padding="24,4" Visibility="Collapsed">
+	<string ux:Property="toastText" />
+	<JavaScript>
+		var Observable	= require("FuseJS/Observable");
+		var v = Observable( false );
+
+		this.toastText.addSubscriber( function( newText ) {
+
+			if ( '' != newText.value ) {
+
+				v.value = true;
+				setTimeout( function() {
+					v.value = false;
+				}, 5000 );
+			}
+
+		});
+
+		module.exports = {
+			v: v
+		}
+
+	</JavaScript>
+
+	<Text Value="{Property toast.toastText}" FontSize="17" TextColor="#fff" TextWrapping="Wrap" TextAlignment="Center" Font="Regular" Alignment="Center" Margin="0,4,0,4" />
+	<Rectangle ux:Name="toastbg" Background="#222" Layer="Background" Opacity="0" />
+
+	<WhileTrue Value="{v}">
+		<Change toast.Visibility="Visible" />
+		<Change toastbg.Opacity=".7" Duration="1" />
+	</WhileTrue>
+
+</Panel>

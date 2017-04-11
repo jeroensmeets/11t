@@ -1,0 +1,24 @@
+<TransitionPage ux:Class="SettingsPage">
+	<Router ux:Dependency="router" />
+	<JavaScript File="SettingsView.js" />
+
+	<Visual ux:Dependency="TopNavBar" />
+	<AlternateRoot ParentNode="TopNavBar">
+		<NavBarTitle>Settings</NavBarTitle>
+	</AlternateRoot>
+
+	<StackPanel Orientation="Vertical" Dock="Top">
+
+		<Panel ux:Name="settingPanel" ux:Class="SettingOption">
+			<string ux:Property="t" />
+			<Text Value="{Property settingPanel.t}" Font="Regular" FontSize="17" TextColor="palette.clrText" Alignment="CenterLeft" Margin="12" />
+			<Rectangle Alignment="Bottom" Height="1" Background="#787b87" />
+		</Panel>
+
+		<SettingOption t="About 11t" Clicked="{showAboutPage}" />
+
+		<ImageFill File="assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" />
+
+	</StackPanel>
+
+</TransitionPage>
