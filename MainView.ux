@@ -48,7 +48,7 @@
 	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>
 	<Text ux:Class="FaLoading" Font="fa" FontSize="16">&#xf1ce;</Text>
 	<Text ux:Class="FaVideoPlay" Font="fa" FontSize="16">&#xf04b;</Text>
-	<Text ux:Class="FaMultipleMedia" Font="fa" FontSize="16">&#xf013;</Text>
+	<Text ux:Class="FaMultipleMedia" Font="fa" FontSize="16">&#xf0fe;</Text>
 
 	<JavaScript File="MainView.js" />
 

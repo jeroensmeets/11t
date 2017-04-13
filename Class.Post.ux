@@ -7,10 +7,10 @@
 
 	<JavaScript File="Class.Post.js" />
 
-	<WhileTrue Value="{mediaSensitive}">
+	<WhileTrue Value="{status.sensitive}">
 		<StackPanel ux:Name="mediaMessageHidden" Orientation="Horizontal" Alignment="Center" HitTestMode="LocalBoundsAndChildren">
 			<FaLock Color="palette.clrIconDimmed" FontSize="18" Margin="0,16,4,0" />
-			<TextView Value="media marked sensitive" Font="Italic" FontSize="14" TextColor="palette.clrTextDimmed" Margin="6,14,0,0" />
+			<Text Value="media marked sensitive" Font="Italic" FontSize="14" TextColor="palette.clrTextDimmed" Margin="6,14,0,0" />
 			<Clicked>
 				<Set mediaContainer.Visibility="Visible" />
 				<Set mediaMessageHidden.Visibility="Collapsed" />
@@ -19,17 +19,17 @@
 	</WhileTrue>
 
 	<Panel ux:Name="mediaContainer" ClipToBounds="true">
-		<WhileTrue Value="{sensitive}">
+		<WhileTrue Value="{status.sensitive}">
 			<Change mediaContainer.Visibility="Collapsed" />
 		</WhileTrue>
-		<WhileTrue Value="{multipleMedia}">
+		<WhileCount Items="{status.media_attachments}" GreaterThan="1">
 			<FaMultipleMedia FontSize="24" Color="palette.clrHighlight" Layer="Overlay" Alignment="BottomRight" Margin="0,0,16,16" />
-		</WhileTrue>
+		</WhileCount>
 		<LinearNavigation>
 			<NavigationMotion GotoEasing="CircularOut" GotoDuration="0.3" />
 		</LinearNavigation>
 		<SwipeNavigate SwipeDirection="Left" />
-		<Each Items="{media}">
+		<Each Items="{status.media_attachments}">
     		<ImageGallery>
     			<WhileString Value="{type}" Equals="image">
     				<Panel Height="280">
@@ -123,15 +123,15 @@
 				</Panel>
 
 				<!-- can't reblog when marked sensitive -->
-				<WhileString Value="{visibility}" Equals="public" Invert="true">
+				<WhileString Value="{status.visibility}" Equals="public" Invert="true">
 
-					<WhileString Value="{visibility}" Equals="direct">
+					<WhileString Value="{status.visibility}" Equals="direct">
 						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
 							<FaEnvelope Color="palette.clrIconDimmed" FontSize="17" />
 						</Panel>
 					</WhileString>
 
-					<WhileString Value="{visibility}" Equals="direct" Invert="true">
+					<WhileString Value="{status.visibility}" Equals="direct" Invert="true">
 						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
 							<FaLock Color="palette.clrIconDimmed" FontSize="17" />
 						</Panel>
@@ -139,7 +139,7 @@
 
 				</WhileString>
 
-				<WhileString Value="{visibility}" Equals="public">
+				<WhileString Value="{status.visibility}" Equals="public">
 					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
 						<FaRepost ux:Name="icoreblogged" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
 							<WhileTrue Value="{reposting}">
@@ -178,16 +178,16 @@
 		<Panel Margin="0,16,0,0" />
 	</WhileFalse>
 
-	<WhileTrue Value="{hasContent}">
+	<WhileTrue Value="true">
 
-		<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
+		<WhileString Value="{status.spoiler_text}" Test="IsNotEmpty">
 			<StackPanel Orientation="Vertical" Margin="36,8,0,0">
 				<Clicked>
 					<Set postcontent.Visibility="Visible" />
 					<Set showSpoilerButton.Visibility="Collapsed" />
 				</Clicked>
-				<Text Value="{Read spoiler_text}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" />
-				<StackPanel ux:Name="showSpoilerButton" Orientation="Horizontal" Margin="2,8,0,8" HitTestMode="LocalBounds">
+				<Text Value="{status.spoiler_text}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" />
+				<StackPanel ux:Name="showSpoilerButton" Orientation="Horizontal" Margin="8,8,0,8" HitTestMode="LocalBounds">
 					<FaView Color="palette.clrIcon" FontSize="15" Margin="0,0,4,0" Alignment="Center" />
 					<Text Value="show more" Color="palette.clrText" Font="Italic" FontSize="15" Alignment="Center" />
 				</StackPanel>
@@ -196,12 +196,12 @@
 
 		<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="32,0,16,0" Padding="12,8,4,0">
 
-			<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
+			<WhileString Value="{status.spoiler_text}" Test="IsNotEmpty">
 				<Change postcontent.Visibility="Collapsed" />
 			</WhileString>
 
 			<WhileFalse Value="{Property pc.clickable}">
-				<StackPanel Orientation="Vertical" Margin="0,8,0,0" Clicked="{gotoPost}">
+				<StackPanel Orientation="Vertical" Clicked="{gotoPost}">
 					<Each Items="{cleanContent}">
 						<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,8" />
 					</Each>
@@ -210,7 +210,7 @@
 
 			<WhileTrue Value="{Property pc.clickable}">
 				<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
-					<Each Items="{Read clickableContent}">
+					<Each Items="{clickableContent}">
 						<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
 							<WhileTrue Value="{clear}">
 								<Change word.Margin="0,0,800,8" />

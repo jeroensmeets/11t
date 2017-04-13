@@ -3,7 +3,6 @@
 	<object ux:Property="post" />
 
 	<bool ux:Property="clickable" />
-	<bool ux:Property="drawlines" />
 
 	<JavaScript File="Class.Post.js" />
 
@@ -12,7 +11,7 @@
 		<Panel Height="54" Width="54" Margin="0,0,16,0" Clicked="{gotoUser}">
 
 			<Rectangle CornerRadius="6" Width="54" Height="54">
-				<ImageFill Url="{account.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
+				<ImageFill Url="{accountData.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
 			</Rectangle>
 
 		</Panel>
@@ -20,8 +19,8 @@
 		<StackPanel Orientation="Vertical">
 
 			<DockPanel Clicked="{gotoUser}" Margin="0,4,0,4">
-				<Text Value="{account.acct}" FontSize="13" TextColor="palette.clrText" Font="Regular" Dock="Left" />
-				<Text Value="{account.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" Margin="8,0,0,0" Dock="Left" />
+				<Text Value="{accountData.acct}" FontSize="13" TextColor="palette.clrText" Font="Regular" Dock="Left" />
+				<Text Value="{accountData.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" Margin="8,0,0,0" Dock="Left" />
 			</DockPanel>
 
 			<StackPanel Orientation="Horizontal">

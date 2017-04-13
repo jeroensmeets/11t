@@ -9,7 +9,7 @@ var webviewVisible = Observable( 'Collapsed' );
 var ClientIdSecret = false;
 
 function showWebview() {
-	api.setError( 'Connecting to Mastodon instance...' );
+	// api.setError( 'Connecting to Mastodon instance...' );
 	webviewVisible.value = 'Visible';
 }
 
@@ -35,7 +35,10 @@ function setOAuthUri() {
 
 	} ).catch( function( error ) {
 
-		console.log( JSON.stringify( error ) );
+		console.log( error.message );
+
+		api.setError( 'Error: could not connect to Mastodon' );
+		router.goBack();
 
 	});
 
@@ -88,8 +91,6 @@ function webViewUrlChanged( ) {
 	} else {
 
 	// ok, we have an auth token, now ask for the acces token
-	console.log( 'auth token received (' + code + ') -- now ask for access token' );
-
 	api.getAccessToken( code, conf.redirect_uri, ClientIdSecret.id, ClientIdSecret.secret ).then(
 		function( access_token ) {
 			// {"access_token":"0ddb922452c983a70566e30dce16e2017db335103e35d783874c448862a78168",

@@ -1,3 +1,4 @@
+
 var api					= require( 'assets/js/api' );
 var Observable			= require( 'FuseJS/Observable' );
 
@@ -12,35 +13,14 @@ function startLoggedInCheck() {
 
 	if ( api.loadAPIConnectionData() ) {
 
-		console.log( 'checking if logged in: yes!' );
 		api.setActiveTimeline( 'home', false );
 		router.goto( 'home' );
 
 	} else {
 
-		console.log( 'checking if logged in: no!' );
 		showLoginForm();
 
 	}
-
-
-	// api.loadAPIConnectionDataAsync()
-	// 	.then( function( result ) {
-
-	// 		if ( 'ok' == result ) {
-	// 			api.setActiveTimeline( 'home', false );
-	// 			router.goto( 'home' );
-	// 		} else {
-	// 			showLoginForm();
-	// 		}
-
-	// 	} )
-	// 	.catch( function() {
-
-	// 		// auth code not found, let user log in
-	// 		showLoginForm();
-
-	// 	});
 
 }
 

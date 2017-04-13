@@ -1,4 +1,7 @@
 var helper			= require( 'assets/js/helper.js' );
+var contentparser	= require( 'assets/js/parse.content.js' );
+
+var FETCH_TIMEOUT	= 10000;
 
 var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
@@ -63,9 +66,6 @@ var userrelationship = Observable();
 * @return boolean
 */
 function loadAPIConnectionData( ) {
-
-	console.log( 'access token is ' + AccessToken );
-	console.log( 'base url is ' + BASE_URL );
 
 	if ( ( false !== AccessToken ) && ( false !== BASE_URL ) ) {
 		// no need to load connection settings, already set
@@ -238,11 +238,6 @@ function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
  */
 function setActiveTimeline( timelineType, loadFromAPI ) {
 
-	if ( !BASE_URL || !AccessToken ) {
-		error.value = 'You\'re not logged in.';
-		returntosplash.value = true;
-	}
-
 	active.value = timelineType;
 	loadCurrentTimelineFromCache();
 
@@ -261,10 +256,15 @@ function setActiveTimeline( timelineType, loadFromAPI ) {
 
 function loadCurrentTimelineFromAPI() {
 
-	if ( false === BASE_URL || false === AccessToken ) {
-		error.value = 'You\'re not logged in.';
-		returntosplash.value = true;
-	}
+	loadAPIConnectionData();
+
+	console.log( BASE_URL );
+	console.log( AccessToken );
+
+	// if ( false === BASE_URL || false === AccessToken ) {
+	// 	error.value = 'You\'re not logged in.';
+	// 	returntosplash.value = true;
+	// }
 
 	if ( loading.value ) {
 		// api is already out to fetch posts
@@ -288,8 +288,6 @@ function loadCurrentTimelineFromCache() {
         refreshPosts( active.value, JSON.parse( fileContents ), true );
     }, function( error ) {
         // error in reading from cache
-        console.log( 'error in reading from cache' );
-        console.log( JSON.stringify( error ) );
     });
 
 }
@@ -357,7 +355,7 @@ function loadTimeline( _type, _id, _postObj ) {
 	} )
 	.catch( function( err ) {
 		console.log( 'returned from apiFetch back in api.loadTimeline with error: ' );
-		console.log( JSON.stringify( err ) );
+		console.log( err.message );
 		loading.value = false;
 	});
 
@@ -373,15 +371,64 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 		},
 		// update
 		function( oldItem, newItem ) {
-			oldItem = newItem;
+			oldItem = new MastodonPost( newItem );
 		},
 		// add new
 		function( newItem ) {
-			return newItem;
+			return new MastodonPost( newItem );
         }
 	);
 
 	Storage.write( posttype + FILE_DATACACHE, JSON.stringify( posts[ posttype ].toArray() ) );
+
+}
+
+function MastodonPost( jsondata ) {
+
+	// in status is the core post itself
+	this.status = jsondata;
+	this.accountData = jsondata.account;
+	this.rebloggerId = 0;
+
+	if ( 'undefined' != typeof jsondata.type ) {
+
+		this.type = jsondata.type;
+
+		if ( 'follow' == jsondata.type ) {
+
+			// for a follow notification, we need account data and bio
+			this.clickableBio = contentparser.clickableBio( jsondata.account.note );
+			return;
+
+		} else {
+
+			// this is for mentions, repost/favourite notifications
+			this.status = jsondata.status;
+
+		}
+
+	} else if ( null != jsondata.reblog ) {
+
+		// this is a reblog (not the notification, but in the main timelines)
+		this.status = jsondata.reblog;
+		this.accountData = jsondata.reblog.account;
+
+		this.rebloggerId = jsondata.account.id;
+		this.rebloggerName = jsondata.account.display_name;
+
+	}
+
+	this.postid = this.status.id;
+	this.userid = this.status.account.id;
+	this.username = this.status.account.acct;
+	this.createat = this.status.created_at;
+
+	this.mentions = this.status.mentions;
+
+	this.cleanContent = contentparser.cleanContent( this.status );
+	this.clickableContent = contentparser.clickableContent( this.status );
+
+	this.hascontent = this.cleanContent.length > 0 || ( '' != this.status.spoiler_text );
 
 }
 
@@ -574,7 +621,7 @@ function rePost( _postid, _currentstatus ) {
 
 	apiFetch( 'api/v1/statuses/' + _postid + '/' + _apiAction, {
 		method: 'POST',
-		headers: { 'Authorization': 'Bearer ' + AccessToken.value }
+		headers: { 'Authorization': 'Bearer ' + AccessToken }
 	})
 	.then( function( json ) {
 
@@ -673,14 +720,11 @@ function apiFetch( path, options ) {
 
 	// fetch has no timeout, wrap it in a promise
 	// https://www.fusetools.com/community/forums/show_and_tell/fetch_timeout
-	var FETCH_TIMEOUT = 5000;
 	return new Promise( function( resolve, reject ) {
 
 		var timeout = setTimeout(function() {
 			reject( new Error( 'Request timed out' ) );
 		}, FETCH_TIMEOUT );
-
-		console.log( url );
 
 		fetch( url, options )
 			.then( function( response ) {
@@ -689,14 +733,11 @@ function apiFetch( path, options ) {
 				if ( response && 200 == response.status ) {
 					return response.json();
 				} else if ( 401 == response.status ) {
-					// not authorized
 					logOut();
-					// TODO show message by handling this reject()
 					reject( '401 not authorized' );
 				} else {
-					console.log( 'apiFetch error for path ' + path );
-					console.log( JSON.stringify( response ) );
-					reject( 'Response error' );
+					console.log( 'apiFetch error for path ' + path + ': ' + response.message );
+					reject( 'API error: ' + response.message );
 				}
 			} )
 			.then( function( responseObject ) {
@@ -704,7 +745,7 @@ function apiFetch( path, options ) {
 				resolve( responseObject );
 			})
 			.catch( function( err ) {
-				reject( err );
+				reject( err.message );
 			});
 
 	});

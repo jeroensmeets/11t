@@ -1,7 +1,8 @@
 <TransitionPage ux:Class="LoginPage">
+	<Activated Handler="{setOAuthUri}" Bypass="Never" />
+
 	<Router ux:Dependency="router" />
 	<JavaScript File="LoginView.js" />
-	<Activated Handler="{setOAuthUri}" Bypass="Never" />
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
@@ -10,8 +11,6 @@
 
 	<DockPanel>
 		<Rectangle ux:Name="progressBar" Dock="Top" Fill="#1a9df8" Alignment="Left" Width="0%" Height="2" />
-
-		<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
 
 		<NativeViewHost ux:Name="_nativeViewHost" Visibility="{webviewVisible}">
 	    	<WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}">
