@@ -28,6 +28,7 @@ var posts = {
 	notifications   : Observable(),
 	publictimeline  : Observable(),
 	favourites		: Observable(),
+	hashtag			: Observable(),
 	user            : Observable(),
 	postcontext		: Observable()
 }
@@ -54,6 +55,10 @@ function cleanUp() {
 
 function setError( message ) {
 	error.value = message;
+}
+
+function clearError() {
+	error.clear();
 }
 
 var userprofile = Observable();
@@ -150,6 +155,26 @@ function saveAPIConnectionData( base_url, clientid, clientsecret, token ) {
 function deleteAPIConnectionData() {
 
 	return Storage.deleteSync( at_file );
+
+}
+
+function getInstanceInfo() {
+
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch( 'api/v1/instance', {} )
+		.then( function( json ) {
+
+			resolve( json );
+
+		})
+		.catch( function( err ) {
+
+			reject( err );
+
+		});
+
+	});
 
 }
 
@@ -258,9 +283,6 @@ function loadCurrentTimelineFromAPI() {
 
 	loadAPIConnectionData();
 
-	console.log( BASE_URL );
-	console.log( AccessToken );
-
 	// if ( false === BASE_URL || false === AccessToken ) {
 	// 	error.value = 'You\'re not logged in.';
 	// 	returntosplash.value = true;
@@ -320,6 +342,10 @@ function loadTimeline( _type, _id, _postObj ) {
 			break;
 		case 'favourites':
 			endpoint = 'api/v1/favourites';
+			break;
+		case 'hashtag':
+			posts.hashtag.clear();
+			endpoint = 'api/v1/timelines/tag/' + _id;
 			break;
 		case 'user':
 			posts.user.clear();
@@ -599,13 +625,13 @@ function favouritePost( _postid, _currentstatus ) {
 	})
 	.then( function( json ) {
 
-		refreshPosts( active.value, json, false );
-
 		favEmitter.emit( 'favouritePostEnded', { err: false, post: json } );
 
 	})
 	.catch( function( err ) {
+
 		favEmitter.emit( 'favouritePostEnded', { err: true } );
+
 	});
 
 	return favEmitter.promiseOf( 'favouritePostEnded' );
@@ -617,23 +643,20 @@ function rePost( _postid, _currentstatus ) {
 	var _apiAction = ( _currentstatus ) ? 'unreblog' : 'reblog';
 
 	// create promise
-	var repostEmitter = new EventEmitter( 'rePostEnded' );
+	return new Promise( function( resolve, reject ) {
 
-	apiFetch( 'api/v1/statuses/' + _postid + '/' + _apiAction, {
-		method: 'POST',
-		headers: { 'Authorization': 'Bearer ' + AccessToken }
-	})
-	.then( function( json ) {
+		apiFetch( 'api/v1/statuses/' + _postid + '/' + _apiAction, {
+			method: 'POST',
+			headers: { 'Authorization': 'Bearer ' + AccessToken }
+		})
+		.then( function( json ) {
+			resolve();
+		})
+		.catch( function( err ) {
+			reject( err );
+		});
 
-		refreshPosts( active.value, json, false );
-
-		repostEmitter.emit( 'rePostEnded', { err: false, post: json } );
-	})
-	.catch( function( err ) {
-		repostEmitter.emit( 'rePostEnded', { err: true } );
 	});
-
-	return repostEmitter.promiseOf( 'rePostEnded' );
 
 }
 
@@ -679,6 +702,7 @@ module.exports = {
 	loading: loading,
 	error: error,
 	setError: setError,
+	clearError: clearError,
 	returntosplash: returntosplash,
 	setActiveTimeline: setActiveTimeline,
 	loadCurrentTimelineFromAPI: loadCurrentTimelineFromAPI,
@@ -688,6 +712,7 @@ module.exports = {
 	loadAPIConnectionDataAsync: loadAPIConnectionDataAsync,
 	saveAPIConnectionData: saveAPIConnectionData,
 	getAccessToken: getAccessToken,
+	getInstanceInfo: getInstanceInfo,
 	sendImage: sendImage,
 	sendPost: sendPost,
 	favouritePost: favouritePost,
@@ -723,6 +748,7 @@ function apiFetch( path, options ) {
 	return new Promise( function( resolve, reject ) {
 
 		var timeout = setTimeout(function() {
+			console.log( 'timeout' );
 			reject( new Error( 'Request timed out' ) );
 		}, FETCH_TIMEOUT );
 
@@ -736,8 +762,9 @@ function apiFetch( path, options ) {
 					logOut();
 					reject( '401 not authorized' );
 				} else {
-					console.log( 'apiFetch error for path ' + path + ': ' + response.message );
-					reject( 'API error: ' + response.message );
+					console.log( 'apiFetch error for path ' + path );
+					console.log( JSON.stringify( response ) );
+					reject( 'API error: status ' + response.status );
 				}
 			} )
 			.then( function( responseObject ) {
@@ -745,6 +772,8 @@ function apiFetch( path, options ) {
 				resolve( responseObject );
 			})
 			.catch( function( err ) {
+				clearTimeout( timeout );
+				console.log( err.message );
 				reject( err.message );
 			});
 

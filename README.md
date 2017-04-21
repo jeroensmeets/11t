@@ -4,11 +4,11 @@
 
 I connect to Mastodon on [mastodon.social](https://mastodon.social/), but everyone can start her own server. 11t lets you use any Mastodon instance.
 
+## Android ##
+The app is [in the Play Store](https://play.google.com/store/apps/details?id=com.jeroensmeets.mastodon) and [on F-Droid](https://apt.izzysoft.de/fdroid/index/apk/com.jeroensmeets.mastodon).
+
 ## iOS ##
 App is under review by Apple.
-
-## Android ##
-The app is [in the Play Store](https://play.google.com/store/apps/details?id=com.jeroensmeets.mastodon).
 
 ### How do I pronounce 11t? ###
 
@@ -30,8 +30,10 @@ I'm [@jeroensmeets@mastodon.social](https://mastodon.social/web/accounts/8779). 
 
 ### Screenshots ###
 
-![Splashscreen screenshot](assets/images/store/resized/screenshot_notifications.png?raw=true "Splashscreen screenshot")
+![Splashscreen screenshot](assets/images/store/resized/screenshot_splash.png?raw=true "Splashscreen screenshot")
 
 ![Timeline screenshot](assets/images/store/resized/screenshot_timeline.png?raw=true "Timeline screenshot")
 
 ![Notifications screenshot](assets/images/store/resized/screenshot_notifications.png?raw=true "Notifications screenshot")
+
+![Favourites screenshot](assets/images/store/resized/screenshot_favourites.png?raw=true "Favourites screenshot")

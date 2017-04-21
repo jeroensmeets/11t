@@ -1,18 +1,14 @@
-<TransitionPage ux:Class="TimelinePage">
+<TransitionPage ux:Class="HashtagPage">
 	<Router ux:Dependency="router" />
-	<JavaScript File="TimelineView.js" />
-
-	<!-- <Swiped> -->
-		<!-- <RouterModify Router="router" How="Goto"  -->
+	<JavaScript File="HashtagView.js" />
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>Timeline</NavBarTitle>
+		<NavBarTitle>{pageTitle}</NavBarTitle>
 	</AlternateRoot>
 
 	<ScrollView LayoutMode="PreserveVisual">
 		<StackPanel Orientation="Vertical">
-
 			<ReloadPull />
 			<Each Items="{posts}">
 				<PostCard post="{}" clickable="false" router="router" />

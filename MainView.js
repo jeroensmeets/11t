@@ -47,22 +47,6 @@ function gotoPage( _pageid, _pushit ) {
 
 }
 
-// // toast
-// var toastVisible = Observable( false );
-// var toastText = Observable( '' );
-
-// function showToast() {
-
-// 	toastText.value = api.error;
-// 	toastVisible.value = true;
-
-// 	setTimeout( function() {
-// 		toastText.value = '';
-// 		toastVisible.value = false;
-// 	}, 2000 );
-
-// }
-
 // setting this value to true is enough to make the app logout and go back to the splash screen
 api.returntosplash.addSubscriber( function( newValue ) {
 
@@ -83,8 +67,5 @@ module.exports = {
 	goSettings: goSettings,
 	loading: api.loading,
 	refreshCurrentTimeline: api.loadCurrentTimelineFromAPI,
-
-	// showToast: showToast,
-	error: api.error,
-	// toastVisible: toastVisible
+	error: api.error
 }

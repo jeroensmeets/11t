@@ -1,29 +1,43 @@
 var api = require( 'assets/js/api' );
 var helper = require( 'assets/js/helper' );
+var settings = require( 'assets/js/settings' );
+
 var HtmlEnt = require( 'assets/js/he/he.js' );
 var Observable = require("FuseJS/Observable");
 
 // used in callback functions for reposting and favouriting
 var _this = this;
+
 var postid = 0;
 var userid = 0;
 var username = '';
 var mentions = {};
+var timeSince = Observable( '' );
 var type = Observable();
+var hasContent = Observable( true );
 
-// true while favouriting/reposting
+var spoilerText = Observable();
+var unprocessedContent = '';
+var contentInParagraphs = Observable();
+var contentInWords = Observable();
+var originalContentInParagraphs = Observable();
+var originalContentInWords = Observable();
+
+
+// true while favouriting/reposting/translating
 var favouriting = Observable( false );
 var reposting = Observable( false );
+var translating = Observable( false );
 
 var userHasReposted = Observable( false );
 var userHasFavourited = Observable( false );
+var isTranslated = Observable( false );
+
+var showTranslation = Observable( function() {
+	return settings.loadSetting( 'showTranslationsButton' );
+} );
 
 var isRepost = Observable( false );
-
-var timeSince =  Observable( '0s' );
-
-// every x seconds?
-// timeSince.value = helper.timeSince( status.created_at );
 
 this.post.onValueChanged( module, function( newValue ) {
 
@@ -33,11 +47,10 @@ this.post.onValueChanged( module, function( newValue ) {
 	mentions = newValue.mentions;
 
 	type.value = newValue.type;
+	hasContent.value = newValue.hascontent;
 
 	// reblog
-	if ( newValue.rebloggerId > 0 ) {
-		isRepost.value = true;
-	}
+	isRepost.value = ( newValue.rebloggerId > 0 );
 
 	// mention
 	if ( ( 'undefined' != typeof newValue.type ) && ( 'undefined' != typeof newValue.accountData ) ) {
@@ -45,8 +58,18 @@ this.post.onValueChanged( module, function( newValue ) {
 		username = newValue.accountData.acct;
 	}
 
+	// follower notifications do not have post content
+	if ( 'follow' != newValue.type ) {
+		spoilerText.value = newValue.status.spoiler_text;
+		unprocessedContent = newValue.status.content;
+		contentInParagraphs = newValue.cleanContent;
+		contentInWords = newValue.clickableContent;
+	}
+
 	userHasReposted.value = newValue.status.reposted;
 	userHasFavourited.value = newValue.status.favourited;
+
+	timeSince.value = helper.timeSince( newValue.status.created_at );
 
 } );
 
@@ -64,7 +87,7 @@ function rePost( ) {
 		userHasReposted.value = !userHasReposted.value;
 	}).catch( function( err ) {
 		console.log( 'error in rePost' );
-		console.log( JSON.stringify( err ) );
+		console.log( err.message );
 		reposting.value = false;
 	});
 
@@ -78,23 +101,64 @@ function favouritePost( ) {
 		userHasFavourited.value = !userHasFavourited.value;
 	}).catch( function( err ) {
 		console.log( 'error in favouritePost' );
-		console.log( JSON.stringify( err ) );
+		console.log( JSON.stringify( err.message ) );
 		favouriting.value = false;
 	});
 
 }
 
-function gotoPost( args ) {
+function translatePost() {
+
+	if ( !isTranslated.value ) {
+
+		translating.value = true;
+
+		// backup original post content
+		originalContentInParagraphs.value = contentInParagraphs.value;
+		originalContentInWords.value = contentInWords.value;
+
+		var translation = require( 'assets/js/translations' );
+		translation.getTranslation( unprocessedContent )
+		.then( function( translation ) {
+
+			var contentparser	= require( 'assets/js/parse.content.js' );
+			// TODO this is not working, as cleanContent needs to be called with the whole post object
+			contentInParagraphs = contentparser.cleanContent( translation.data.translations[0].translatedText );
+
+			// TODO translate into clickable words
+
+			isTranslated.value = !isTranslated.value;
+			translating.value = false;
+
+		} )
+		.catch( function( err ) {
+
+			api.setError( 'Could not translate toot: ' + err.message );
+			translating.value = false;
+
+		})
+
+	}
+
+}
+
+function gotoPost() {
 
 	router.push( "postcontext", { post: _this.post.value.status } );
 
 }
 
-function gotoUser( ) {
+function gotoUser() {
 
 	router.push( "userprofile", { userid: userid } );
 
 }
+
+function gotoTag( args ) {
+
+	router.push( "hashtag", { tag: args.data.name } );
+
+} 
 
 function gotoReblogger() {
 
@@ -121,8 +185,10 @@ function wordClicked( args ) {
 
 module.exports = {
 
-	// timeSince: timeSince,
+	timeSince: timeSince,
+
 	type: type,
+	hasContent: hasContent,
 
 	isRepost: isRepost,
 	gotoReblogger: gotoReblogger,
@@ -137,8 +203,18 @@ module.exports = {
 	favouriting: favouriting,
 	userHasFavourited: userHasFavourited,
 
+	spoilerText: spoilerText,
+	contentInParagraphs: contentInParagraphs,
+	contentInWords: contentInWords,
+
+	translating: translating,
+	isTranslated: isTranslated,
+	showTranslation: showTranslation,
+	translatePost: translatePost,
+
 	gotoUser: gotoUser,
 	gotoPost: gotoPost,
+	gotoTag: gotoTag,
 
 	wordClicked: wordClicked
 

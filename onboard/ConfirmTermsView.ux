@@ -1,0 +1,31 @@
+<Page ux:Class="ConfirmTermsPage">
+
+	<Router ux:Dependency="router" />
+	<JavaScript File="ConfirmTermsView.js" />
+
+	<ScrollView>
+		<StackPanel Orientation="Vertical" Padding="16">
+			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Value="User agreement" TextWrapping="Wrap" Margin="0,0,0,16" />
+			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,32">
+				User agreement here.
+			</Text>
+
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,32" Alignment="Center">
+				<Switch Value="{acceptedTerms}" Alignment="Center" Margin="0,0,16,0" ValueChanged="{switchChanged}" />
+				<Text ux:Name="acceptTermsText" Font="Bold" FontSize="15" TextColor="palette.clrText" Value="I accept these terms." TextWrapping="Wrap" Margin="0,6,0,0" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" Alignment="Center">
+				<FaCancel Color="palette.clrTextDimmed" FontSize="48" Clicked="{tryAgain}" Margin="0,0,32,0" />
+				<FaCheck ux:Name="acceptGotoLogin" Color="palette.clrTextDimmed" FontSize="48" Clicked="{confirmTerms}" />
+			</StackPanel>
+
+			<WhileTrue Value="{acceptedTerms}">
+				<Change acceptGotoLogin.Color="palette.clrNavigation" />
+				<Change acceptTermsText.Color="palette.clrNavigation" />
+			</WhileTrue>
+
+		</StackPanel>
+	</ScrollView>
+
+</Page>

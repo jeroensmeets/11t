@@ -1,10 +1,5 @@
-var api			= require("assets/js/api");
-
-function setActiveTimeline() {
-	api.setActiveTimeline( 'home' );
-}
+var api = require("assets/js/api");
 
 module.exports = {
-	posts: api.posts.home,
-	setActiveTimeline: setActiveTimeline
+	posts: api.posts.home
 }

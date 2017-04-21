@@ -8,13 +8,14 @@
 	],
 	"Includes": [
 		"*",
-		"*.js:Bundle"
+		"*.js:Bundle",
+		"*.Uno"
 	],
 	"Title": "11t",
 	"Description": "An app to connect to Mastodon",
 	"Copyright": "This code has an MIT license. Run with it!",
 	"Version": "1.1",
-	"VersionCode": 18,
+	"VersionCode": 20,
 	"Mobile": {
 		"Orientations": "Portrait"
 	},

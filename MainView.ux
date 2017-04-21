@@ -1,5 +1,7 @@
 <App Background="#fff">
 
+	<Localization ux:Global="Localization" />
+
 	<float4 ux:Global="palette.clrText" ux:Value="#282b37" />
 	<float4 ux:Global="palette.clrIcon" ux:Value="#282b37" />
 	<float4 ux:Global="palette.clrTextDimmed" ux:Value="#787b87" />
@@ -43,7 +45,11 @@
 	<Text ux:Class="FaEnvelope" Font="fa" FontSize="16">&#xf0e0;</Text>
 	<Text ux:Class="FaSettings" Font="fa" FontSize="16">&#xf013;</Text>
 
+	<Text ux:Class="FaCheck" Font="fa" FontSize="16">&#xf05d;</Text>
+	<Text ux:Class="FaCancel" Font="fa" FontSize="16">&#xf05c;</Text>
+
 	<Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
+	<Text ux:Class="FaHistory" Font="fa" FontSize="16">&#xf1da;</Text>
 	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>
 	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>
 	<Text ux:Class="FaLoading" Font="fa" FontSize="16">&#xf1ce;</Text>
@@ -57,9 +63,9 @@
 		<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
 
 		<StackPanel Dock="Top">
-			<Android.StatusBarConfig Color="#1a9df8" IsVisible="True" />
+			<Android.StatusBarConfig Color="palette.clrHighlight" IsVisible="True" />
 			<iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
-			<StatusBarBackground Background="#fff" />
+			<StatusBarBackground Background="#1a9df8" />
 			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Background="#1a9df8">
 
 				<WhileCanGoBack>
@@ -96,31 +102,30 @@
 
 		<BottomBarBackground Dock="Bottom" />
 
-		<Navigator DefaultPath="splash">
+		<Navigator DefaultPath="splash" SwipeBack="Right">
 			<WritePage Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</WritePage>
-			<TimelinePage Name="home" Title="Timeline" router="router" TopNavBar="TopNavBar" />
-			<NotificationsPage Name="notifications" Title="Notifications" router="router" TopNavBar="TopNavBar" />
-			<FavouritesPage Name="favourites" router="router" TopNavBar="TopNavBar" />
-			<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" />
+			<TimelinePage Name="home" Title="Timeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
+			<NotificationsPage Name="notifications" Title="Notifications" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
+			<FavouritesPage Name="favourites" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
+			<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
 			<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar" />
-			<SplashPage Name="splash" router="router">
+			<HashtagPage Name="hashtag" router="router" TopNavBar="TopNavBar" />
+			<SplashPage Name="splash" router="router" SwipeBack="None">
 				<WhileActive Bypass="Never">
 					<Change Target="TopNavBar.Visibility" Value="Collapsed" />
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</SplashPage>
-			<LoginPage ux:Template="login" TopNavBar="TopNavBar" router="router">
+			<LoginPage Name="login" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">
-					<Change Target="writeIcon.Visibility" Value="Collapsed" />
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</LoginPage>
-			<UserProfilePage ux:Template="userprofile" router="router" TopNavBar="TopNavBar">
-			</UserProfilePage>
+			<UserProfilePage ux:Template="userprofile" router="router" TopNavBar="TopNavBar" />
 			<PostPage ux:Template="postcontext" router="router" TopNavBar="TopNavBar" />
 			<FixedContentPage ux:Template="fixedcontent" router="router" TopNavBar="TopNavBar" />
 		</Navigator>

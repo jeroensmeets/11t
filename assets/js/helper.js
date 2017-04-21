@@ -39,7 +39,7 @@ function getUrisFromText( _text ) {
 
 }
 
-function timeSince(date) {
+function timeSince( date ) {
 
 	var seconds = Math.floor( ( new Date() - new Date( date ) ) / 1000 );
 

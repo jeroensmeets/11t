@@ -1,6 +1,7 @@
 <Panel ux:Name="toast" ux:Class="Toast" Layer="Overlay" Padding="24,4" Visibility="Collapsed">
 	<string ux:Property="toastText" />
 	<JavaScript>
+		var api = require( 'assets/js/api' );
 		var Observable	= require("FuseJS/Observable");
 		var v = Observable( false );
 
@@ -10,6 +11,7 @@
 
 				v.value = true;
 				setTimeout( function() {
+					api.clearError();
 					v.value = false;
 				}, 5000 );
 			}
