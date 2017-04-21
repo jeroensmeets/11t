@@ -24,6 +24,8 @@ instance.onValueChanged( module, function( newValue ) {
 		api.getInstanceInfo( newValue )
 			.then( function( result ) {
 
+				console.log( JSON.stringify( result ) );
+
 				instanceContactEmail.value = result.email;
 				instanceDescription.value =  
 					'<style>* { font-size: 42px !important; line-height: 1.3em; }</style>'
