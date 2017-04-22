@@ -1,19 +1,19 @@
 var api					= require( 'assets/js/api' );
 var Observable			= require( 'FuseJS/Observable' );
 
-var baseurl				= Observable( 'https://mastodon.social/' );
+var baseurl				= Observable( '' );
 
 function saveInstanceUrl() {
-
-	if ( ( 'undefined' == typeof baseurl.value ) || ( baseurl.value.length < 8 ) ) {
-		api.setError( 'Please specify a valid URL' );
-		return false;
-	}
 
 	// check baseurl
 	var urlparts = api.parseUri( baseurl.value );
 
-	if ( 'https' != urlparts.protocol ) {
+	if ( ( '' == urlparts.host ) || ( urlparts.host.length < 5 ) ) {
+		api.setError( 'Please enter a valid URL' );
+		return false;
+	}
+
+	if ( ( '' != urlparts.protocol ) && ( 'https' != urlparts.protocol ) ) {
 		api.setError( 'Only https connections are supported' );
 		return false;
 	}
@@ -21,6 +21,8 @@ function saveInstanceUrl() {
 	var path = ( '' == urlparts.path ) ? '/' : urlparts.path;
 
 	var bu = "https://" + urlparts.host + path;
+
+	console.log( 'setting baseurl to ' + bu );
 
 	api.saveAPIConnectionData( bu, false, false, false );
 
