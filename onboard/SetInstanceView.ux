@@ -7,7 +7,7 @@
 
 	<StackPanel Orientation="Vertical">
 
-		<Text Font="Regular" FontSize="15" Margin="4,0,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
+		<Text Font="Regular" FontSize="15" Margin="4,16,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
 			Value="To use Mastodon, you connect to an instance. This is the Mastodon server where you created your account." />
 		<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#1a9df8" TextWrapping="Wrap"  Height="40" Padding="16,2,2,2" Margin="0,0,36,24" TextAlignment="Left" Background="#fff">
 			<Rectangle Layer="Background">

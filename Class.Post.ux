@@ -165,6 +165,18 @@
 					</WhileTrue>
 				</StackPanel>
 
+				<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
+					<FaFlag ux:Name="icoflag" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
+						<WhileTrue Value="{flagging}">
+							<Spin Frequency="1" />
+						</WhileTrue>
+					</FaFlag>
+					<Clicked Handler="{flagPost}" />
+					<WhileTrue Value="{userHasflagged}">
+						<Change icoflag.Color="palette.clrHighlight" />
+					</WhileTrue>
+				</StackPanel>
+
 				<!-- only show translation option when enabled in settings -->
 				<WhileTrue Value="{showTranslation}">
 					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">

@@ -55,6 +55,7 @@
 	<Text ux:Class="FaLoading" Font="fa" FontSize="16">&#xf1ce;</Text>
 	<Text ux:Class="FaVideoPlay" Font="fa" FontSize="16">&#xf04b;</Text>
 	<Text ux:Class="FaMultipleMedia" Font="fa" FontSize="16">&#xf0fe;</Text>
+	<Text ux:Class="FaFlag" Font="fa" FontSize="16">&#xf024;</Text>
 
 	<JavaScript File="MainView.js" />
 
