@@ -13,7 +13,7 @@
 		<Rectangle ux:Name="progressBar" Dock="Top" Fill="#1a9df8" Alignment="Left" Width="0%" Height="2" />
 
 		<NativeViewHost ux:Name="_nativeViewHost" Visibility="{webviewVisible}" Dock="Fill">
-	    	<WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}">
+	    	<WebView Url="{oAuthUri}" UrlChanged="{webViewUrlChanged}" ZoomEnabled="false">
 				<ProgressAnimation>
 					<Change progressBar.Width="100" />
 				</ProgressAnimation>
@@ -29,9 +29,6 @@
 						}
 	  				</EvaluateJS>
 	  			</PageLoaded>
-				<WhileKeyboardVisible>
-					<Move Y="-.5" RelativeTo="Keyboard" />
-				</WhileKeyboardVisible>
 			</WebView>
 		</NativeViewHost>
 
