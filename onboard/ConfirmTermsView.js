@@ -1,16 +1,7 @@
 var api = require( 'assets/js/api' );
-var Observable = require( 'FuseJS/Observable' );
-
-var acceptedTerms = Observable( false );
 
 function confirmTerms() {
-
-	if ( acceptedTerms.value ) {
-		router.push( 'login', {} );
-	} else {
-		api.setError( 'Please accept the user agreement first' );
-	}
-
+	router.push( 'login', {} );
 }
 
 function tryAgain() {
@@ -20,6 +11,5 @@ function tryAgain() {
 
 module.exports = {
 	confirmTerms: confirmTerms,
-	acceptedTerms: acceptedTerms,
 	tryAgain: tryAgain
 }

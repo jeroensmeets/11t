@@ -4,53 +4,52 @@
 	<JavaScript File="ConfirmTermsView.js" />
 
 	<ScrollView>
-		<StackPanel Orientation="Vertical" Padding="16">
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Value="User agreement" TextWrapping="Wrap" Margin="0,0,0,16" />
+		<StackPanel Orientation="Vertical" Padding="8">
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,32" TextWrapping="Wrap">
-				To use the app 11t to connect to Mastodon, you must agree to these rules.
+				To use the app 11t to connect to Mastodon, you must agree to this agreement.
 			</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,8">Kindness</Text>
+			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Kindness</Text>
 			<Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				I [say your name here] will be kind to others, and expect everyone else to be. I will help others, but only if they ask me to.
+				I [say your name here] will be kind to others, and expect everyone else to be kind too. I will help others, but only if they ask me to.
 			</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,8">Copyright</Text>
+			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Copyright</Text>
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				When you upload information to the Mastodon instance where you have an account, you will only upload text and images you own, or have been given permission for.
+				When uploading information to Mastodon through 11t, I will only upload text and images I own, or have been given permission for.
 			</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,8">Privacy</Text>
+			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Privacy</Text>
+			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
+				In 11t, I know or will find out how I can set the visibility of my content: private to one or more users, visible to my followers or visible to all.
+			</Text>
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				In 11t, you select how visible your content will be: private to one or more users, visible for your followers or visible for all. You will not share private content of other users publicly. 
+				I will not share private content of others publicly. 
 			</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,8">NSFW content</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				On Mastodon you see what other people have shared. There are protocols in place for these images, videos and texts: imagery should be marked as sensitive, and text should be hidden behind a warning text. You are expected to do the same.
+			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">NSFW content</Text>
+			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
+				I will mark NSFW images and videos as sensitive, and hide text that be offensive to others behind a warning text. I will expect others to do the same.
 			</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				When you see or read content you think is offensive, you will let the owner of your Mastodon instance know. There are two ways to mark content as offensive: 1) flag the post as offensive and 2) block the user. After flagging or blocking, you will not be able to see this content and/or user in 11t.
+			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
+				On Mastodon I can read and see what other people have shared. When I see or read content I think is offensive, I will notify the owner of my Mastodon instance, by flagging the offensive content, or reporting the user.
+			</Text>
+			<Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
+				Each post on Mastodon has a flag in 11t, pressing this icon will send a notification to the owner of the Mastodon administrator. On the profile page of a Mastodon user, an option to block and unblock a user is shown.
 			</Text>
 
 			<!-- <Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
 				And I promise to buy the new Randy Newman record, if it should ever be released.
 			</Text> -->
 
-			<StackPanel Orientation="Horizontal" Margin="0,0,0,32" Alignment="Center">
-				<Switch Value="{acceptedTerms}" Alignment="Center" Margin="0,0,16,0" ValueChanged="{switchChanged}" />
-				<Text ux:Name="acceptTermsText" Font="Bold" FontSize="15" TextColor="palette.clrText" Value="I accept these terms." TextWrapping="Wrap" Margin="0,6,0,0" />
-			</StackPanel>
+			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
+				By clicking ✓ I accept this user agreement fully.
+			</Text>
 
-			<StackPanel Orientation="Horizontal" Alignment="Center">
+			<StackPanel Orientation="Horizontal" Alignment="Center" Margin="0,0,0,24">
 				<FaCancel Color="palette.clrTextDimmed" FontSize="48" Clicked="{tryAgain}" Margin="0,0,32,0" />
-				<FaCheck ux:Name="acceptGotoLogin" Color="palette.clrTextDimmed" FontSize="48" Clicked="{confirmTerms}" />
+				<FaCheck ux:Name="acceptGotoLogin" Color="palette.clrNavigation" FontSize="48" Clicked="{confirmTerms}" />
 			</StackPanel>
-
-			<WhileTrue Value="{acceptedTerms}">
-				<Change acceptGotoLogin.Color="palette.clrNavigation" />
-				<Change acceptTermsText.Color="palette.clrNavigation" />
-			</WhileTrue>
 
 		</StackPanel>
 	</ScrollView>
