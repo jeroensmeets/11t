@@ -61,6 +61,8 @@
 
 	<DockPanel Background="#f4f4f4">
 
+		<!-- <GlobalImageViewer ux:Global="ImageViewer" ViewerVisible="false" Layer="Overlay" /> -->
+
 		<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
 
 		<StackPanel Dock="Top">
@@ -128,6 +130,7 @@
 			</LoginPage>
 			<UserProfilePage ux:Template="userprofile" router="router" TopNavBar="TopNavBar" />
 			<PostPage ux:Template="postcontext" router="router" TopNavBar="TopNavBar" />
+			<ReportContentPage ux:Template="reportcontent" router="router" TopNavBar="TopNavBar" />
 			<FixedContentPage ux:Template="fixedcontent" router="router" TopNavBar="TopNavBar" />
 		</Navigator>
 

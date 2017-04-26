@@ -28,9 +28,12 @@ var originalContentInWords = Observable();
 var favouriting = Observable( false );
 var reposting = Observable( false );
 var translating = Observable( false );
+var flagging = Observable( false );
 
 var userHasReposted = Observable( false );
 var userHasFavourited = Observable( false );
+var userHasFlagged = Observable( true );
+
 var isTranslated = Observable( false );
 
 var showTranslation = Observable( function() {
@@ -40,6 +43,10 @@ var showTranslation = Observable( function() {
 var isRepost = Observable( false );
 
 this.post.onValueChanged( module, function( newValue ) {
+
+	if ( null == newValue ) {
+		return;
+	}
 
 	postid = newValue.postid;
 	userid = newValue.userid;
@@ -104,6 +111,14 @@ function favouritePost( ) {
 		console.log( JSON.stringify( err.message ) );
 		favouriting.value = false;
 	});
+
+}
+
+function gotoReportScreen() {
+
+	console.log( 'clicked on flag for post ' + postid );
+
+	router.push( 'reportcontent', { post: _this.post.value.status, userid: userid, username: username } );
 
 }
 
@@ -202,6 +217,8 @@ module.exports = {
 	favouritePost: favouritePost,
 	favouriting: favouriting,
 	userHasFavourited: userHasFavourited,
+
+	gotoReportScreen: gotoReportScreen,
 
 	spoilerText: spoilerText,
 	contentInParagraphs: contentInParagraphs,

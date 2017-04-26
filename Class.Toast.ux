@@ -1,19 +1,21 @@
 <Panel ux:Name="toast" ux:Class="Toast" Layer="Overlay" Padding="24,4" Visibility="Collapsed">
+
 	<string ux:Property="toastText" />
+
 	<JavaScript>
 		var api = require( 'assets/js/api' );
 		var Observable	= require("FuseJS/Observable");
 		var v = Observable( false );
 
-		this.toastText.addSubscriber( function( newText ) {
+		this.toastText.onValueChanged( module, function( newText ) {
 
-			if ( '' != newText.value ) {
+			if ( ( 'string' == typeof newText.value ) && ( '' != newText.value ) ) {
 
 				v.value = true;
 				setTimeout( function() {
 					api.clearError();
 					v.value = false;
-				}, 5000 );
+				}, 3000 );
 			}
 
 		});
@@ -29,7 +31,7 @@
 
 	<WhileTrue Value="{v}">
 		<Change toast.Visibility="Visible" />
-		<Change toastbg.Opacity=".7" Duration="1" />
+		<Change toastbg.Opacity=".5" Duration="1" />
 	</WhileTrue>
 
 </Panel>

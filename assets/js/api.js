@@ -527,6 +527,38 @@ function followUser( _userid, _isfollowing ) {
 
 }
 
+function sendReport( _userid, _postid, _comment ) {
+
+	return new Promise( function( resolve, reject ) {
+
+		var _bodyArgs = {};
+		_bodyArgs.account_id = _userid;
+		_bodyArgs.status_ids = _postid;
+		_bodyArgs.comment = _comment;
+
+		console.log( 'sending report with these data: ' );
+		console.log( JSON.stringify( _bodyArgs ) );
+
+		apiFetch( '/api/v1/reports', {
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + AccessToken
+			},
+			body: JSON.stringify( _bodyArgs )
+		} )
+		.then( function( json ) {
+			// console.log( 'api call to ' + followAction + ' user ' + _userid + ' returned with response: ' + JSON.stringify( json ) );
+			resolve( json );
+		})
+		.catch( function( err ) {
+			console.log( err.message );
+			reject( err );
+		});
+
+	} );
+
+}
+
 
 /**
  * @param  {string}		_txt			text of post
@@ -715,11 +747,14 @@ module.exports = {
 	getInstanceInfo: getInstanceInfo,
 	sendImage: sendImage,
 	sendPost: sendPost,
+	sendReport: sendReport,
 	favouritePost: favouritePost,
 	rePost: rePost,
 	parseUri: helper.parseUri,
 	cleanUp: cleanUp,
-	logOut: logOut
+	logOut: logOut,
+
+	MastodonPost: MastodonPost
 }
 
 // https://www.fusetools.com/docs/backend/rest-apis
@@ -778,15 +813,5 @@ function apiFetch( path, options ) {
 			});
 
 	});
-
-	// .then(function( result ) {
-	// 	// request succeed
-	// 	resolve( result );
-	// 	console.log( 'request succeeded' );
-	// })
-	// .catch(function( err ) {
-	// 	// error: response error, request timeout or runtime error
-	// 	console.log( 'error in API call: ' + JSON.stringify( err ) );
-	// });
 
 }

@@ -3,6 +3,7 @@
 	<object ux:Property="post" />
 
 	<bool ux:Property="clickable" />
+	<bool ux:Property="hideicons" />
 	<bool ux:Property="drawlines" />
 
 	<JavaScript File="Class.Post.js" />
@@ -47,6 +48,18 @@
         					<WhileFailed>
 								<Change attachment.Height="0" />
 							</WhileFailed>
+							<Tapped>
+<!-- 								<Set ImageViewer.Source="{url}" />
+								<Set ImageViewer.ViewerVisible="true" /> -->
+								
+<!-- 								<Set TheTransform.ZoomFactor="1"/>
+								<Set TheTransform.Rotation="0"/>
+								<Set TheTransform.Translation="0"/>
+								
+								<Set ZoomToPos.RelativeNode="attachment"/>
+								<Set ZoomToSize.RelativeNode="attachment"/>
+								<PulseBackward Target="ZoomTo"/> -->
+							</Tapped>
 						</Image>
 
 					</Panel>
@@ -115,7 +128,7 @@
 				<Text Value="{accountData.acct}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Regular" />
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Horizontal" ux:Name="interactions">
 
 				<Panel Alignment="CenterLeft" Margin="0,0,16,0">
 					<FaReply Color="palette.clrIconDimmed" FontSize="15" />
@@ -165,16 +178,8 @@
 					</WhileTrue>
 				</StackPanel>
 
-				<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
-					<FaFlag ux:Name="icoflag" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
-						<WhileTrue Value="{flagging}">
-							<Spin Frequency="1" />
-						</WhileTrue>
-					</FaFlag>
-					<Clicked Handler="{flagPost}" />
-					<WhileTrue Value="{userHasflagged}">
-						<Change icoflag.Color="palette.clrHighlight" />
-					</WhileTrue>
+				<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0" Clicked="{gotoReportScreen}">
+					<FaFlag ux:Name="icoflag" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0" />
 				</StackPanel>
 
 				<!-- only show translation option when enabled in settings -->
@@ -195,6 +200,10 @@
 			</StackPanel>
 
 		</StackPanel>
+
+		<WhileTrue Value="{Property pc.hideicons}">
+			<Change interactions.Visibility= "Collapsed" />
+		</WhileTrue>
 
 		<Panel Dock="Right" Margin="0,0,4,0" Padding="8,0,0,0">
 			<Text Value="{timeSince}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Italic" />
