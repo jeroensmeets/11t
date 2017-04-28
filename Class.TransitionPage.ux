@@ -1,4 +1,7 @@
-<Page ux:Class="TransitionPage" Transition="None">
+<Page ux:Class="TransitionPage" Transition="Default">
+	<ResourceString Key="PageTitle" Value="{pagetitle}" />
+</Page>
+<!-- <Page ux:Class="TransitionPage" Transition="None">
 	<ResourceString Key="PageTitle" Value="{pagetitle}" />
     <EnteringAnimation>
         <Move X="1" RelativeTo="Size" Duration="0.4" Easing="CubicInOut" />
@@ -10,3 +13,4 @@
         <Move X="-1" RelativeTo="Size" Duration="0.4" Easing="CubicInOut" />
     </RemovingAnimation>
 </Page>
+ -->

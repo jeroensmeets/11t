@@ -1,4 +1,4 @@
-<StackPanel ux:Class="PostCard" ux:Name="pc" Margin="0,0,0,6" Background="#fff">
+<StackPanel ux:Class="PostCard" ux:Name="pc" Margin="0,0,0,3" Background="#fff">
 	<Router ux:Dependency="router" />
 	<object ux:Property="post" />
 
@@ -111,9 +111,9 @@
 		</Each>
 	</Panel>
 
-	<DockPanel Padding="12">
+	<DockPanel Padding="12,12,12,6">
 
-		<Panel Height="54" Width="54" Margin="0,0,8,0" Clicked="{gotoUser}" Dock="Left">
+		<Panel Height="54" Width="54" Margin="0,0,12,0" Clicked="{gotoUser}" Dock="Left">
 
 			<Rectangle CornerRadius="6" Width="54" Height="54" Color="#1a9df8">
 				<ImageFill Url="{accountData.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
@@ -121,93 +121,103 @@
 
 		</Panel>
 
-		<StackPanel Orientation="Vertical">
+		<StackPanel Orientation="Vertical" Margin="0,4">
 
-			<StackPanel Orientation="Vertical" Clicked="{gotoUser}" Margin="0,0,0,4">
-				<Text Value="{accountData.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrTextDimmed" />
-				<Text Value="{accountData.acct}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Regular" />
-			</StackPanel>
+			<DockPanel Margin="0,0,0,4">
 
-			<StackPanel Orientation="Horizontal" ux:Name="interactions">
-
-				<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-					<FaReply Color="palette.clrIconDimmed" FontSize="15" />
-					<Clicked Handler="{replyToPost}" />
+				<Panel Dock="Left" Alignment="Left">
+					<Text Value="{accountData.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrTextDimmed" />
+				</Panel>
+				<Panel Dock="Right" Alignment="Right">
+					<Text Value="{accountData.acct}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Regular" />
 				</Panel>
 
-				<!-- can't reblog when marked sensitive -->
-				<WhileString Value="{status.visibility}" Equals="public" Invert="true">
+			</DockPanel>
 
-					<WhileString Value="{status.visibility}" Equals="direct">
-						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-							<FaEnvelope Color="palette.clrIconDimmed" FontSize="17" />
-						</Panel>
+			<DockPanel>
+
+				<Panel Margin="8,0,0,2" Dock="Right" Alignment="Right">
+					<Text Value="{timeSince}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Italic" />
+				</Panel>
+
+				<StackPanel Orientation="Horizontal" ux:Name="interactions" Dock="Left">
+
+					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+						<FaReply Color="palette.clrIconDimmed" FontSize="15" />
+						<Clicked Handler="{replyToPost}" />
+					</Panel>
+
+					<!-- can't reblog when marked sensitive -->
+					<WhileString Value="{status.visibility}" Equals="public" Invert="true">
+
+						<WhileString Value="{status.visibility}" Equals="direct">
+							<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+								<FaEnvelope Color="palette.clrIconDimmed" FontSize="17" />
+							</Panel>
+						</WhileString>
+
+						<WhileString Value="{status.visibility}" Equals="direct" Invert="true">
+							<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+								<FaLock Color="palette.clrIconDimmed" FontSize="17" />
+							</Panel>
+						</WhileString>
+
 					</WhileString>
 
-					<WhileString Value="{status.visibility}" Equals="direct" Invert="true">
-						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-							<FaLock Color="palette.clrIconDimmed" FontSize="17" />
-						</Panel>
+					<WhileString Value="{status.visibility}" Equals="public">
+						<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
+							<FaRepost ux:Name="icoreblogged" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
+								<WhileTrue Value="{reposting}">
+									<Spin Frequency="1" />
+								</WhileTrue>
+							</FaRepost>
+							<Clicked Handler="{rePost}" />
+							<WhileTrue Value="{userHasReposted}">
+								<Change icoreblogged.Color="palette.clrHighlight" />
+							</WhileTrue>
+						</StackPanel>
 					</WhileString>
 
-				</WhileString>
-
-				<WhileString Value="{status.visibility}" Equals="public">
 					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
-						<FaRepost ux:Name="icoreblogged" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
-							<WhileTrue Value="{reposting}">
+						<FaStar ux:Name="icostar" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
+							<WhileTrue Value="{favouriting}">
 								<Spin Frequency="1" />
 							</WhileTrue>
-						</FaRepost>
-						<Clicked Handler="{rePost}" />
-						<WhileTrue Value="{userHasReposted}">
-							<Change icoreblogged.Color="palette.clrHighlight" />
+						</FaStar>
+						<Clicked Handler="{favouritePost}" />
+						<WhileTrue Value="{userHasFavourited}">
+							<Change icostar.Color="palette.clrHighlight" />
 						</WhileTrue>
 					</StackPanel>
-				</WhileString>
 
-				<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
-					<FaStar ux:Name="icostar" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
-						<WhileTrue Value="{favouriting}">
-							<Spin Frequency="1" />
-						</WhileTrue>
-					</FaStar>
-					<Clicked Handler="{favouritePost}" />
-					<WhileTrue Value="{userHasFavourited}">
-						<Change icostar.Color="palette.clrHighlight" />
+					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Clicked="{gotoReportScreen}">
+						<FaFlag ux:Name="icoflag" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0" />
+					</StackPanel>
+
+					<!-- only show translation option when enabled in settings -->
+					<WhileTrue Value="{showTranslation}">
+						<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
+							<FaGlobe ux:Name="icotranslate" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
+								<WhileTrue Value="{translating}">
+									<Spin Frequency="1" />
+								</WhileTrue>
+							</FaGlobe>
+							<Clicked Handler="{translatePost}" />
+							<WhileTrue Value="{isTranslated}">
+								<Change icotranslate.Color="palette.clrHighlight" />
+							</WhileTrue>
+						</StackPanel>
 					</WhileTrue>
+
 				</StackPanel>
 
-				<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0" Clicked="{gotoReportScreen}">
-					<FaFlag ux:Name="icoflag" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0" />
-				</StackPanel>
-
-				<!-- only show translation option when enabled in settings -->
-				<WhileTrue Value="{showTranslation}">
-					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
-						<FaGlobe ux:Name="icotranslate" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
-							<WhileTrue Value="{translating}">
-								<Spin Frequency="1" />
-							</WhileTrue>
-						</FaGlobe>
-						<Clicked Handler="{translatePost}" />
-						<WhileTrue Value="{isTranslated}">
-							<Change icotranslate.Color="palette.clrHighlight" />
-						</WhileTrue>
-					</StackPanel>
-				</WhileTrue>
-
-			</StackPanel>
+			</DockPanel>
 
 		</StackPanel>
 
 		<WhileTrue Value="{Property pc.hideicons}">
 			<Change interactions.Visibility= "Collapsed" />
 		</WhileTrue>
-
-		<Panel Dock="Right" Margin="0,0,4,0" Padding="8,0,0,0">
-			<Text Value="{timeSince}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Italic" />
-		</Panel>
 
 	</DockPanel>
 
@@ -234,34 +244,38 @@
 
 		<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="24,8,16,0">
 
-			<WhileString Value="{spoilerText}" Test="IsNotEmpty">
-				<Change postcontent.Visibility="Collapsed" />
-			</WhileString>
+			<Deferred>
 
-			<WhileFalse Value="{Property pc.clickable}">
-				<StackPanel Orientation="Vertical" Clicked="{gotoPost}">
-					<Each Items="{contentInParagraphs}">
-						<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,8" />
-					</Each>
-				</StackPanel>
+				<WhileString Value="{spoilerText}" Test="IsNotEmpty">
+					<Change postcontent.Visibility="Collapsed" />
+				</WhileString>
 
-			</WhileFalse>
+				<WhileFalse Value="{Property pc.clickable}">
+					<StackPanel Orientation="Vertical" Clicked="{gotoPost}">
+						<Each Items="{contentInParagraphs}">
+							<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,8" />
+						</Each>
+					</StackPanel>
 
-			<WhileTrue Value="{Property pc.clickable}">
-				<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
-					<Each Items="{contentInWords}">
-						<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
-							<WhileTrue Value="{clear}">
-								<Change word.Margin="0,0,800,8" />
-							</WhileTrue>
-							<WhileTrue Value="{makeBold}">
-								<Change word.Font="Bold" />
-								<Clicked Handler="{wordClicked}" />
-							</WhileTrue>
-						</Text>
-					</Each>
-				</WrapPanel>
-			</WhileTrue>
+				</WhileFalse>
+
+				<WhileTrue Value="{Property pc.clickable}">
+					<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
+						<Each Items="{contentInWords}">
+							<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
+								<WhileTrue Value="{clear}">
+									<Change word.Margin="0,0,800,8" />
+								</WhileTrue>
+								<WhileTrue Value="{makeBold}">
+									<Change word.Font="Bold" />
+									<Clicked Handler="{wordClicked}" />
+								</WhileTrue>
+							</Text>
+						</Each>
+					</WrapPanel>
+				</WhileTrue>
+
+			</Deferred>
 
 			<WhileTrue Value="{Property pc.drawlines}">
 				<WhileFalse Value="{last}">

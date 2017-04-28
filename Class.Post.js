@@ -116,9 +116,7 @@ function favouritePost( ) {
 
 function gotoReportScreen() {
 
-	console.log( 'clicked on flag for post ' + postid );
-
-	router.push( 'reportcontent', { post: _this.post.value.status, userid: userid, username: username } );
+	router.push( 'reportcontent', { post: _this.post.value.status, userid: userid } );
 
 }
 

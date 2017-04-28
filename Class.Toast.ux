@@ -9,7 +9,7 @@
 
 		this.toastText.onValueChanged( module, function( newText ) {
 
-			if ( ( 'string' == typeof newText.value ) && ( '' != newText.value ) ) {
+			if ( ( 'string' == typeof newText ) && ( '' != newText ) ) {
 
 				v.value = true;
 				setTimeout( function() {

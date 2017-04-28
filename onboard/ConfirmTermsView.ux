@@ -21,7 +21,10 @@
 
 			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Privacy</Text>
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
-				In 11t, I know or will find out how I can set the visibility of my content: private to one or more users, visible to my followers or visible to all.
+				In 11t, I know or will find out how I can set the visibility of my content: how to write it for one or more users, visible to my followers or visible to all.
+			</Text>
+			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
+				Mastodon is federated and has many servers. I know that, even though I can limit the visibility of my content, there is no guarantee the content will remain invisible to others.
 			</Text>
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
 				I will not share private content of others publicly. 
@@ -29,7 +32,7 @@
 
 			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">NSFW content</Text>
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
-				I will mark NSFW images and videos as sensitive, and hide text that be offensive to others behind a warning text. I will expect others to do the same.
+				I will mark NSFW images and videos as sensitive, and hide text that could be offensive to others behind a warning text. I will expect others to do the same.
 			</Text>
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
 				On Mastodon I can read and see what other people have shared. When I see or read content I think is offensive, I will notify the owner of my Mastodon instance, by flagging the offensive content, or reporting the user.

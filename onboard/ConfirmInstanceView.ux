@@ -16,7 +16,7 @@
 		<StackPanel Orientation="Vertical" Height="280" ux:Name="errorLoading" Padding="16" Visibility="Collapsed" Dock="Top">
 			<Text Font="Italic" FontSize="15" TextColor="palette.clrText" Value="Could not connect to instance. Please go back and try again." TextWrapping="Wrap" Alignment="Center" TextAlignment="Center" />
 			<StackPanel Orientation="Horizontal" Margin="0,16,0,0" Alignment="Center" Clicked="{tryAgain}">
-				<FaHistory TextColor="palette.clrNavigation" Margin="0,8,4,0" />
+				<FaHistory TextColor="palette.clrNavigation" Margin="0,8,16,0" />
 				<Text Font="Regular" FontSize="21" TextColor="palette.clrNavigation" Value="Let me try again!" />
 			</StackPanel>
 		</StackPanel>

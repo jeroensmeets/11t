@@ -263,6 +263,8 @@ function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
  */
 function setActiveTimeline( timelineType, loadFromAPI ) {
 
+	console.log( 'setting timeline to ' + timelineType );
+
 	active.value = timelineType;
 	loadCurrentTimelineFromCache();
 
@@ -307,7 +309,7 @@ function loadCurrentTimelineFromCache() {
 
 	Storage.read( active.value + FILE_DATACACHE )
     .then( function( fileContents ) {
-        refreshPosts( active.value, JSON.parse( fileContents ), true );
+        refreshPosts( active.value, JSON.parse( fileContents ) );
     }, function( error ) {
         // error in reading from cache
     });
@@ -345,10 +347,12 @@ function loadTimeline( _type, _id, _postObj ) {
 			break;
 		case 'hashtag':
 			posts.hashtag.clear();
+			Storage.deleteSync( _type + FILE_DATACACHE );
 			endpoint = 'api/v1/timelines/tag/' + _id;
 			break;
 		case 'user':
 			posts.user.clear();
+			Storage.deleteSync( _type + FILE_DATACACHE );
 			endpoint = 'api/v1/accounts/' + _id + '/statuses';
 			break;
 		case 'postcontext':
@@ -373,8 +377,25 @@ function loadTimeline( _type, _id, _postObj ) {
 			json[ json.length - 1 ][ 'last' ] = true;
 		}
 
+		// // save new data to cache
+		// var _cache = Storage.readSync( _type + FILE_DATACACHE );
+		// var _posts = ( '' == _cache ) ? [] : JSON.parse( _cache );
+
+		// console.log( 'size of array from cache is ' + _posts.length );
+		// // console.log( JSON.stringify( _posts ) );
+		// console.log( 'size of array from api is ' + json.length );
+		// // console.log( JSON.stringify( json ) );
+
+		// // Array.prototype.push.apply( _posts, json );
+		// _posts = _posts.concat( json );
+		// Storage.write( _type + FILE_DATACACHE, JSON.stringify( _posts ) );
+
+		// // TODO limit size of cache
+		// console.log( 'size of posts array is now ' + _posts.length );
+		// // console.log( JSON.stringify( _posts ) );
+
 		// posts loaded, refresh timeline
-		refreshPosts( _type, json, false );
+		refreshPosts( _type, json );
 
 		loading.value = false;
 
@@ -387,7 +408,7 @@ function loadTimeline( _type, _id, _postObj ) {
 
 }
 
-function refreshPosts( posttype, jsondata, isfromcache ) {
+function refreshPosts( posttype, jsondata ) {
 
 	posts[ posttype ].refreshAll(
 		jsondata,
@@ -402,10 +423,8 @@ function refreshPosts( posttype, jsondata, isfromcache ) {
 		// add new
 		function( newItem ) {
 			return new MastodonPost( newItem );
-        }
+		}
 	);
-
-	Storage.write( posttype + FILE_DATACACHE, JSON.stringify( posts[ posttype ].toArray() ) );
 
 }
 
@@ -527,27 +546,40 @@ function followUser( _userid, _isfollowing ) {
 
 }
 
-function sendReport( _userid, _postid, _comment ) {
+function getReports() {
+
+	loadAPIConnectionData();
+
+	// let's try getting reports
+	apiFetch( 'api/v1/reports', {
+		headers: {
+			Authorization: 'Bearer ' + AccessToken
+		}
+	} ).then( function( json ) {
+		console.log( JSON.stringify( json ) );
+	} );
+
+}
+
+function sendReport( uid, pid, commenttxt ) {
+
+	loadAPIConnectionData();
 
 	return new Promise( function( resolve, reject ) {
 
-		var _bodyArgs = {};
-		_bodyArgs.account_id = _userid;
-		_bodyArgs.status_ids = _postid;
-		_bodyArgs.comment = _comment;
-
-		console.log( 'sending report with these data: ' );
-		console.log( JSON.stringify( _bodyArgs ) );
-
-		apiFetch( '/api/v1/reports', {
+		apiFetch( 'api/v1/reports', {
 			method: 'POST',
 			headers: {
 				Authorization: 'Bearer ' + AccessToken
 			},
-			body: JSON.stringify( _bodyArgs )
+			body: {
+				account_id	: uid,
+				status_ids	: [ pid ],
+				comment		: commenttxt
+			}
 		} )
 		.then( function( json ) {
-			// console.log( 'api call to ' + followAction + ' user ' + _userid + ' returned with response: ' + JSON.stringify( json ) );
+			console.log( 'api call to report user ' + uid + ' for post ' + pid + ' returned with response: ' + JSON.stringify( json ) );
 			resolve( json );
 		})
 		.catch( function( err ) {
@@ -778,6 +810,11 @@ function apiFetch( path, options ) {
 
 	}
 
+	console.log( 'sending request to ' + url );
+	console.log( ' ----- options ----- ' );
+	console.log( JSON.stringify( options ) );
+	console.log( ' ------------------- ' );
+
 	// fetch has no timeout, wrap it in a promise
 	// https://www.fusetools.com/community/forums/show_and_tell/fetch_timeout
 	return new Promise( function( resolve, reject ) {
@@ -792,8 +829,10 @@ function apiFetch( path, options ) {
 
 				clearTimeout( timeout );
 				if ( response && 200 == response.status ) {
+					console.log( 'apiFetch returned with status 200' );
 					return response.json();
 				} else if ( 401 == response.status ) {
+					console.log( 'received a 401 from API' );
 					logOut();
 					reject( '401 not authorized' );
 				} else {
@@ -804,12 +843,13 @@ function apiFetch( path, options ) {
 			} )
 			.then( function( responseObject ) {
 				// process results
+				console.log( 'return response object' );
 				resolve( responseObject );
 			})
 			.catch( function( err ) {
 				clearTimeout( timeout );
-				console.log( err.message );
-				reject( err.message );
+				console.log( 'error: ' + err.message );
+				reject( err );
 			});
 
 	});

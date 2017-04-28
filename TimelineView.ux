@@ -2,9 +2,6 @@
 	<Router ux:Dependency="router" />
 	<JavaScript File="TimelineView.js" />
 
-	<!-- <Swiped> -->
-		<!-- <RouterModify Router="router" How="Goto"  -->
-
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
 		<NavBarTitle>Timeline</NavBarTitle>

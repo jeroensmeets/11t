@@ -5,10 +5,12 @@
 I connect to Mastodon on [mastodon.social](https://mastodon.social/), but everyone can start her own server. 11t lets you use any Mastodon instance.
 
 ## Android ##
-The app is [in the Play Store](https://play.google.com/store/apps/details?id=com.jeroensmeets.mastodon) and [on F-Droid](https://apt.izzysoft.de/fdroid/index/apk/com.jeroensmeets.mastodon).
+The app is [in the Play Store](https://play.google.com/store/apps/details?id=com.jeroensmeets.mastodon) and minor versions (as in major.minor.build) are [on F-Droid](https://apt.izzysoft.de/fdroid/index/apk/com.jeroensmeets.mastodon).
 
 ## iOS ##
-App is under review by Apple.
+Not yet available.
+
+Version 1.1 was rejected by Apple, they sent me a couple of suggestions I could add to get it accepted. Working on these at the moment.
 
 ### How do I pronounce 11t? ###
 
@@ -26,7 +28,7 @@ Drawing of blue elephant: [Tineke Meirink](https://www.tinekemeirink.nl/).
 
 ### Contact ###
 
-I'm [@jeroensmeets@mastodon.social](https://mastodon.social/web/accounts/8779). And also on that dinosaur called Twitter.
+I'm [@jeroensmeets@mastodon.social](https://mastodon.social/@jeroensmeets). And also on that dinosaur called Twitter.
 
 ### Screenshots ###
 

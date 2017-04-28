@@ -10,7 +10,7 @@
 
 	<ScrollView>
 		<StackPanel Orientation="Vertical">
-			<FaFlag Color="palette.clrHighlight" FontSize="48" Alignment="Center" Margin="0,24,0,36" />
+			<FaFlag Color="palette.clrHighlight" FontSize="48" Alignment="Center" Margin="0,24,0,24" />
 
 			<Each Items="{singlepost}">
 				<PostCard post="{}" drawlines="false" clickable="false" hideicons="true" router="router" />

@@ -22,7 +22,7 @@ function logOut() {
 	api.setError( 'Logging you out...' );
 	api.logOut();
 	setTimeout( function() {
-		router.goto( 'splash' );
+		router.goto( 'splash', {}, 'setinstance' );
 	}, 2500 );
 
 }

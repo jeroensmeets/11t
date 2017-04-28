@@ -4,25 +4,33 @@ var Observable = require( 'FuseJS/Observable' );
 var singlepost = Observable();
 var comment = Observable( '' );
 
-var post = this.Parameter.map( function( params ) {
-	return params.post;
-});
+var post = Observable();
+var userid = Observable( 0 );
 
-var userid = this.Parameter.map( function( params ) {
-	return params.userid;
-});
+this.Parameter.onValueChanged( module, function( params ) {
 
-var username = this.Parameter.map( function( params ) {
-	return params.username;
-});
+	post.value = params.post;
+	singlepost.value = new api.MastodonPost( post.value );
 
-// prevent multiple calls to api
-var postloaded = false;
-post.onValueChanged( module, function( newValue ) {
-
-	singlepost.value = new api.MastodonPost( newValue );
+	userid.value = params.userid;
 
 } );
+
+// var post = this.Parameter.map( function( params ) {
+// 	return params.post;
+// });
+
+// var userid = this.Parameter.map( function( params ) {
+// 	return params.userid;
+// });
+
+// // prevent multiple calls to api
+// var postloaded = false;
+// post.onValueChanged( module, function( newValue ) {
+
+// 	singlepost.value = new api.MastodonPost( newValue );
+
+// } );
 
 function sendReport() {
 
