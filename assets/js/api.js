@@ -810,10 +810,10 @@ function apiFetch( path, options ) {
 
 	}
 
-	console.log( 'sending request to ' + url );
-	console.log( ' ----- options ----- ' );
-	console.log( JSON.stringify( options ) );
-	console.log( ' ------------------- ' );
+	// console.log( 'sending request to ' + url );
+	// console.log( ' ----- options ----- ' );
+	// console.log( JSON.stringify( options ) );
+	// console.log( ' ------------------- ' );
 
 	// fetch has no timeout, wrap it in a promise
 	// https://www.fusetools.com/community/forums/show_and_tell/fetch_timeout
