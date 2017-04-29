@@ -116,7 +116,7 @@
 		<Panel Height="54" Width="54" Margin="0,0,12,0" Clicked="{gotoUser}" Dock="Left">
 
 			<Rectangle CornerRadius="6" Width="54" Height="54" Color="#1a9df8">
-				<ImageFill Url="{accountData.avatar}" StretchMode="UniformToFill" ContentAlignment="Center" />
+				<ImageFill Url="{accountData.avatar_static}" StretchMode="UniformToFill" ContentAlignment="Center" />
 			</Rectangle>
 
 		</Panel>
@@ -125,7 +125,7 @@
 
 			<DockPanel Margin="0,0,0,4">
 
-				<Panel Dock="Left" Alignment="Left">
+				<Panel Alignment="Left">
 					<Text Value="{accountData.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrTextDimmed" />
 				</Panel>
 				<Panel Dock="Right" Alignment="Right">

@@ -546,17 +546,23 @@ function followUser( _userid, _isfollowing ) {
 
 }
 
-function getReports() {
+function loadReports() {
 
 	loadAPIConnectionData();
 
 	// let's try getting reports
-	apiFetch( 'api/v1/reports', {
-		headers: {
-			Authorization: 'Bearer ' + AccessToken
-		}
-	} ).then( function( json ) {
-		console.log( JSON.stringify( json ) );
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch( 'api/v1/reports', {
+			headers: {
+				Authorization: 'Bearer ' + AccessToken
+			}
+		} ).then( function( json ) {
+			resolve( json );
+		} ).catch( function( err ) {
+			reject( err );
+		} );
+
 	} );
 
 }
@@ -763,6 +769,7 @@ module.exports = {
 	loadTimeline: loadTimeline,
 	loadUserProfile: loadUserProfile,
 	loadPostContext: loadPostContext,
+	loadReports: loadReports,
 	loading: loading,
 	error: error,
 	setError: setError,

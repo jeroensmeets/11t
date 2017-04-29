@@ -17,6 +17,10 @@ function showAboutPage() {
 	router.push( 'fixedcontent', { content: 'about' } );
 }
 
+function showReports() {
+	router.push( 'reportslist' );
+}
+
 function logOut() {
 
 	api.setError( 'Logging you out...' );
@@ -29,6 +33,7 @@ function logOut() {
 
 module.exports = {
 	showAboutPage: showAboutPage,
+	showReports: showReports,
 	logOut: logOut,
 	useTranslations: useTranslations,
 	loadSettings: loadSettings

@@ -27,6 +27,7 @@
 			<Rectangle Alignment="Bottom" Height="1" Background="#787b87" />
 		</Panel> -->
 
+		<SettingOption t="Your reports" Clicked="{showReports}" />
 		<SettingOption t="About 11t" Clicked="{showAboutPage}" />
 		<SettingOption t="Log out" Clicked="{logOut}" />
 

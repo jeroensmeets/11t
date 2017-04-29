@@ -20,6 +20,8 @@
 						<Change btnFollow.Visibility="Visible" />
 					</WhileString>
 				</StackPanel>
+
+				<Image Layer="Background" File="{account.header}" StretchMode="UniformToFill" ContentAlignment="Center" />
 			</StackPanel>
 
 			<Panel Margin="16,4,24,0">

@@ -111,6 +111,7 @@
 			<FavouritesPage Name="favourites" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
 			<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
 			<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar" />
+			<ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" />
 
 			<WritePage Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">
