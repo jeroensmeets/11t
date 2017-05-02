@@ -21,6 +21,14 @@ function showReports() {
 	router.push( 'reportslist' );
 }
 
+function showMutedUsers() {
+	router.push( 'mutedusers' );
+}
+
+function showBlockedUsers() {
+	router.push( 'blockedusers' );
+}
+
 function logOut() {
 
 	api.setError( 'Logging you out...' );
@@ -34,6 +42,8 @@ function logOut() {
 module.exports = {
 	showAboutPage: showAboutPage,
 	showReports: showReports,
+	showBlockedUsers: showBlockedUsers,
+	showMutedUsers: showMutedUsers,
 	logOut: logOut,
 	useTranslations: useTranslations,
 	loadSettings: loadSettings

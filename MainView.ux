@@ -48,6 +48,14 @@
 	<Text ux:Class="FaCheck" Font="fa" FontSize="16">&#xf05d;</Text>
 	<Text ux:Class="FaCancel" Font="fa" FontSize="16">&#xf05c;</Text>
 
+	<Text ux:Class="FaAmNotFollowing" Font="fa" FontSize="16">&#xf234;</Text>
+	<Text ux:Class="FaAmFollowing" Font="fa" FontSize="16">&#xf235;</Text>
+
+	<Text ux:Class="FaIsNotMuted" Font="fa" FontSize="16">&#xf028;</Text>
+	<Text ux:Class="FaIsMuted" Font="fa" FontSize="16">&#xf026;</Text>
+
+	<Text ux:Class="FaIsBlocked" Font="fa" FontSize="16">&#xf05e;</Text>
+
 	<Text ux:Class="FaGoBack" Font="fa" FontSize="16">&#xf060;</Text>
 	<Text ux:Class="FaHistory" Font="fa" FontSize="16">&#xf1da;</Text>
 	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>
@@ -112,6 +120,8 @@
 			<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
 			<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar" />
 			<ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" />
+			<BlockedUsersPage Name="blockedusers" router="router" TopNavBar="TopNavBar" />
+			<MutedUsersPage Name="mutedusers" router="router" TopNavBar="TopNavBar" />
 
 			<WritePage Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">

@@ -1,4 +1,7 @@
 <TransitionPage ux:Class="UserProfilePage">
+
+	<int ux:Property="userid" />
+
 	<Router ux:Dependency="router" />
 	<JavaScript File="UserProfileView.js" />
 
@@ -8,38 +11,18 @@
 	</AlternateRoot>
 
 	<ScrollView>
+
 		<StackPanel Orientation="Vertical">
-			<StackPanel Orientation="Horizontal">
-				<Image Url="{Clear account.avatar}" Height="120" Width="120" Margin="16,16,8,16" StretchMode="UniformToFill" MemoryPolicy="QuickUnload" ContentAlignment="Center" />
-				<StackPanel Orientation="Vertical" Margin="16,6,0,0">
-					<Text Value="{Clear account.display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" />
-					<Text Value="@{Clear account.acct}" FontSize="13" Font="Regular" TextColor="palette.clrText" Margin="0,0,0,6" />
-					<MastodonButton text="Mention" Clicked="{mentionUser}" Margin="0,0,0,12" />
-					<MastodonButton ux:Name="btnFollow" text="{following}" Clicked="{followUser}" Margin="0,0,0,12" Visibility="Collapsed" />
-					<WhileString Test="IsNotEmpty" Value="{following}">
-						<Change btnFollow.Visibility="Visible" />
-					</WhileString>
-				</StackPanel>
 
-				<Image Layer="Background" File="{account.header}" StretchMode="UniformToFill" ContentAlignment="Center" />
-			</StackPanel>
+			<UserCard act="{act}" router="router" />
 
-			<Panel Margin="16,4,24,0">
-				<WhileTrue Value="{amFollowedBy}">
-					<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Italic" Value="{account.display_name} is following you." />
-				</WhileTrue>
+			<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear act.note}" />
 
-				<WhileFalse Value="{amFollowedBy}">
-					<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Italic" Value="{account.display_name} should be following you." />
-				</WhileFalse>
-			</Panel>
-
-			<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear account.note}" />
 			<Panel Margin="16,16,24,16">
-				<Text Value="{Clear account.statuses_count} posts composed." FontSize="13" TextColor="palette.clrText" Font="Regular" />
+				<Text Value="{Clear act.statuses_count} posts composed." FontSize="13" TextColor="palette.clrText" Font="Regular" />
 			</Panel>
 
-			<Each Items="{Clear posts}">
+			<Each Items="{posts}">
 				<PostCard post="{}" router="router" />
 			</Each>
 			<WhileFalse Value="{loading}">
@@ -48,5 +31,7 @@
 				</WhileEmpty>
 			</WhileFalse>
 		</StackPanel>
+
 	</ScrollView>
+
 </TransitionPage>

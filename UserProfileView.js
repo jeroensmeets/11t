@@ -1,53 +1,67 @@
 var api = require( 'assets/js/api' );
 var Observable = require("FuseJS/Observable");
 
-var amFollowing = false;
+var amFollowing = Observable( false );
 var amFollowedBy = Observable( false );
-var following = Observable( '' );
+
+var isMuted = Observable( false );
+var isBlocked = Observable( false );
 
 var userid = this.Parameter.map( function( param ) {
 	return param.userid;
-});
+} );
 
-userid.addSubscriber( function() {
+var userprofile = Observable();
 
-	if ( userid.value ) {
-		api.loadUserProfile( userid.value );
-		api.loadTimeline( 'user', userid.value );
+userid.onValueChanged( module, function( newValue ) {
+
+	console.log( newValue );
+
+	if ( newValue ) {
+
+		api.getUserProfile( newValue )
+		.then( function( json ) {
+			userprofile.value = json;
+		})
+		.catch( function( err ) {
+			console.log( err.message );
+		});
+
+		api.loadTimeline( 'user', newValue );
+
 	}
 
 });
-
-api.userrelationship.addSubscriber( function( newValue ) {
-
-	if ( 'undefined' != typeof newValue.value ) {
-
-		amFollowing = newValue.value.following;
-		following.value = amFollowing ? 'Unfollow' : 'Follow';
-
-		amFollowedBy.value = newValue.value.followed_by;
-	}
-
-})
 
 function mentionUser() {
 	router.push( "write", { firstup: api.userprofile.value.acct } );
 }
 
 function followUser() {
-	api.followUser( userid.value, amFollowing ).then( function() {
-		amFollowing = !amFollowing;
-		following.value = amFollowing ? 'Unfollow' : 'Follow';
+	api.followUser( userid.value, amFollowing.value ).then( function() {
+		amFollowing.value = !amFollowing.value;
 	}).catch( function( err ) {
 		console.log( JSON.stringify( err ) );
 	});
 }
 
+function muteUser() {
+	api.muteUser( userid.value, isMuted.value ).then( function() {
+		isMuted.value = !isMuted.value;
+	}).catch( function( err ) {
+		console.log( JSON.stringify( err ) );
+	});	
+}
+
+function blockUser() {
+	api.blockUser( userid.value, isBlocked.value ).then( function() {
+		isBlocked.value = !isBlocked.value;
+	}).catch( function( err ) {
+		console.log( JSON.stringify( err ) );
+	});	
+}
+
 module.exports = {
-	account: api.userprofile,
-	posts: api.posts.user,
-	mentionUser: mentionUser,
-	followUser: followUser,
-	following: following,
-	amFollowedBy: amFollowedBy
+	act: userprofile,
+	posts: api.posts.user
 }

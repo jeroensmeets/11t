@@ -1,0 +1,31 @@
+<TransitionPage ux:Class="MutedUsersPage">
+	<Router ux:Dependency="router" />
+	<JavaScript File="MutedUsersView.js" />
+
+	<Activated Handler="{loadMutedUsers}" Bypass="Never" />
+
+	<Visual ux:Dependency="TopNavBar" />
+	<AlternateRoot ParentNode="TopNavBar">
+		<NavBarTitle>Who did I mute?</NavBarTitle>
+	</AlternateRoot>
+
+	<ScrollView>
+
+		<StackPanel Orientation="Vertical" Dock="Top">
+
+			<Each Items="{mutedUsers}">
+				<UserCard act="{}" router="router" />
+			</Each>
+
+			<WhileEmpty Items="{mutedUsers}">
+				<StackPanel Orientation="Vertical">
+					<Text Margin="0,42,0,4" TextAlignment="Center" Value="You haven't muted any users." FontSize="17" Font="Italic" />
+					<Text TextAlignment="Center" Value="How loud of you!" FontSize="17" Font="Italic" />
+				</StackPanel>
+			</WhileEmpty>
+
+		</StackPanel>
+
+	</ScrollView>
+
+</TransitionPage>

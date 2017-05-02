@@ -15,7 +15,7 @@
 	"Description": "An app to connect to Mastodon",
 	"Copyright": "This code has an MIT license. Run with it!",
 	"Version": "1.1",
-	"VersionCode": 22,
+	"VersionCode": 23,
 	"Mobile": {
 		"Orientations": "Portrait"
 	},

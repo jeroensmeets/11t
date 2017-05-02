@@ -1,7 +1,7 @@
 <Button ux:Class="MastodonButton" Margin="8,0,0,0">
   <string ux:Property="text" />
   <Panel HitTestMode="LocalBounds">
-    <Text Value="{Property this.text}" Color="#fff" Alignment="Center" TextAlignment="Center" Margin="12,8" />
+    <Text Value="{Property this.text}" Color="#fff" Alignment="Center" TextAlignment="Center" Margin="8,4" />
     <Rectangle CornerRadius="4" Layer="Background" Color="#1a9df8" />
   </Panel>
 </Button>

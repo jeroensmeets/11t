@@ -28,9 +28,9 @@ instance.onValueChanged( module, function( newValue ) {
 
 				instanceContactEmail.value = result.email;
 				instanceDescription.value =  
-					'<style>* { font-size: 42px !important; line-height: 1.3em; }</style>'
+					// '<style>* { font-size: 100% !important; line-height: 1.3em; }</style>'
+					''
 					+ result.description;
-					// + HtmlEnt.decode( result.description );
 				loadingInfo.value = false;
 
 			} )

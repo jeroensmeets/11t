@@ -61,9 +61,6 @@ function clearError() {
 	error.clear();
 }
 
-var userprofile = Observable();
-var userrelationship = Observable();
-
 /**
 * load API accesstoken from storage and store it in helper.AccessToken
 * returns true when accesstoken loaded, otherwise false
@@ -478,48 +475,52 @@ function MastodonPost( jsondata ) {
 }
 
 /**
- * @param  {integer}	_userid		user to load profile for
+ * @param  {integer}	userid		user to load profile for
  * @return none
  */
-function loadUserProfile( _userid ) {
+function getUserProfile( userid ) {
 
-	userprofile.clear();
-	userrelationship.clear();
-	loading.value = true;
+	loadAPIConnectionData();
 
-	apiFetch( 'api/v1/accounts/' + _userid, {
-		headers: {
-			'Authorization': 'Bearer ' + AccessToken
-		}
-  	})
-	.then( function( json ) {
-		var _userprofile = json;
-		_userprofile.note = HtmlEnt.decode( _userprofile.note );
-		_userprofile.note = _userprofile.note.replace( /<[^>]+>/ig, '' );
-		userprofile.value = _userprofile;
-	})
-	.catch( function( err ) {
-		loading.value = false;
-  	});
+	return new Promise( function( resolve, reject ) {
 
-	// console.log( 'get relationship (async) for user ' + _userid );
+		apiFetch( 'api/v1/accounts/' + userid, {
+			headers: {
+				'Authorization': 'Bearer ' + AccessToken
+			}
+		} )
+		.then( function( json ) {
+			var userprofile = json;
+			userprofile.note = HtmlEnt.decode( userprofile.note );
+			userprofile.note = userprofile.note.replace( /<[^>]+>/ig, '' );
+			resolve( userprofile );
+		} )
+		.catch( function( err ) {
+			reject( err );
+		} );
 
-	apiFetch( 'api/v1/accounts/relationships?id=' + _userid, {
-		headers: {
-			'Authorization': 'Bearer ' + AccessToken
-		}
-  	})
-	.then( function( json ) {
-		// {"id":54837,"following":false,"followed_by":false,"blocking":false,"muting":false,"requested":false}
-		// console.log( JSON.stringify( json ) );
-		// if ( json.length > 0 ) {
-			userrelationship.value = json.shift();
-			// console.log( 'response from API for relationship: ' + JSON.stringify( userrelationship.value ) );
-		// }
-	})
-	.catch( function( err ) {
-		loading.value = false;
-  	});
+	} );
+}
+
+function getRelationship( userid ) {
+
+	loadAPIConnectionData();
+
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch( 'api/v1/accounts/relationships?id=' + userid, {
+			headers: {
+				'Authorization': 'Bearer ' + AccessToken
+			}
+  		})
+		.then( function( json ) {
+			resolve( json );
+		})
+		.catch( function( err ) {
+			reject( err );
+  		});
+
+	} );
 
 }
 
@@ -535,12 +536,96 @@ function followUser( _userid, _isfollowing ) {
 			}
 		} )
 		.then( function( json ) {
-			// console.log( 'api call to ' + followAction + ' user ' + _userid + ' returned with response: ' + JSON.stringify( json ) );
 			resolve( json );
 		})
 		.catch( function( err ) {
 			reject( err );
 		});
+
+	} );
+
+}
+
+function muteUser( _userid, _ismuted ) {
+
+	return new Promise( function( resolve, reject ) {
+
+		var muteAction = _ismuted ? 'unmute' : 'mute';
+		apiFetch( 'api/v1/accounts/' + _userid + '/' + muteAction, {
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + AccessToken
+			}
+		} )
+		.then( function( json ) {
+			resolve( json );
+		})
+		.catch( function( err ) {
+			reject( err );
+		});
+
+	} );
+
+}
+
+function blockUser( _userid, _isblocked ) {
+
+	return new Promise( function( resolve, reject ) {
+
+		var blockAction = _isblocked ? 'unblock' : 'block';
+		apiFetch( 'api/v1/accounts/' + _userid + '/' + blockAction, {
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer ' + AccessToken
+			}
+		} )
+		.then( function( json ) {
+			resolve( json );
+		})
+		.catch( function( err ) {
+			reject( err );
+		});
+
+	} );
+
+}
+
+function loadBlockedUsers() {
+
+	loadAPIConnectionData();
+
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch( 'api/v1/blocks', {
+			headers: {
+				Authorization: 'Bearer ' + AccessToken
+			}
+		} ).then( function( json ) {
+			resolve( json );
+		} ).catch( function( err ) {
+			reject( err );
+		} );
+
+	} );
+
+}
+
+function loadMutedUsers() {
+
+	loadAPIConnectionData();
+
+	// let's try getting reports
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch( 'api/v1/mutes', {
+			headers: {
+				Authorization: 'Bearer ' + AccessToken
+			}
+		} ).then( function( json ) {
+			resolve( json );
+		} ).catch( function( err ) {
+			reject( err );
+		} );
 
 	} );
 
@@ -763,13 +848,16 @@ function getPostById( _postid ) {
 
 module.exports = {
 	posts: posts,
-	userprofile: userprofile,
-	userrelationship: userrelationship,
 	followUser: followUser,
+	muteUser: muteUser,
+	blockUser: blockUser,
 	loadTimeline: loadTimeline,
-	loadUserProfile: loadUserProfile,
+	getUserProfile: getUserProfile,
+	getRelationship: getRelationship,
 	loadPostContext: loadPostContext,
 	loadReports: loadReports,
+	loadBlockedUsers: loadBlockedUsers,
+	loadMutedUsers: loadMutedUsers,
 	loading: loading,
 	error: error,
 	setError: setError,
@@ -836,7 +924,6 @@ function apiFetch( path, options ) {
 
 				clearTimeout( timeout );
 				if ( response && 200 == response.status ) {
-					console.log( 'apiFetch returned with status 200' );
 					return response.json();
 				} else if ( 401 == response.status ) {
 					console.log( 'received a 401 from API' );
@@ -850,7 +937,6 @@ function apiFetch( path, options ) {
 			} )
 			.then( function( responseObject ) {
 				// process results
-				console.log( 'return response object' );
 				resolve( responseObject );
 			})
 			.catch( function( err ) {

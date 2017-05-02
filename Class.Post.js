@@ -163,6 +163,7 @@ function gotoPost() {
 
 function gotoUser() {
 
+	console.log( 'goto user ' + userid );
 	router.push( "userprofile", { userid: userid } );
 
 }

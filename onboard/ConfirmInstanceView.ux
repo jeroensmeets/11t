@@ -33,7 +33,7 @@
 			</WhileString>
 
 			<WhileString Value="{instanceDescription}" Test="IsEmpty">
-				<TextView Font="Italic" FontSize="15" Margin="0,0,8,4" TextColor="palette.clrText" Value="There is no further information available about this instance. Please ask the admin to specify a description!" TextWrapping="Wrap" />
+				<TextView Font="Italic" FontSize="15" Margin="0,0,8,32" TextColor="palette.clrText" Value="There is no further information available about this instance. Please ask the admin to specify a description!" TextWrapping="Wrap" />
 			</WhileString>
 
 			<WhileString Value="{instanceDescription}" Test="IsNotEmpty">
@@ -44,7 +44,7 @@
 					</Rectangle>
 					<ScrollView>
 						<NativeViewHost Padding="3">
-							<WebView Height="140" ZoomEnabled="false" Background="#f4f4f4">
+							<WebView Height="140" Width="100%" ZoomEnabled="false" Background="#f4f4f4">
 								<HTML Source="{instanceDescription}" />
 							</WebView>
 						</NativeViewHost>

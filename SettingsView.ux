@@ -27,11 +27,13 @@
 			<Rectangle Alignment="Bottom" Height="1" Background="#787b87" />
 		</Panel> -->
 
-		<SettingOption t="Your reports" Clicked="{showReports}" />
+		<SettingOption t="Who did I block?" Clicked="{showBlockedUsers}" />
+		<SettingOption t="Who did I mute?" Clicked="{showMutedUsers}" />
+		<!-- <SettingOption t="Your reports" Clicked="{showReports}" /> -->
 		<SettingOption t="About 11t" Clicked="{showAboutPage}" />
 		<SettingOption t="Log out" Clicked="{logOut}" />
 
-		<ImageFill File="assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" />
+		<ImageFill File="assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" Opacity=".4" />
 
 	</StackPanel>
 
