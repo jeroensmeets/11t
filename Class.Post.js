@@ -1,95 +1,58 @@
 var api = require( 'assets/js/api' );
-var helper = require( 'assets/js/helper' );
-var settings = require( 'assets/js/settings' );
-
-var HtmlEnt = require( 'assets/js/he/he.js' );
 var Observable = require("FuseJS/Observable");
 
 // used in callback functions for reposting and favouriting
+// TODO use args.data
 var _this = this;
-
-var postid = 0;
-var userid = 0;
-var username = '';
-var mentions = {};
-var timeSince = Observable( '' );
-var type = Observable();
-var hasContent = Observable( true );
-
-var spoilerText = Observable();
-var unprocessedContent = '';
-var contentInParagraphs = Observable();
-var contentInWords = Observable();
-var originalContentInParagraphs = Observable();
-var originalContentInWords = Observable();
-
 
 // true while favouriting/reposting/translating
 var favouriting = Observable( false );
 var reposting = Observable( false );
-var translating = Observable( false );
-var flagging = Observable( false );
 
-var userHasReposted = Observable( false );
-var userHasFavourited = Observable( false );
-var userHasFlagged = Observable( true );
+// var translating = Observable( false );
+// var isTranslated = Observable( false );
+// var showTranslation = Observable( function() {
+// 	return settings.loadSetting( 'showTranslationsButton' );
+// } );
 
-var isTranslated = Observable( false );
-
-var showTranslation = Observable( function() {
-	return settings.loadSetting( 'showTranslationsButton' );
+var account = this.Parameter.map( function( param ) {
+	return param.account;
 } );
 
-var isRepost = Observable( false );
-
-this.post.onValueChanged( module, function( newValue ) {
-
-	if ( null == newValue ) {
-		return;
-	}
-
-	postid = newValue.postid;
-	userid = newValue.userid;
-	username = newValue.username;
-	mentions = newValue.mentions;
-
-	type.value = newValue.type;
-	hasContent.value = newValue.hascontent;
-
-	// reblog
-	isRepost.value = ( newValue.rebloggerId > 0 );
-
-	// mention
-	if ( ( 'undefined' != typeof newValue.type ) && ( 'undefined' != typeof newValue.accountData ) ) {
-		userid = newValue.accountData.id;
-		username = newValue.accountData.acct;
-	}
-
-	// follower notifications do not have post content
-	if ( 'follow' != newValue.type ) {
-		spoilerText.value = newValue.status.spoiler_text;
-		unprocessedContent = newValue.status.content;
-		contentInParagraphs = newValue.cleanContent;
-		contentInWords = newValue.clickableContent;
-	}
-
-	userHasReposted.value = newValue.status.reposted;
-	userHasFavourited.value = newValue.status.favourited;
-
-	timeSince.value = helper.timeSince( newValue.status.created_at );
-
+var status = this.Parameter.map( function( param ) {
+	return param.status;
 } );
 
-function replyToPost( ) {
+var mentions = this.Parameter.map( function( param ) {
+	return param.mentions;
+} );
 
-	router.push( "write", { postid: postid, mentions: mentions, firstup: username } );
+var rebloggerId = this.Parameter.map( function( param ) {
+	return param.rebloggerId;
+} );
+
+var isRepost = this.status.map( function( value ) {
+	return value.rebloggerID > 0;
+} );
+
+var userHasReposted = this.status.map( function( value ) {
+	return ( true == value.reblogged );
+} );
+
+var userHasFavourited = this.status.map( function( value ) {
+	return ( true == value.favourited );
+} );
+
+function replyToPost() {
+
+	router.push( "write", { postid: _this.status.value.id, mentions: _this.mentions.value, firstup: _this.account.value.acct } );
 
 }
 
 function rePost( ) {
 
 	reposting.value = true;
-	api.rePost( postid, _this.post.value.reposted ).then( function() {
+	api.rePost( _this.status.value.id, userHasReposted.value ).then( function() {
 		reposting.value = false;
 		userHasReposted.value = !userHasReposted.value;
 	}).catch( function( err ) {
@@ -103,7 +66,7 @@ function rePost( ) {
 function favouritePost( ) {
 
 	favouriting.value = true;
-	api.favouritePost( postid, _this.post.value.favourited ).then( function() {
+	api.favouritePost( _this.status.value.id, userHasFavourited.value ).then( function() {
 		favouriting.value = false;
 		userHasFavourited.value = !userHasFavourited.value;
 	}).catch( function( err ) {
@@ -116,122 +79,114 @@ function favouritePost( ) {
 
 function gotoReportScreen() {
 
-	router.push( 'reportcontent', { post: _this.post.value.status, userid: userid } );
+	router.push( 'reportcontent', { post: _this.status.value, userid: _this.account.value.id } );
 
 }
 
-function translatePost() {
+// function translatePost() {
 
-	if ( !isTranslated.value ) {
+// 	if ( !isTranslated.value ) {
 
-		translating.value = true;
+// 		translating.value = true;
 
-		// backup original post content
-		originalContentInParagraphs.value = contentInParagraphs.value;
-		originalContentInWords.value = contentInWords.value;
+// 		// backup original post content
+// 		originalContentInParagraphs.value = contentInParagraphs.value;
+// 		originalContentInWords.value = contentInWords.value;
 
-		var translation = require( 'assets/js/translations' );
-		translation.getTranslation( unprocessedContent )
-		.then( function( translation ) {
+// 		var translation = require( 'assets/js/translations' );
+// 		translation.getTranslation( unprocessedContent )
+// 		.then( function( translation ) {
 
-			var contentparser	= require( 'assets/js/parse.content.js' );
-			// TODO this is not working, as cleanContent needs to be called with the whole post object
-			contentInParagraphs = contentparser.cleanContent( translation.data.translations[0].translatedText );
+// 			var contentparser	= require( 'assets/js/parse.content.js' );
+// 			// TODO this is not working, as cleanContent needs to be called with the whole post object
+// 			contentInParagraphs = contentparser.cleanContent( translation.data.translations[0].translatedText );
 
-			// TODO translate into clickable words
+// 			// TODO translate into clickable words
 
-			isTranslated.value = !isTranslated.value;
-			translating.value = false;
+// 			isTranslated.value = !isTranslated.value;
+// 			translating.value = false;
 
-		} )
-		.catch( function( err ) {
+// 		} )
+// 		.catch( function( err ) {
 
-			api.setError( 'Could not translate toot: ' + err.message );
-			translating.value = false;
+// 			api.setError( 'Could not translate toot: ' + err.message );
+// 			translating.value = false;
 
-		})
+// 		})
 
-	}
+// 	}
 
-}
+// }
 
 function gotoPost() {
 
-	router.push( "postcontext", { post: _this.post.value.status } );
+	router.push( "postcontext", { post: _this.status.value } );
 
 }
 
 function gotoUser() {
 
-	console.log( 'goto user ' + userid );
-	router.push( "userprofile", { userid: userid } );
+	router.push( "userprofile", { userid: _this.account.value.id } );
 
 }
 
-function gotoTag( args ) {
+// function gotoTag( args ) {
 
-	router.push( "hashtag", { tag: args.data.name } );
+// 	router.push( "hashtag", { tag: args.data.name } );
 
-} 
+// } 
 
 function gotoReblogger() {
 
-	if ( _this.post.value.rebloggerId > 0 ) {
-		router.push( "userprofile", { userid: _this.post.value.rebloggerId } );
+	if ( _this.rebloggerId > 0 ) {
+		router.push( "userprofile", { userid: _this.rebloggerId } );
 	}
 
 }
 
-function wordClicked( args ) {
+// function wordClicked( args ) {
 
-	if ( args.data.mention ) {
+// 	if ( args.data.mention ) {
 
-		router.push( "userprofile", { userid: userid } );
+// 		router.push( "userprofile", { userid: userid } );
 
-	} else if ( args.data.link ) {
+// 	} else if ( args.data.link ) {
 
-		var InterApp = require("FuseJS/InterApp");
-		InterApp.launchUri( args.data.uri );
+// 		var InterApp = require("FuseJS/InterApp");
+// 		InterApp.launchUri( args.data.uri );
 
-	}
+// 	}
 
-}
+// }
 
 module.exports = {
 
-	timeSince: timeSince,
+// 	// timeSince: timeSince,
 
-	type: type,
-	hasContent: hasContent,
+isRepost: isRepost,
+gotoReblogger: gotoReblogger,
 
-	isRepost: isRepost,
-	gotoReblogger: gotoReblogger,
+replyToPost: replyToPost,
 
-	replyToPost: replyToPost,
+rePost: rePost,
+reposting: reposting,
+userHasReposted: userHasReposted,
 
-	rePost: rePost,
-	reposting: reposting,
-	userHasReposted: userHasReposted,
+favouritePost: favouritePost,
+favouriting: favouriting,
+userHasFavourited: userHasFavourited,
 
-	favouritePost: favouritePost,
-	favouriting: favouriting,
-	userHasFavourited: userHasFavourited,
+gotoReportScreen: gotoReportScreen,
 
-	gotoReportScreen: gotoReportScreen,
+// 	// translating: translating,
+// 	// isTranslated: isTranslated,
+// 	// showTranslation: showTranslation,
+// 	// translatePost: translatePost,
 
-	spoilerText: spoilerText,
-	contentInParagraphs: contentInParagraphs,
-	contentInWords: contentInWords,
+gotoUser: gotoUser,
+gotoPost: gotoPost,
+// 	// gotoTag: gotoTag,
 
-	translating: translating,
-	isTranslated: isTranslated,
-	showTranslation: showTranslation,
-	translatePost: translatePost,
-
-	gotoUser: gotoUser,
-	gotoPost: gotoPost,
-	gotoTag: gotoTag,
-
-	wordClicked: wordClicked
+// 	// wordClicked: wordClicked
 
 };

@@ -1,6 +1,8 @@
 var api = require( 'assets/js/api' );
 var Observable = require("FuseJS/Observable");
 
+var posts = Observable();
+
 var amFollowing = Observable( false );
 var amFollowedBy = Observable( false );
 
@@ -15,9 +17,12 @@ var userprofile = Observable();
 
 userid.onValueChanged( module, function( newValue ) {
 
-	console.log( newValue );
+	// console.log( newValue );
 
 	if ( newValue ) {
+
+		userprofile.clear();
+		posts.clear();
 
 		api.getUserProfile( newValue )
 		.then( function( json ) {
@@ -27,7 +32,20 @@ userid.onValueChanged( module, function( newValue ) {
 			console.log( err.message );
 		});
 
-		api.loadTimeline( 'user', newValue );
+		api.loadTimeline( 'user', newValue )
+		.then( function( APIresponse ) {
+
+			posts.refreshAll(
+				APIresponse.posts,
+				function( oldItem, newItem ) { return oldItem.id == newItem.id; },
+				function( oldItem, newItem ) { oldItem = new api.MastodonPost( newItem ); },
+				function( newItem ) { return new api.MastodonPost( newItem ); }
+			);
+
+		} )
+		.catch( function( err ) {
+			console.log( err.message );
+		} );
 
 	}
 
@@ -63,5 +81,5 @@ function blockUser() {
 
 module.exports = {
 	act: userprofile,
-	posts: api.posts.user
+	posts: posts
 }

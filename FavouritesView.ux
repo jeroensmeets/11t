@@ -2,6 +2,8 @@
 	<Router ux:Dependency="router" />
 	<JavaScript File="FavouritesView.js" />
 
+	<Activated Handler="{loadTimeline}" Bypass="Never" />
+
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
 		<NavBarTitle>Favourites</NavBarTitle>
@@ -11,7 +13,7 @@
 		<StackPanel Orientation="Vertical">
 			<ReloadPull />
 			<Each Items="{posts}">
-				<PostCard post="{}" clickable="false" router="router" />
+				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 			<WhileFalse Value="{loading}">
 				<WhileEmpty Items="{posts}">

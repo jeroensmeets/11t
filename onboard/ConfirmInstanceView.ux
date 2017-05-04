@@ -3,6 +3,8 @@
 	<Router ux:Dependency="router" />
 	<JavaScript File="ConfirmInstanceView.js" />
 
+	<Activated Handler="{getInstanceInfo}" Bypass="Never" />
+
 	<DockPanel>
 
 		<Panel ux:Name="infoIsLoading" Visibility="Collapsed" Dock="Top">

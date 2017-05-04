@@ -1,7 +1,7 @@
 var helper			= require( 'assets/js/helper.js' );
 var contentparser	= require( 'assets/js/parse.content.js' );
 
-var FETCH_TIMEOUT	= 10000;
+var FETCH_TIMEOUT	= 6000;
 
 var Observable      = require("FuseJS/Observable");
 var Storage         = require("FuseJS/Storage");
@@ -11,7 +11,6 @@ var error 			= Observable( '' );
 var returntosplash	= Observable( false );
 
 var loading			= Observable( false );
-var active			= Observable( false );
 
 var HtmlEnt         = require( 'assets/js/he/he.js' );
 
@@ -19,39 +18,6 @@ var FILE_DATACACHE  = '.posts.cache.json';
 var BASE_URL        = false;
 var AccessToken     = false;
 var at_file         = "APIconnect.json";
-
-/**
- * variable to hold the loaded posts
- */
-var posts = {
-	home            : Observable(),
-	notifications   : Observable(),
-	publictimeline  : Observable(),
-	favourites		: Observable(),
-	hashtag			: Observable(),
-	user            : Observable(),
-	postcontext		: Observable()
-}
-
-function clearPostsObject() {
-
-	for ( var index in posts ) {
-		posts[ index ].clear();
-		Storage.deleteSync( index + FILE_DATACACHE );
-	}
-}
-
-/**
- * remove old cache files with different data structures
- */
-function cleanUp() {
-
-	// before version 1.0.12, datacache was in {posttype}.data.cache.json
-	for ( var index in posts ) {
-		Storage.deleteSync( index + '.data.cache.json' );
-	}
-
-}
 
 function setError( message ) {
 	error.value = message;
@@ -219,7 +185,6 @@ function getClientIdSecret() {
 function logOut() {
 
 	deleteAPIConnectionData();
-	clearPostsObject();
 
 	BASE_URL = false;
 	AccessToken = false;
@@ -251,90 +216,63 @@ function getAccessToken( auth_token, redirect_uri, client_id, client_secret ) {
 
 }
 
-/**
- * @param {string}	_type	which timeline to set and load
- *
- * set active timeline and load it from cache
- * load it from API after 3 seconds
- * 
- */
-function setActiveTimeline( timelineType, loadFromAPI ) {
+function loadTimelineFromCache( timeline ) {
 
-	console.log( 'setting timeline to ' + timelineType );
+	return new Promise( function( resolve, reject ) {
 
-	active.value = timelineType;
-	loadCurrentTimelineFromCache();
+		Storage.read( timeline + FILE_DATACACHE )
+		.then( function( fileContents ) {
 
-	var cacheEmpty = posts[ timelineType ] && ( posts[ timelineType ].length == 0 );
+			var cacheContents = JSON.parse( fileContents );
+			if ( cacheContents.posts && cacheContents.max_id && cacheContents.since_id ) {
+				resolve( JSON.parse( fileContents ) );
+			} else {
+				// old format cache, delete it
+				deleteTimelineFromCache( timeline );
+				resolve( [] );
+			}
+		}, function( error ) {
+			reject( error );
+		} );
 
-	if ( loadFromAPI || cacheEmpty ) {
-
-		loadCurrentTimelineFromAPI();
-
-	}
-
-	// formally not correct, as we don't know if API calls went ok
-	return true;
+	} );
 
 }
 
-function loadCurrentTimelineFromAPI() {
+function saveTimelineToCache( timeline, posts ) {
 
-	loadAPIConnectionData();
-
-	// if ( false === BASE_URL || false === AccessToken ) {
-	// 	error.value = 'You\'re not logged in.';
-	// 	returntosplash.value = true;
-	// }
-
-	if ( loading.value ) {
-		// api is already out to fetch posts
-		return;
-	}
-
-	if ( false === active.value ) {
-		// probably a reload in FuseTools preview
-		setActiveTimeline( 'home' );
-		return;
-	}
-
-	loadTimeline( active.value );
+	Storage.write( timeline + FILE_DATACACHE, JSON.stringify( posts ) );
 
 }
 
-function loadCurrentTimelineFromCache() {
+function deleteTimelineFromCache( timeline ) {
 
-	Storage.read( active.value + FILE_DATACACHE )
-    .then( function( fileContents ) {
-        refreshPosts( active.value, JSON.parse( fileContents ) );
-    }, function( error ) {
-        // error in reading from cache
-    });
+	Storage.deleteSync( timeline + FILE_DATACACHE );
 
 }
 
 /**
  * load timeline (of type _type), store posts in cache and refresh the api.posts object
  * 
- * @param  {string}		_type		which timeline to load
- * @param  {integer}	_id			userid when _type is `user`, or postid when _type is `postcontext`
- * @param  {object}		_postObj	post shown in PostContext screen
+ * @param  {string}		type		which timeline to load
+ * @param  {integer}	id			userid when _type is `user`
+ *                        			postid when _type is `postcontext`
+ *                        			since_id when _type is 'home'
+ * @param  {object}		postObj		post shown in PostContext screen
  * @return no return value
  */
 function loadTimeline( _type, _id, _postObj ) {
 
-	if ( undefined === posts[ _type ] ) {
-		// TODO probably triggered by splash screen
-		return;
-	}
-
-	loading.value = true;
 	loadAPIConnectionData();
 
 	var endpoint = '';
 	switch ( _type ) {
 		case 'home':
 			endpoint = 'api/v1/timelines/home';
+			if ( parseInt( _id ) > 0 ) {
+				endpoint += '?since_id=' + _id;
+			}
+			console.log( endpoint );
 			break;
 		case 'notifications':
 			endpoint = 'api/v1/notifications';
@@ -343,13 +281,9 @@ function loadTimeline( _type, _id, _postObj ) {
 			endpoint = 'api/v1/favourites';
 			break;
 		case 'hashtag':
-			posts.hashtag.clear();
-			Storage.deleteSync( _type + FILE_DATACACHE );
 			endpoint = 'api/v1/timelines/tag/' + _id;
 			break;
 		case 'user':
-			posts.user.clear();
-			Storage.deleteSync( _type + FILE_DATACACHE );
 			endpoint = 'api/v1/accounts/' + _id + '/statuses';
 			break;
 		case 'postcontext':
@@ -361,76 +295,56 @@ function loadTimeline( _type, _id, _postObj ) {
 			break;
 	}
 
-	apiFetch(
-		endpoint, {
-		headers: { 'Authorization': 'Bearer ' + AccessToken }
-	} )
-	.then( function( json ) {
+	return new Promise( function( resolve, reject ) {
 
-		// for postcontext, the Mastodon API returns two arrays with ancestors and descendants
-		if ( 'postcontext' == _type ) {
-			json.ancestors.push( _postObj );
-			json = json.ancestors.concat( json.descendants );
-			json[ json.length - 1 ][ 'last' ] = true;
-		}
+		apiFetch(
+			endpoint, {
+			headers: { 'Authorization': 'Bearer ' + AccessToken }
+		} )
+		.then( function( json ) {
 
-		// // save new data to cache
-		// var _cache = Storage.readSync( _type + FILE_DATACACHE );
-		// var _posts = ( '' == _cache ) ? [] : JSON.parse( _cache );
+			resolve( json );
 
-		// console.log( 'size of array from cache is ' + _posts.length );
-		// // console.log( JSON.stringify( _posts ) );
-		// console.log( 'size of array from api is ' + json.length );
-		// // console.log( JSON.stringify( json ) );
+		}, function( err ) {
 
-		// // Array.prototype.push.apply( _posts, json );
-		// _posts = _posts.concat( json );
-		// Storage.write( _type + FILE_DATACACHE, JSON.stringify( _posts ) );
+			console.log( 'returned from apiFetch back in api.loadTimeline with error: ' );
+			console.log( err.message );
+			reject( err );
 
-		// // TODO limit size of cache
-		// console.log( 'size of posts array is now ' + _posts.length );
-		// // console.log( JSON.stringify( _posts ) );
+		} );
 
-		// posts loaded, refresh timeline
-		refreshPosts( _type, json );
+	} );
 
-		loading.value = false;
-
-	} )
-	.catch( function( err ) {
-		console.log( 'returned from apiFetch back in api.loadTimeline with error: ' );
-		console.log( err.message );
-		loading.value = false;
-	});
+	// // for postcontext, the Mastodon API returns two arrays with ancestors and descendants
+	// if ( 'postcontext' == _type ) {
+	// 	json.ancestors.push( _postObj );
+	// 	json = json.ancestors.concat( json.descendants );
+	// 	json[ json.length - 1 ][ 'last' ] = true;
+	// }
 
 }
 
-function refreshPosts( posttype, jsondata ) {
-
-	posts[ posttype ].refreshAll(
-		jsondata,
-		// compare on ID
-		function( oldItem, newItem ) {
-			return oldItem.id == newItem.id;
-		},
-		// update
-		function( oldItem, newItem ) {
-			oldItem = new MastodonPost( newItem );
-		},
-		// add new
-		function( newItem ) {
-			return new MastodonPost( newItem );
-		}
-	);
-
-}
+/**
+ * a MastodonPost is an object with these values
+ *
+ * status: the post that is being shared, favourited, reblogged. if this is a notification of a new follower, status is null
+ * account: data for the account that is displayed with an avatar for this post
+ * type: type of notification
+ * rebloggerId, rebloggerName: who reblogged this post (this is for the timelines, not for notifications)
+ * mentions: array of mentions
+ * media_attachments: array of attachments
+ * cleanContent: content in paragraphs
+ * clickableContent: content split in words
+ * 
+ */
 
 function MastodonPost( jsondata ) {
 
 	// in status is the core post itself
 	this.status = jsondata;
-	this.accountData = jsondata.account;
+	this.account = jsondata.account;
 	this.rebloggerId = 0;
+	this.rebloggerName = '';
 
 	if ( 'undefined' != typeof jsondata.type ) {
 
@@ -453,24 +367,18 @@ function MastodonPost( jsondata ) {
 
 		// this is a reblog (not the notification, but in the main timelines)
 		this.status = jsondata.reblog;
-		this.accountData = jsondata.reblog.account;
+		this.account = jsondata.reblog.account;
 
 		this.rebloggerId = jsondata.account.id;
 		this.rebloggerName = jsondata.account.display_name;
 
 	}
 
-	this.postid = this.status.id;
-	this.userid = this.status.account.id;
-	this.username = this.status.account.acct;
-	this.createat = this.status.created_at;
-
 	this.mentions = this.status.mentions;
+	this.media_attachments = this.status.media_attachments;
 
 	this.cleanContent = contentparser.cleanContent( this.status );
 	this.clickableContent = contentparser.clickableContent( this.status );
-
-	this.hascontent = this.cleanContent.length > 0 || ( '' != this.status.spoiler_text );
 
 }
 
@@ -526,6 +434,8 @@ function getRelationship( userid ) {
 
 function followUser( _userid, _isfollowing ) {
 
+	loadAPIConnectionData();
+
 	return new Promise( function( resolve, reject ) {
 
 		var followAction = _isfollowing ? 'unfollow' : 'follow';
@@ -548,6 +458,8 @@ function followUser( _userid, _isfollowing ) {
 
 function muteUser( _userid, _ismuted ) {
 
+	loadAPIConnectionData();
+
 	return new Promise( function( resolve, reject ) {
 
 		var muteAction = _ismuted ? 'unmute' : 'mute';
@@ -569,6 +481,8 @@ function muteUser( _userid, _ismuted ) {
 }
 
 function blockUser( _userid, _isblocked ) {
+
+	loadAPIConnectionData();
 
 	return new Promise( function( resolve, reject ) {
 
@@ -601,8 +515,10 @@ function loadBlockedUsers() {
 				Authorization: 'Bearer ' + AccessToken
 			}
 		} ).then( function( json ) {
+			console.log( '>>>' );
 			resolve( json );
 		} ).catch( function( err ) {
+			console.log( '<<<' );
 			reject( err );
 		} );
 
@@ -696,6 +612,8 @@ function sendReport( uid, pid, commenttxt ) {
  */
 function sendPost( _txt, _inreplyto, _media_ids, _private, _hidepublic, _issensitive, _spoilertxt ) {
 
+	loadAPIConnectionData();
+
 	return new Promise( function( resolve, reject ) {
 
 		if ( '' == _txt ) {
@@ -759,6 +677,8 @@ function sendPost( _txt, _inreplyto, _media_ids, _private, _hidepublic, _issensi
 
 function sendImage( _imgObj ) {
 
+	loadAPIConnectionData();
+
 	var Uploader = require("Uploader");
 	return Uploader.send(
 		_imgObj.path,
@@ -769,6 +689,8 @@ function sendImage( _imgObj ) {
 }
 
 function favouritePost( _postid, _currentstatus ) {
+
+	loadAPIConnectionData();
 
 	// create promise
 	var favEmitter = new EventEmitter( 'favouritePostEnded' );
@@ -815,14 +737,6 @@ function rePost( _postid, _currentstatus ) {
 
 }
 
-function loadPostContext( post ) {
-
-	posts.postcontext.clear();
-
- 	loadTimeline( 'postcontext', post.id, post );
-
-}
-
 function getPostById( _postid ) {
 
 	// if a post is requested, it should be in one of the posts observables
@@ -847,14 +761,12 @@ function getPostById( _postid ) {
 
 
 module.exports = {
-	posts: posts,
 	followUser: followUser,
 	muteUser: muteUser,
 	blockUser: blockUser,
 	loadTimeline: loadTimeline,
 	getUserProfile: getUserProfile,
 	getRelationship: getRelationship,
-	loadPostContext: loadPostContext,
 	loadReports: loadReports,
 	loadBlockedUsers: loadBlockedUsers,
 	loadMutedUsers: loadMutedUsers,
@@ -863,9 +775,9 @@ module.exports = {
 	setError: setError,
 	clearError: clearError,
 	returntosplash: returntosplash,
-	setActiveTimeline: setActiveTimeline,
-	loadCurrentTimelineFromAPI: loadCurrentTimelineFromAPI,
-	loadCurrentTimelineFromCache: loadCurrentTimelineFromCache,
+	loadTimelineFromCache: loadTimelineFromCache,
+	saveTimelineToCache: saveTimelineToCache,
+	deleteTimelineFromCache: deleteTimelineFromCache,
 	getClientIdSecret: getClientIdSecret,
 	loadAPIConnectionData: loadAPIConnectionData,
 	loadAPIConnectionDataAsync: loadAPIConnectionDataAsync,
@@ -878,7 +790,6 @@ module.exports = {
 	favouritePost: favouritePost,
 	rePost: rePost,
 	parseUri: helper.parseUri,
-	cleanUp: cleanUp,
 	logOut: logOut,
 
 	MastodonPost: MastodonPost
@@ -905,10 +816,9 @@ function apiFetch( path, options ) {
 
 	}
 
-	// console.log( 'sending request to ' + url );
-	// console.log( ' ----- options ----- ' );
-	// console.log( JSON.stringify( options ) );
-	// console.log( ' ------------------- ' );
+	// save max_id and since_id for subsequent API requests
+	var max_id = false;
+	var since_id = false;
 
 	// fetch has no timeout, wrap it in a promise
 	// https://www.fusetools.com/community/forums/show_and_tell/fetch_timeout
@@ -919,31 +829,61 @@ function apiFetch( path, options ) {
 			reject( new Error( 'Request timed out' ) );
 		}, FETCH_TIMEOUT );
 
+		loading.value = true;
+
 		fetch( url, options )
 			.then( function( response ) {
 
 				clearTimeout( timeout );
 				if ( response && 200 == response.status ) {
+
+					// ["<https://mastodon.social/api/v1/timelines/home?max_id=4899975>; rel=\"next\", <https://mastodon.social/api/v1/timelines/home?since_id=4902190>; rel=\"prev\""]
+					if ( 'object' == typeof response.headers.map.link ) {
+						var linkheader = response.headers.map.link.shift();
+						if ( 'string' == typeof linkheader ) {
+							linkheader = linkheader.split( /[<>]/ );
+							if ( linkheader.length > 3 ) {
+								max_id = linkheader[ 1 ].split( 'max_id=' ).pop();
+								since_id = linkheader[ 3 ].split( 'since_id=' ).pop();
+							}
+						}
+
+					}
+
+					loading.value = false;
+
 					return response.json();
+
 				} else if ( 401 == response.status ) {
 					console.log( 'received a 401 from API' );
+					loading.value = false;
 					logOut();
 					reject( '401 not authorized' );
 				} else {
 					console.log( 'apiFetch error for path ' + path );
 					console.log( JSON.stringify( response ) );
+					loading.value = false;
 					reject( 'API error: status ' + response.status );
 				}
 			} )
 			.then( function( responseObject ) {
 				// process results
-				resolve( responseObject );
+				if ( max_id && since_id ) {
+					resolve( {
+						posts: responseObject,
+						max_id: max_id,
+						since_id: since_id
+					} );
+				} else {
+					resolve( responseObject );
+				}
 			})
 			.catch( function( err ) {
 				clearTimeout( timeout );
+				loading.value = false;
 				console.log( 'error: ' + err.message );
 				reject( err );
-			});
+			} );
 
 	});
 

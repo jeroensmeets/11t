@@ -2,6 +2,8 @@
 	<Router ux:Dependency="router" />
 	<JavaScript File="NotificationsView.js" />
 
+	<Activated Handler="{loadTimeline}" Bypass="Never" />
+
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
 		<NavBarTitle>Notifications</NavBarTitle>
@@ -11,7 +13,7 @@
 		<StackPanel Orientation="Vertical">
 			<ReloadPull />
 			<Each Items="{posts}">
-				<NotificationCard post="{}" clickable="false" router="router" />
+				<NotificationCard status="{status}" type="{type}" cleanContent="{cleanContent}" clickableBio="{clickableBio}" account="{account}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 
 			<WhileFalse Value="{loading}">

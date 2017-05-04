@@ -14,7 +14,7 @@
 
 		<StackPanel Orientation="Vertical">
 
-			<UserCard act="{act}" router="router" />
+			<UserCard act="{Clear act}" router="router" />
 
 			<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear act.note}" />
 
@@ -22,8 +22,8 @@
 				<Text Value="{Clear act.statuses_count} posts composed." FontSize="13" TextColor="palette.clrText" Font="Regular" />
 			</Panel>
 
-			<Each Items="{posts}">
-				<PostCard post="{}" router="router" />
+			<Each Items="{Clear posts}">
+				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 			<WhileFalse Value="{loading}">
 				<WhileEmpty Items="{posts}">

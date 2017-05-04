@@ -6,22 +6,18 @@ function goWrite() {
 }
 
 function goHome() {
-	api.setActiveTimeline( 'home', false );
 	gotoPage( 'home' );
 }
 
 function goNotifications() {
-	api.setActiveTimeline( 'notifications', false );
 	gotoPage( 'notifications' );
 }
 
 function goFavourites() {
-	api.setActiveTimeline( 'favourites', false );
 	gotoPage( 'favourites' );
 }
 
 function goPublic() {
-	api.setActiveTimeline( 'publictimeline', false );
 	gotoPage( 'publictimeline' );
 }
 
@@ -66,6 +62,5 @@ module.exports = {
 	goPublic: goPublic,
 	goSettings: goSettings,
 	loading: api.loading,
-	refreshCurrentTimeline: api.loadCurrentTimelineFromAPI,
 	error: api.error
 }

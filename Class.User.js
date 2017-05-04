@@ -15,6 +15,15 @@ var act = this.Parameter.map( function( param ) {
 
 this.act.onValueChanged( module, function( account ) {
 
+	console.log( '-------' );
+	console.log( account );
+
+	if ( !account ) {
+		return;
+	}
+
+	console.log( '+++++++' );
+
 	// BUG! BUG! BUG!
 	// account should be an observable but sometimes is an array
 	if ( account && account.value && 'number' == typeof account.value.id ) {

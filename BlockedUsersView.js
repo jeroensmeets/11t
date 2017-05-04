@@ -7,6 +7,7 @@ function loadBlockedUsers() {
 
 	api.loadBlockedUsers()
 	.then( function( result ) {
+		console.log( JSON.stringify( result ) );
 		blockedUsers.refreshAll( result );
 	})
 	.catch( function( err ) {

@@ -1,5 +1,7 @@
 var api = require( 'assets/js/api' );
+var Observable = require("FuseJS/Observable");
 
+var posts = Observable();
 var post = this.Parameter.map( function( param ) {
   return param.post;
 });
@@ -7,13 +9,30 @@ var post = this.Parameter.map( function( param ) {
 post.onValueChanged( module, function( newValue ) {
 
 	if ( 'undefined' != typeof newValue ) {
-		api.loadPostContext( newValue );
+
+		posts.clear();
+
+		posts.add( new api.MastodonPost( newValue ) );
+
+		api.loadTimeline( 'postcontext', newValue.id, newValue )
+		.then( function( APIresponse ) {
+
+			var np = APIresponse.ancestors.concat( newValue, APIresponse.descendants );
+
+			posts.refreshAll(
+				np,
+				function( oldItem, newItem ) { return oldItem.id == newItem.id; },
+				function( oldItem, newItem ) { oldItem = new api.MastodonPost( newItem ); },
+				function( newItem ) { return new api.MastodonPost( newItem ); }
+			);
+
+		} );
+
 	}
 
 });
 
 module.exports = {
-	// posts: posts,
-	posts: api.posts.postcontext,
+	posts: posts,
 	loading: api.loading
 };

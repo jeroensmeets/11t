@@ -14,33 +14,34 @@ var instance = this.Parameter.map( function( param ) {
 
 var instanceName = Observable( 'this instance' );
 
+function getInstanceInfo() {
+
+	loadingInfo.value = true;
+	api.getInstanceInfo( newValue )
+	.then( function( result ) {
+
+		console.log( JSON.stringify( result ) );
+
+		instanceContactEmail.value = result.email;
+		instanceDescription.value =  
+			// '<style>* { font-size: 100% !important; line-height: 1.3em; }</style>'
+			''
+			+ result.description;
+		loadingInfo.value = false;
+
+	} )
+	.catch( function( err ) {
+
+		instanceError.value = true;
+		loadingInfo.value = false;
+
+	} );
+}
+
 instance.onValueChanged( module, function( newValue ) {
 
 	if ( newValue ) {
-
 		instanceName.value = newValue;
-
-		loadingInfo.value = true;
-		api.getInstanceInfo( newValue )
-			.then( function( result ) {
-
-				console.log( JSON.stringify( result ) );
-
-				instanceContactEmail.value = result.email;
-				instanceDescription.value =  
-					// '<style>* { font-size: 100% !important; line-height: 1.3em; }</style>'
-					''
-					+ result.description;
-				loadingInfo.value = false;
-
-			} )
-			.catch( function( err ) {
-
-				instanceError.value = true;
-				loadingInfo.value = false;
-
-			})
-
 	}
 
 } );

@@ -11,7 +11,7 @@
 	<ScrollView LayoutMode="PreserveVisual">
 		<StackPanel Orientation="Vertical">
 			<Each Items="{posts}">
-				<PostCard post="{}" drawlines="true" clickable="true" router="router" />
+				<PostCard status="{status}" clickableContent="{clickableContent}" account="{account}" drawlines="false" clickable="true" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 			<WhileTrue Value="{loading}">
 				<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">Loading post context...</Text>

@@ -17,6 +17,6 @@ tag.onValueChanged( module, function( newValue ) {
 });
 
 module.exports = {
-	posts: api.posts.hashtag,
+	// posts: api.posts.hashtag,
 	pageTitle: pageTitle
 }

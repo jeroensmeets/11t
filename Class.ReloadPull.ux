@@ -4,13 +4,7 @@
 		<Resize Y="1" RelativeTo="SizeChange" Duration="0.1" />
 	</LayoutAnimation>
 
-	<FaRefresh Color="palette.clrIcon" FontSize="14" Alignment="Center">
-		<WhileActive>
-			<Spin Frequency="1" />
-		</WhileActive>
-	</FaRefresh>
-
-	<PullToReload IsLoading="{loading}" ReloadHandler="{refreshCurrentTimeline}">
+	<PullToReload IsLoading="{loading}" ReloadHandler="{refreshTimeline}">
 	    <State ux:Binding="Pulling">
 	        <!-- active while pulling -->
 	    </State>

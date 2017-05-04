@@ -34,7 +34,7 @@ function cleanContent( postdata ) {
 	// remove empty paragraphs
 	_text = _text.replace( '<p></p>', '' );
 
-	if ( '' == _text.toLowerCase() ) {
+	if ( !_text || ( '' == _text.toLowerCase() ) ) {
 
 		return [];
 
@@ -75,6 +75,11 @@ function clickableBio( bio ) {
 	}
 
 	var result = Observable();
+
+	if ( !bio ) {
+		return result;
+	}
+
 	var words = bio.split( /\s/g );
 
 	for ( var i in words ) {
@@ -133,6 +138,10 @@ function clickableContent( postdata ) {
 	_content = _content.replace( /<[^>]+>/ig, '' );
 
 	var result = Observable();
+
+	if ( !_content ) {
+		return result;
+	}
 
 	var _words = _content.split( /\s/g );
 

@@ -2,23 +2,27 @@
 	<Router ux:Dependency="router" />
 	<JavaScript File="TimelineView.js" />
 
+	<Activated Handler="{loadTimeline}" Bypass="Never" />
+
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
 		<NavBarTitle>Timeline</NavBarTitle>
 	</AlternateRoot>
 
-	<ScrollView LayoutMode="PreserveVisual">
+	<ScrollView LayoutMode="PreserveVisual" AllowedScrollDirections="Vertical">
 		<StackPanel Orientation="Vertical">
 
 			<ReloadPull />
+
 			<Each Items="{posts}">
-				<PostCard post="{}" clickable="false" router="router" />
+				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 			<WhileFalse Value="{loading}">
 				<WhileEmpty Items="{posts}">
 					<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText">No posts found.</Text>
 				</WhileEmpty>
 			</WhileFalse>
+
 		</StackPanel>
 	</ScrollView>
 
