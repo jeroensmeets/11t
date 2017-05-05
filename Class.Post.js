@@ -1,4 +1,5 @@
 var api = require( 'assets/js/api' );
+var helper = require( 'assets/js/helper' );
 var Observable = require("FuseJS/Observable");
 
 // used in callback functions for reposting and favouriting
@@ -22,6 +23,12 @@ var account = this.Parameter.map( function( param ) {
 var status = this.Parameter.map( function( param ) {
 	return param.status;
 } );
+
+var youtubeLink = Observable('');
+// doesn't scroll nicely in a webview, let's wait for a native youtube solution
+// this.status.onValueChanged( module, function ( newStatus ) {
+// 	youtubeLink.value = helper.getYoutubeLinkFromText( newStatus.content );
+// })
 
 var mentions = this.Parameter.map( function( param ) {
 	return param.mentions;
@@ -184,6 +191,8 @@ gotoReportScreen: gotoReportScreen,
 gotoUser: gotoUser,
 gotoPost: gotoPost,
 
-wordClicked: wordClicked
+wordClicked: wordClicked,
+
+// youtubeLink: youtubeLink
 
 };

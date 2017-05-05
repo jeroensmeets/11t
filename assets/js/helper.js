@@ -39,6 +39,19 @@ function getUrisFromText( _text ) {
 
 }
 
+function getYoutubeLinkFromText( _text ) {
+
+	if ( 'string' != typeof _text ) {
+		return '';
+	}
+
+	// http://stackoverflow.com/a/9102270
+	var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?\<]*).*/;
+    var match = _text.match(regExp);
+    return ( match && ( match.length > 2 ) ) ? 'https://www.youtube.com/embed/' + match[2] : '';
+
+}
+
 function timeSince( date ) {
 
 	var seconds = Math.floor( ( new Date() - new Date( date ) ) / 1000 );
@@ -65,5 +78,6 @@ function timeSince( date ) {
 module.exports = {
 	parseUri: parseUri,
 	getUrisFromText: getUrisFromText,
-	timeSince: timeSince
+	timeSince: timeSince,
+	getYoutubeLinkFromText: getYoutubeLinkFromText
 }

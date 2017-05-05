@@ -27,8 +27,8 @@ userid.onValueChanged( module, function( newValue ) {
 
 		api.getUserProfile( newValue )
 		.then( function( json ) {
+			json.clickableBio = contentparser.clickableBio( json.note );
 			userprofile.value = json;
-			userprofile.clickableBio = contentparser.clickableBio( jsondata.account.note );
 		})
 		.catch( function( err ) {
 			console.log( err.message );

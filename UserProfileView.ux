@@ -14,7 +14,7 @@
 
 		<StackPanel Orientation="Vertical">
 
-			<UserCard act="{Clear act}" router="router" />
+			<UserCard act="{act}" router="router" />
 
 			<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear act.note}" />
 
