@@ -13,7 +13,7 @@
 		<StackPanel Orientation="Vertical">
 			<ReloadPull />
 			<Each Items="{posts}">
-				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
+				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 			<WhileFalse Value="{loading}">
 				<WhileEmpty Items="{posts}">

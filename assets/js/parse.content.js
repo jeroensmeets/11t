@@ -177,9 +177,15 @@ function clickableContent( postdata ) {
 
 				// not a mention. maybe a hashtag?
 				var _tag = postdata.tags.filter( function (obj) { return '#' + obj.name === _linkTxt; } );
-				if ( _tag.length > 0 ) {
 
-					// hashtags are added below post content
+				// why would you make an hashtag an external link? don't like that
+				var _isReallyHashtag = /^#\S+$/.test( _linkTxt )
+
+				if ( _isReallyHashtag || ( _tag.length > 0 ) ) {
+
+					// console.log( '%%%%%%%%%%%%%%%%%%%%%% -- hashtag' );
+					var tag = _linkTxt.replace( '#', '' );
+					result.add( { hashtag: true, word: _linkTxt, tag: tag, makeBold: true } );
 
 				} else if ( postdata.media_attachments.some( function (obj) { return _linkTxt == obj.text_url; } ) ) {
 

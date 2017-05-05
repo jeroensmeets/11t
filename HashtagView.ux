@@ -9,9 +9,9 @@
 
 	<ScrollView LayoutMode="PreserveVisual">
 		<StackPanel Orientation="Vertical">
-			<ReloadPull />
+			<!-- <ReloadPull /> -->
 			<Each Items="{posts}">
-				<PostCard clickable="false" router="router" />
+				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 			<WhileFalse Value="{loading}">
 				<WhileEmpty Items="{posts}">

@@ -1,11 +1,12 @@
 var api = require( 'assets/js/api' );
+var contentparser	= require( 'assets/js/parse.content.js' );
+
 var Observable = require("FuseJS/Observable");
 
 var posts = Observable();
 
 var amFollowing = Observable( false );
 var amFollowedBy = Observable( false );
-
 var isMuted = Observable( false );
 var isBlocked = Observable( false );
 
@@ -27,6 +28,7 @@ userid.onValueChanged( module, function( newValue ) {
 		api.getUserProfile( newValue )
 		.then( function( json ) {
 			userprofile.value = json;
+			userprofile.clickableBio = contentparser.clickableBio( jsondata.account.note );
 		})
 		.catch( function( err ) {
 			console.log( err.message );

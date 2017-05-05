@@ -31,8 +31,8 @@ var rebloggerId = this.Parameter.map( function( param ) {
 	return param.rebloggerId;
 } );
 
-var isRepost = this.status.map( function( value ) {
-	return value.rebloggerID > 0;
+var isRepost = this.Parameter.map( function( param ) {
+	return param.rebloggerID > 0;
 } );
 
 var userHasReposted = this.status.map( function( value ) {
@@ -130,34 +130,32 @@ function gotoUser() {
 
 }
 
-// function gotoTag( args ) {
-
-// 	router.push( "hashtag", { tag: args.data.name } );
-
-// } 
-
 function gotoReblogger() {
 
-	if ( _this.rebloggerId > 0 ) {
-		router.push( "userprofile", { userid: _this.rebloggerId } );
+	if ( _this.rebloggerId.value > 0 ) {
+		router.push( "userprofile", { userid: _this.rebloggerId.value } );
 	}
 
 }
 
-// function wordClicked( args ) {
+function wordClicked( args ) {
 
-// 	if ( args.data.mention ) {
+	if ( args.data.mention ) {
 
-// 		router.push( "userprofile", { userid: userid } );
+		router.push( "userprofile", { userid: userid } );
 
-// 	} else if ( args.data.link ) {
+	} else if ( args.data.hashtag ) {
 
-// 		var InterApp = require("FuseJS/InterApp");
-// 		InterApp.launchUri( args.data.uri );
+		router.push( "hashtag", { tag: args.data.tag } );
 
-// 	}
+	} else if ( args.data.link ) {
 
-// }
+		var InterApp = require("FuseJS/InterApp");
+		InterApp.launchUri( args.data.uri );
+
+	}
+
+}
 
 module.exports = {
 
@@ -185,8 +183,7 @@ gotoReportScreen: gotoReportScreen,
 
 gotoUser: gotoUser,
 gotoPost: gotoPost,
-// 	// gotoTag: gotoTag,
 
-// 	// wordClicked: wordClicked
+wordClicked: wordClicked
 
 };

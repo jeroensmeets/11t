@@ -33,18 +33,23 @@
 			</StackPanel>
 		</WhileTrue>
 
+		<!-- some bots have sensitive set to true but no images -->
+		<WhileEmpty Items="{Property pc.mediaAttachments}">
+			<Set mediaMessageHidden.Visibility="Collapsed" />
+		</WhileEmpty>
+
 		<Panel ux:Name="mediaContainer" ClipToBounds="true">
 			<WhileTrue Value="{sensitive}">
 				<Change mediaContainer.Visibility="Collapsed" />
 			</WhileTrue>
-			<WhileCount Items="{media_attachments}" GreaterThan="1">
+			<WhileCount Items="{Property pc.mediaAttachments}" GreaterThan="1">
 				<FaMultipleMedia FontSize="24" Color="palette.clrHighlight" Layer="Overlay" Alignment="BottomRight" Margin="0,0,16,16" />
 			</WhileCount>
 			<LinearNavigation>
 				<NavigationMotion GotoEasing="CircularOut" GotoDuration="0.3" />
 			</LinearNavigation>
 			<SwipeNavigate SwipeDirection="Left" />
-			<Each Items="{media_attachments}">
+			<Each Items="{Property pc.mediaAttachments}">
 	    		<ImageGallery>
 	    			<WhileString Value="{type}" Equals="image">
 	    				<Panel Height="280">
@@ -265,30 +270,25 @@
 			<Change postcontent.Visibility="Collapsed" />
 		</WhileString>
 
-		<WhileFalse Value="{Property pc.clickable}">
-			<StackPanel Orientation="Vertical" Clicked="{gotoPost}">
-				<Each Items="{Property pc.cleanContent}">
-					<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,8" />
-				</Each>
-			</StackPanel>
+		<StackPanel Orientation="Vertical" Clicked="{gotoPost}">
+			<Each Items="{Property pc.cleanContent}">
+				<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,8" />
+			</Each>
+		</StackPanel>
 
-		</WhileFalse>
-
-		<WhileTrue Value="{Property pc.clickable}">
-			<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
-				<Each Items="{Property pc.clickableContent}">
-					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
-						<WhileTrue Value="{clear}">
-							<Change word.Margin="0,0,800,8" />
-						</WhileTrue>
-						<WhileTrue Value="{makeBold}">
-							<Change word.Font="Bold" />
-							<Clicked Handler="{wordClicked}" />
-						</WhileTrue>
-					</Text>
-				</Each>
-			</WrapPanel>
-		</WhileTrue>
+		<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
+			<Each Items="{Property pc.clickableContent}">
+				<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
+					<WhileTrue Value="{clear}">
+						<Change word.Margin="0,0,800,8" />
+					</WhileTrue>
+					<WhileTrue Value="{makeBold}">
+						<Change word.Font="Bold" />
+						<Clicked Handler="{wordClicked}" />
+					</WhileTrue>
+				</Text>
+			</Each>
+		</WrapPanel>
 
 		<WhileTrue Value="{Property pc.drawlines}">
 			<WhileFalse Value="{last}">
@@ -298,10 +298,10 @@
 
 	</StackPanel>
 
-	<WhileTrue Value="{isRepost}">
+	<WhileFloat Value="{rebloggerId}" GreaterThan="0">
 		<Panel Clicked="{gotoReblogger}" Margin="16,8,16,8">
-			<Text Value="reblogged by {rebloggerName}" TextColor="palette.clrText" Font="Italic" FontSize="13" />
+			<Text Value="reblogged by {rebloggerName}" TextColor="palette.clrText" Font="Italic" FontSize="13" Alignment="Right" />
 		</Panel>
-	</WhileTrue>
+	</WhileFloat>
 
 </StackPanel>
