@@ -16,8 +16,17 @@ var act = this.Parameter.map( function( param ) {
 this.act.onValueChanged( module, function( account ) {
 
 	if ( !account || !account.value ) {
+		console.log( 'sowwy' );
 		return;
 	}
+
+	uFollowing = false;
+	uFollowedBy = false;
+	uBlocking = false;
+	uMuting = false;
+	uRequested = false;
+
+	console.log( 'wabbit found' );
 
 	// BUG! BUG! BUG!
 	// account should be an observable but sometimes is an array
@@ -37,6 +46,7 @@ this.act.onValueChanged( module, function( account ) {
 	.then( function( result ) {
 
 		var relationship = result.shift();
+		console.log( JSON.stringify( relationship ) );
 		uFollowing.value = relationship.following;
 		uFollowedBy.value = relationship.followed_by;
 		uBlocking.value = relationship.blocking;

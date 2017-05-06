@@ -6,41 +6,23 @@ function goWrite() {
 }
 
 function goHome() {
-	gotoPage( 'home' );
+	router.goto( 'home', {}, 'timeline' );
 }
 
 function goNotifications() {
-	gotoPage( 'notifications' );
+	router.goto( 'home', {}, 'notifications' );
 }
 
 function goFavourites() {
-	gotoPage( 'favourites' );
+	router.goto( 'home', {}, 'favourites' );
 }
 
 function goPublic() {
-	gotoPage( 'publictimeline' );
+	router.goto( 'home', {}, 'publictimeline' );
 }
 
 function goSettings() {
-	router.push( 'settings' );
-}
-
-function gotoPage( _pageid, _pushit ) {
-
-	if ( 0 == arguments ) {
-		return;
-	}
-
-	if ( 1 == arguments ) {
-		var _pushit = false;
-	}
-
-	if ( _pushit ) {
-		router.push( _pageid );
-	} else {
-		router.goto( _pageid );
-	}
-
+	router.goto( 'home', {}, 'settings' );
 }
 
 // setting this value to true is enough to make the app logout and go back to the splash screen

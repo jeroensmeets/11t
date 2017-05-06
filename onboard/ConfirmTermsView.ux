@@ -4,7 +4,7 @@
 	<JavaScript File="ConfirmTermsView.js" />
 
 	<ScrollView>
-		<StackPanel Orientation="Vertical" Padding="8">
+		<StackPanel Orientation="Vertical" Padding="0,8">
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,32" TextWrapping="Wrap">
 				To use the app 11t to connect to Mastodon, you must agree to this agreement.
 			</Text>
@@ -38,7 +38,12 @@
 				On Mastodon I can read and see what other people have shared. When I see or read content I think is offensive, I will notify the owner of my Mastodon instance, by flagging the offensive content, or reporting the user.
 			</Text>
 			<Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				Each post on Mastodon has a flag in 11t, pressing this icon will send a notification to the owner of the Mastodon administrator. On the profile page of a Mastodon user, an option to block and unblock a user is shown.
+				Each post on Mastodon has a flag in 11t, pressing this icon will send a notification to the owner of the Mastodon administrator.
+			</Text>
+
+			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Blocking or muting a user</Text>
+			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
+				If I am offended or uncomfortable with content on Mastodon, I will use the options to block or mute a user on her/his/their profile page.
 			</Text>
 
 			<!-- <Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
@@ -46,7 +51,7 @@
 			</Text> -->
 
 			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				By clicking ✓ I accept this user agreement fully.
+				By clicking ✓ I accept this user agreement fully and without reservation.
 			</Text>
 
 			<StackPanel Orientation="Horizontal" Alignment="Center" Margin="0,0,0,24">

@@ -20,10 +20,20 @@
 
 			<Panel Margin="0,0,0,12">
 				<WhileTrue Value="{uFollowedBy}">
-					<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Italic" Value="follows you" />
+					<WhileTrue Value="{uFollowing}">
+						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="You follow each other!" />
+					</WhileTrue>
+					<WhileFalse Value="{uFollowing}">
+						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="follows you, go ahead and take a leap!" />
+					</WhileFalse>
 				</WhileTrue>
 				<WhileFalse Value="{uFollowedBy}">
-					<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Italic" Value="" />
+					<WhileTrue Value="{uFollowing}">
+						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="is not following you, maybe say something nice?" />
+					</WhileTrue>
+					<WhileFalse Value="{uFollowing}">
+						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="you can start something beautiful here" />
+					</WhileFalse>
 				</WhileFalse>
 			</Panel>
 

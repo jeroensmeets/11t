@@ -114,12 +114,14 @@
 		<BottomBarBackground Dock="Bottom" />
 
 		<Navigator DefaultPath="splash" SwipeBack="Right" DeferPageSwitch="Deferring">
-			<TimelinePage Name="home" Title="Timeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-			<NotificationsPage Name="notifications" Title="Notifications" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-			<FavouritesPage Name="favourites" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-			<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-			<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar" />
-			<ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" />
+			<SplashPage Name="splash" router="router" SwipeBack="None">
+				<WhileActive Bypass="Never">
+					<Change Target="TopNavBar.Visibility" Value="Collapsed" />
+					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
+				</WhileActive>
+			</SplashPage>
+			<HomePage Name="home" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
+			<!-- <ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" /> -->
 			<BlockedUsersPage Name="blockedusers" router="router" TopNavBar="TopNavBar" />
 			<MutedUsersPage Name="mutedusers" router="router" TopNavBar="TopNavBar" />
 
@@ -130,12 +132,6 @@
 			</WritePage>
 
 			<HashtagPage Name="hashtag" router="router" TopNavBar="TopNavBar" />
-			<SplashPage Name="splash" router="router" SwipeBack="None">
-				<WhileActive Bypass="Never">
-					<Change Target="TopNavBar.Visibility" Value="Collapsed" />
-					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
-				</WhileActive>
-			</SplashPage>
 			<LoginPage Name="login" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
