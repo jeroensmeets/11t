@@ -17,7 +17,11 @@ function refreshTimeline() {
 			max_id = APIresponse.max_id;
 			since_id = APIresponse.since_id;
 
-			APIresponse.posts = APIresponse.posts.concat( posts.value );
+			if ( posts.value ) {
+				// merge current timeline
+				// TODO speaking of which: why doesn't Observable.refreshAll keep the current entries???
+				APIresponse.posts = APIresponse.posts.concat( posts.value );
+			}
 
 			posts.refreshAll(
 				APIresponse.posts,
