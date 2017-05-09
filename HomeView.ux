@@ -1,13 +1,14 @@
-<Page ux:Class="HomePage">
+<TransitionPage ux:Class="HomePage">
 	<Router ux:Dependency="router" />
-	<Visual ux:Dependency="TopNavBar" />
 
-	<PageControl AllowedSwipeDirections="Both" SwipeBack="None">
-		<TimelinePage Name="timeline" Title="Timeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-		<NotificationsPage Name="notifications" Title="Notifications" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-		<FavouritesPage Name="favourites" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-		<PublicTimelinePage Name="publictimeline" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-		<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
+	<Visual ux:Dependency="TopNavBar" ux:Binding="TopNavBar" />
+
+	<PageControl AllowedSwipeDirections="Both">
+		<TimelinePage Name="timeline" timeline="home" pagetitle="Timeline" router="router" TopNavBar="TopNavBar" />
+		<NotificationsPage Name="notifications" router="router" TopNavBar="TopNavBar" />
+		<TimelinePage Name="favourites" timeline="favourites" pagetitle="Favourites" router="router" TopNavBar="TopNavBar" />
+		<TimelinePage Name="publictimeline" timeline="publictimeline" pagetitle="Public Timeline" router="router" TopNavBar="TopNavBar" />
+		<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar" />
 	</PageControl>
 
-</Page>
+</TransitionPage>

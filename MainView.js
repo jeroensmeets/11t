@@ -6,23 +6,36 @@ function goWrite() {
 }
 
 function goHome() {
-	router.goto( 'home', {}, 'timeline' );
+	GotoOrRefresh( 'timeline' );
 }
 
 function goNotifications() {
-	router.goto( 'home', {}, 'notifications' );
+	GotoOrRefresh( 'notifications' );
 }
 
 function goFavourites() {
-	router.goto( 'home', {}, 'favourites' );
+	GotoOrRefresh( 'favourites' );
 }
 
 function goPublic() {
-	router.goto( 'home', {}, 'publictimeline' );
+	GotoOrRefresh( 'publictimeline' );
 }
 
 function goSettings() {
-	router.goto( 'home', {}, 'settings' );
+	GotoOrRefresh( 'settings' );
+}
+
+function GotoOrRefresh( desiredRoute ) {
+
+	router.getRoute( function( route ) {
+		if ( route && ( route.length > 2 ) && ( desiredRoute != route[ 2 ] ) ) {
+			router.goto( 'home', {}, desiredRoute );
+		} else {
+			// TODO how to get the resolve of this function to the active page
+			// api.loadTimeline( desiredRoute );
+		}
+	} );
+
 }
 
 // setting this value to true is enough to make the app logout and go back to the splash screen

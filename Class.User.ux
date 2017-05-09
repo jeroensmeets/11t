@@ -1,11 +1,13 @@
-<DockPanel ux:Class="UserCard">
+<DockPanel ux:Class="UserCard" ux:Name="uc">
 
-	<object ux:Property="act" />
+	<object ux:Property="useraccount" />
 
 	<Router ux:Dependency="router" />
 	<JavaScript File="Class.User.js" />
 
-	<With Data="{Property act}">
+	<Activated Handler="{getRelationship}" Bypass="Never" />
+
+	<With Data="{Property uc.useraccount}">
 
 		<Image Layer="Background" Url="{header_static}" StretchMode="UniformToFill" Opacity=".2" />
 
@@ -21,18 +23,18 @@
 			<Panel Margin="0,0,0,12">
 				<WhileTrue Value="{uFollowedBy}">
 					<WhileTrue Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="You follow each other!" />
+						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="You follow each other!" />
 					</WhileTrue>
 					<WhileFalse Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="follows you, go ahead and take a leap!" />
+						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="follows you, go ahead and take a leap!" />
 					</WhileFalse>
 				</WhileTrue>
 				<WhileFalse Value="{uFollowedBy}">
 					<WhileTrue Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="is not following you, maybe say something nice?" />
+						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="is not following you, maybe say something nice?" />
 					</WhileTrue>
 					<WhileFalse Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" Font="Italic" Value="you can start something beautiful here" />
+						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="you can start something beautiful here" />
 					</WhileFalse>
 				</WhileFalse>
 			</Panel>

@@ -5,7 +5,7 @@
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>Write</NavBarTitle>
+		<NavBarTitle></NavBarTitle>
 	</AlternateRoot>
 
 	<ScrollView>

@@ -18,9 +18,7 @@ var userprofile = Observable();
 
 userid.onValueChanged( module, function( newValue ) {
 
-	// console.log( newValue );
-
-	if ( newValue ) {
+	if ( 'undefined' != typeof newValue ) {
 
 		userprofile.clear();
 		posts.clear();
@@ -82,6 +80,6 @@ function blockUser() {
 }
 
 module.exports = {
-	act: userprofile,
+	userprofile: userprofile,
 	posts: posts
 }

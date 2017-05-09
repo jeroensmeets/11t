@@ -1,5 +1,8 @@
-<Page ux:Class="TransitionPage" Transition="Default">
+<Page ux:Class="TransitionPage" Transition="Default" ux:Name="self">
 	<ResourceString Key="PageTitle" Value="{pagetitle}" />
+	<WhileActive Invert="true">
+		<Change self.Visibility="Hidden" />
+	</WhileActive>
 </Page>
 <!-- <Page ux:Class="TransitionPage" Transition="None">
 	<ResourceString Key="PageTitle" Value="{pagetitle}" />

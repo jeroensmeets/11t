@@ -65,6 +65,10 @@ function clickableBio( bio ) {
 
 	// replace HTML codes like &amp; and &gt;
 	bio = HtmlEnt.decode( bio );
+	bio = bio.replace( /<br\s*[\/]?>/gi, '</p>' );
+
+	// make sure the </p> is not followed by a non-space character
+	bio = bio.replace( '</p>', '</p> ' );
 
 	// temporary replace urls to prevent splitting on spaces in linktext
 	var uris = helper.getUrisFromText( bio );
@@ -84,14 +88,19 @@ function clickableBio( bio ) {
 
 	for ( var i in words ) {
 
-		if ( -1 === words[ i ].indexOf( '[[[[' ) ) {
+		var word = words[ i ];
+		var newline = ( word.indexOf( '</p>' ) > -1 );
+
+		// now remove al HTML tags
+		word = word.replace( /<[^>]+>/ig, '' );
+		if ( -1 === word.indexOf( '[[[[' ) ) {
 
 			// this is not a link, add it as a word
-			result.add( { word: words[ i ] } );
+			result.add( { word: word, clear: newline } );
 
 		} else {
 
-			var linkId = Number.parseInt( words[ i ].match(/\d/g).join('') );
+			var linkId = Number.parseInt( word.match(/\d/g).join('') );
 			if ( ! uris[ linkId ] ) {
 				continue;
 			}
@@ -100,7 +109,7 @@ function clickableBio( bio ) {
 			var linkstart = uris[ linkId ].indexOf( 'href="' ) + 6;
 			var linkend = uris[ linkId ].indexOf( '"', linkstart );
 			var linkUrl = uris[ linkId ].substring( linkstart, linkend );
-			result.add( { link: true, word: linkTxt, uri: linkUrl, makeBold: true } );
+			result.add( { link: true, word: linkTxt, uri: linkUrl, makeBold: true, clear: newline } );
 
 		}
 
@@ -122,7 +131,9 @@ function clickableContent( postdata ) {
 	_content = _content.replace(new RegExp('<\/p>$'), '');
 
 	// other closing </p> need some breathing room (for now a placeholder)
-	_content = _content.replace( "</p>", " ]]]] " );
+	_content = _content.replace( "</p>", " ]]]]]]]] " );
+	// after a <br> just a newline
+	_content = _content.replace( /<br\s*[\/]?>/gi, " ]]]] " );
 	// opening <p> can be removed
 	_content = _content.replace( "<p>", "" );
 
@@ -147,9 +158,13 @@ function clickableContent( postdata ) {
 
 	for ( var i in _words ) {
 
-		if ( _words[ i ].indexOf( ']]]]' ) > -1 ) {
+		if ( _words[ i ].indexOf( ']]]]]]]]' ) > -1 ) {
 
 			result.add( { word: '', clear: true } );
+
+		} else if ( _words[ i ].indexOf( ']]]]' ) > -1 ) {
+
+			result.add( { word: '', newline: true } );
 
 		} else if ( -1 === _words[ i ].indexOf( '[[[[' ) ) {
 

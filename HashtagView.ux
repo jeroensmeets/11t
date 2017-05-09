@@ -4,7 +4,7 @@
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>{pageTitle}</NavBarTitle>
+		<NavBarTitle></NavBarTitle>
 	</AlternateRoot>
 
 	<ScrollView LayoutMode="PreserveVisual">

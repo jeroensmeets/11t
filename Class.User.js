@@ -9,36 +9,37 @@ var uRequested = Observable( false );
 
 var userid = 0;
 var username = false;
-var act = this.Parameter.map( function( param ) {
-	return param.account;
+
+var usracct = this.Parameter.map( function( param ) {
+	return param.useraccount;
 } );
 
-this.act.onValueChanged( module, function( account ) {
+usracct.onValueChanged( module, function( newValue ) {
 
-	if ( !account || !account.value ) {
-		console.log( 'sowwy' );
+	uFollowing.value = false;
+	uFollowedBy.value = false;
+	uBlocking.value = false;
+	uMuting.value = false;
+	uRequested.value = false;
+
+	// BUG! BUG! BUG!
+	// newValue should be an observable but sometimes is an array
+	var a = ( newValue && newValue.value ) ? newValue.value : newValue;
+
+	console.log( 'In Class.User the property act has changed to ' + JSON.stringify( a ) );
+
+	if ( !a ) {
+		console.log( 'sowwy, no account found' );
 		return;
 	}
 
-	uFollowing = false;
-	uFollowedBy = false;
-	uBlocking = false;
-	uMuting = false;
-	uRequested = false;
+	console.log( 'wabbit found: ' + JSON.stringify( a ) );
 
-	console.log( 'wabbit found' );
-
-	// BUG! BUG! BUG!
-	// account should be an observable but sometimes is an array
-	if ( account && account.value && 'number' == typeof account.value.id ) {
-		userid = account.value.id;
-		username = account.value.acct;
-	} else {
-		userid = account.id;
-		username = account.acct;
-	}
+	userid = a.id;
+	username = a.acct;
 
 	if ( !userid ) {
+		console.log( 'sowwy, no userid found' );
 		return;
 	}
 
@@ -73,7 +74,6 @@ function followUser() {
 }
 
 function muteUser() {
-	console.log( '(un)mute user ' + userid );
 	api.muteUser( userid, uMuting.value ).then( function() {
 		uMuting.value = !uMuting.value;
 	}).catch( function( err ) {

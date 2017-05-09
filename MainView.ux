@@ -1,14 +1,32 @@
-<App Background="#fff">
+<App Background="#eaeaea">
 
 	<Localization ux:Global="Localization" />
 
 	<float4 ux:Global="palette.clrText" ux:Value="#282b37" />
-	<float4 ux:Global="palette.clrIcon" ux:Value="#282b37" />
+	<float4 ux:Global="palette.clrIcon" ux:Value="#e3e3e3" />
 	<float4 ux:Global="palette.clrTextDimmed" ux:Value="#787b87" />
-	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#787b87" />
+	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#c3c3c3" />
 	<float4 ux:Global="palette.clrLines" ux:Value="#282b37" />
+	<float4 ux:Global="palette.clrDivider" ux:Value="#fff" />
 	<float4 ux:Global="palette.clrHighlight" ux:Value="#1a9df8" />
+	<SolidColor ux:Global="palette.brushHighlight" ux:Value="#1a9df8" />
 	<float4 ux:Global="palette.clrNavigation" ux:Value="#1a9df8" />
+	<float4 ux:Global="palette.barBackground" ux:Value="#1a9df8" />
+
+	<!-- http://www.colourlovers.com/palette/4403442/LittleGeorgiou_LLP -->
+
+<!-- 	<float4 ux:Global="palette.backgroundColor" ux:Value="#eaeaea" />
+	<float4 ux:Global="palette.clrText" ux:Value="#464646" />
+	<float4 ux:Global="palette.clrIcon" ux:Value="#E3E3E3" />
+	<float4 ux:Global="palette.clrTextDimmed" ux:Value="#464646" />
+	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#464646" />
+	<float4 ux:Global="palette.clrLines" ux:Value="#075064" />
+	<float4 ux:Global="palette.clrDivider" ux:Value="#ddd" />
+	<float4 ux:Global="palette.clrHighlight" ux:Value="#075064" />
+	<SolidColor ux:Global="palette.brushHighlight" ux:Value="#075064" />
+	<float4 ux:Global="palette.clrNavigation" ux:Value="#075064" />
+	<float4 ux:Global="palette.barBackground" ux:Value="#355057" />
+	<SolidColor ux:Global="palette.statusbarBackground" ux:Value="#355057" /> -->
 
 	<MemoryPolicy ux:Global="QuickUnload" UnloadInBackground="true" UnusedTimeout="10" UnpinInvisible="true"/>
 
@@ -67,21 +85,21 @@
 
 	<JavaScript File="MainView.js" />
 
-	<DockPanel Background="#f4f4f4">
+	<DockPanel>
 
 		<!-- <GlobalImageViewer ux:Global="ImageViewer" ViewerVisible="false" Layer="Overlay" /> -->
 
 		<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
 
-		<StackPanel Dock="Top">
-			<Android.StatusBarConfig Color="palette.clrHighlight" IsVisible="True" />
+		<StackPanel Dock="Top" Color="palette.barBackground">
+			<Android.StatusBarConfig IsVisible="True" />
 			<iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
-			<StatusBarBackground Background="#1a9df8" />
-			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Background="#1a9df8">
+			<StatusBarBackground />
+			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Color="palette.barBackground">
 
 				<WhileCanGoBack>
 					<Panel ux:Name="backButton" Padding="8,0,0,0" Alignment="Left">
-						<FaGoBack Color="#fff" FontSize="20" Dock="Left" Margin="4,8,0,0" />
+						<FaGoBack Color="palette.clrIcon" FontSize="20" Dock="Left" Margin="4,8,0,0" />
 						<AddingAnimation>
 							<Change backButton.Opacity="0" Duration=".3" />
 						</AddingAnimation>
@@ -96,15 +114,15 @@
 
 				<StackPanel Orientation="Horizontal" Layer="Background" Alignment="Right">
 					<Panel Padding="0,0,16,0" Dock="Right">
-						<FaRefresh ux:Name="loadingIcon" Color="#1a9df8" FontSize="16" Alignment="Center">
+						<FaRefresh ux:Name="loadingIcon" Color="palette.barBackground" FontSize="16" Alignment="Center">
 							<WhileTrue Value="{loading}">
 								<Spin Frequency="1" />
-								<Change loadingIcon.Color="#fff" />
+								<Change loadingIcon.Color="palette.clrIcon" />
 							</WhileTrue>
 						</FaRefresh>
 					</Panel>
 					<Panel ux:Name="writeIcon" HitTestMode="LocalBounds" Clicked="{goWrite}" Padding="0,0,12,0" Visibility="Visible">
-						<FaWrite Color="#fff" FontSize="20" Alignment="Center" />
+						<FaWrite Color="palette.clrIcon" FontSize="20" Alignment="Center" />
 					</Panel>
 				</StackPanel>
 
@@ -120,10 +138,37 @@
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</SplashPage>
-			<HomePage Name="home" router="router" TopNavBar="TopNavBar" SwipeBack="None" />
-			<!-- <ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" /> -->
-			<BlockedUsersPage Name="blockedusers" router="router" TopNavBar="TopNavBar" />
-			<MutedUsersPage Name="mutedusers" router="router" TopNavBar="TopNavBar" />
+
+			<!-- <HomePage Name="home" router="router" TopNavBar="TopNavBar" SwipeBack="None" /> -->
+			<TransitionPage Name="home" SwipeBack="None">
+				<PageControl AllowedSwipeDirections="Both">
+					<TimelinePage Name="timeline" timeline="home" pagetitle="Timeline" router="router" TopNavBar="TopNavBar">
+						<WhileActive>
+							<Change btnBottomHome.Color="palette.clrIcon" />
+						</WhileActive>
+					</TimelinePage>
+					<NotificationsPage Name="notifications" router="router" TopNavBar="TopNavBar">
+						<WhileActive>
+							<Change btnBottomNotifications.Color="palette.clrIcon" />
+						</WhileActive>
+					</NotificationsPage>
+					<TimelinePage Name="favourites" timeline="favourites" pagetitle="Favourites" router="router" TopNavBar="TopNavBar">
+						<WhileActive>
+							<Change btnBottomFavourites.Color="palette.clrIcon" />
+						</WhileActive>
+					</TimelinePage>
+					<TimelinePage Name="publictimeline" timeline="publictimeline" pagetitle="Public Timeline" router="router" TopNavBar="TopNavBar">
+						<WhileActive>
+							<Change btnBottomPublic.Color="palette.clrIcon" />
+						</WhileActive>
+					</TimelinePage>
+					<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar">
+						<WhileActive>
+							<Change btnBottomSettings.Color="palette.clrIcon" />
+						</WhileActive>
+					</SettingsPage>
+				</PageControl>
+			</TransitionPage>
 
 			<WritePage Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">
@@ -134,6 +179,7 @@
 			<HashtagPage Name="hashtag" router="router" TopNavBar="TopNavBar" />
 			<LoginPage Name="login" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">
+					<Change Target="writeIcon.Visibility" Value="Collapsed" />
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</LoginPage>
@@ -141,23 +187,27 @@
 			<PostPage ux:Template="postcontext" router="router" TopNavBar="TopNavBar" />
 			<ReportContentPage ux:Template="reportcontent" router="router" TopNavBar="TopNavBar" />
 			<FixedContentPage ux:Template="fixedcontent" router="router" TopNavBar="TopNavBar" />
+			<!-- <ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" /> -->
+			<BlockedUsersPage Name="blockedusers" router="router" TopNavBar="TopNavBar" />
+			<MutedUsersPage Name="mutedusers" router="router" TopNavBar="TopNavBar" />
+
 		</Navigator>
 
-		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Background="#f4f4f4">
-			<Panel HitTestMode="LocalBounds" Clicked="{goHome}">
-				<FaHome Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Color="palette.barBackground">
+			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goHome}">
+				<FaHome ux:Name="btnBottomHome" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
 			</Panel>
-			<Panel HitTestMode="LocalBounds" Clicked="{goNotifications}">
-				<FaReplyAll Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goNotifications}">
+				<FaReplyAll ux:Name="btnBottomNotifications" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
 			</Panel>
-			<Panel HitTestMode="LocalBounds" Clicked="{goFavourites}">
-				<FaStar Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goFavourites}">
+				<FaStar ux:Name="btnBottomFavourites" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
 			</Panel>
-			<Panel HitTestMode="LocalBounds" Clicked="{goPublic}">
-				<FaUsers Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goPublic}">
+				<FaUsers ux:Name="btnBottomPublic" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
 			</Panel>
-			<Panel HitTestMode="LocalBounds" Clicked="{goSettings}">
-				<FaSettings Color="palette.clrNavigation" FontSize="24" Alignment="Center" />
+			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goSettings}">
+				<FaSettings ux:Name="btnBottomSettings" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
 			</Panel>
 		</Grid>
 

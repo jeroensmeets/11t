@@ -1,4 +1,4 @@
-<StackPanel ux:Class="NotificationCard" ux:Name="nc" Background="#fff" Margin="0,0,0,6">
+<StackPanel ux:Class="NotificationCard" ux:Name="nc">
 	<Router ux:Dependency="router" />
 
 	<object ux:Property="status" />
@@ -109,5 +109,7 @@
 		</StackPanel>
 
 	</StackPanel>
+
+	<Rectangle Height="1" Color="palette.clrDivider" />
 
 </StackPanel>

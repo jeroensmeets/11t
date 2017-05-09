@@ -5,11 +5,11 @@ var posts = Observable();
 var max_id = false;
 var since_id = false;
 
-var timeline = 'home';
+var tl = this.timeline;
 
 function refreshTimeline() {
 
-	api.loadTimeline( timeline, since_id )
+	api.loadTimeline( tl.value, since_id )
 	.then( function( APIresponse ) {
 
 		if ( APIresponse.max_id && APIresponse.since_id ) {
@@ -30,7 +30,7 @@ function refreshTimeline() {
 				function( newItem ) { return new api.MastodonPost( newItem ); }
 			);
 
-			api.saveTimelineToCache( timeline, posts.value );
+			api.saveTimelineToCache( tl.value, posts.value );
 
 		}
 
@@ -47,7 +47,7 @@ function loadTimeline() {
 		return;
 	}
 
-	api.loadTimelineFromCache( timeline )
+	api.loadTimelineFromCache( tl.value )
 	.then( function( json ) {
 
 		// nothing in cache? then get timeline from API

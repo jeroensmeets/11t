@@ -6,7 +6,7 @@
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>Your reports</NavBarTitle>
+		<NavBarTitle></NavBarTitle>
 	</AlternateRoot>
 
 	<StackPanel ux:Name="reportPanel" ux:Class="ReportPanelRow" Margin="8,0">

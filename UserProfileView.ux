@@ -1,20 +1,18 @@
 <TransitionPage ux:Class="UserProfilePage">
 
-	<int ux:Property="userid" />
-
 	<Router ux:Dependency="router" />
 	<JavaScript File="UserProfileView.js" />
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>User profile</NavBarTitle>
+		<NavBarTitle></NavBarTitle>
 	</AlternateRoot>
 
 	<ScrollView>
 
 		<StackPanel Orientation="Vertical">
 
-			<UserCard act="{act}" router="router" />
+			<UserCard useraccount="{userprofile}" router="router" />
 
 			<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear act.note}" />
 

@@ -6,7 +6,7 @@
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>Who did I mute?</NavBarTitle>
+		<NavBarTitle></NavBarTitle>
 	</AlternateRoot>
 
 	<ScrollView>
@@ -14,7 +14,7 @@
 		<StackPanel Orientation="Vertical" Dock="Top">
 
 			<Each Items="{mutedUsers}">
-				<UserCard act="{}" router="router" />
+				<UserCard useraccount="{}" router="router" />
 			</Each>
 
 			<WhileEmpty Items="{mutedUsers}">

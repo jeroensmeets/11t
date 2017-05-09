@@ -1,4 +1,4 @@
-<StackPanel ux:Class="PostCard" ux:Name="pc" Margin="0,0,0,3" Background="#fff">
+<StackPanel ux:Class="PostCard" ux:Name="pc">
 
 	<Router ux:Dependency="router" />
 
@@ -123,7 +123,7 @@
 								</WhileFailed>
 							</Video>
 
-							<Rectangle ux:Name="progressBar" Dock="Bottom" Fill="#1a9df8" Alignment="Left" Width="0%" Height="2" />
+							<Rectangle ux:Name="progressBar" Dock="Bottom" Fill="palette.brushHighlight" Alignment="Left" Width="0%" Height="2" />
 						</DockPanel>
 					</WhileString>
 				</ImageGallery>
@@ -138,7 +138,7 @@
 
 			<With Data="{Property pc.account}">
 
-				<Rectangle CornerRadius="6" Width="54" Height="54" Color="#1a9df8">
+				<Rectangle CornerRadius="6" Width="54" Height="54" Color="palette.clrHighlight">
 					<ImageFill Url="{avatar_static}" StretchMode="UniformToFill" ContentAlignment="Center" />
 				</Rectangle>
 
@@ -279,6 +279,9 @@
 		<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
 			<Each Items="{Property pc.clickableContent}">
 				<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
+					<WhileTrue Value="{newline}">
+						<Change word.Margin="0,0,800,4" />
+					</WhileTrue>
 					<WhileTrue Value="{clear}">
 						<Change word.Margin="0,0,800,8" />
 					</WhileTrue>
@@ -303,5 +306,7 @@
 			<Text Value="reblogged by {rebloggerName}" TextColor="palette.clrText" Font="Italic" FontSize="13" Alignment="Right" />
 		</Panel>
 	</WhileFloat>
+
+	<Rectangle Height="1" Color="palette.clrDivider" />
 
 </StackPanel>

@@ -4,7 +4,7 @@
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>{contentPageTitle}</NavBarTitle>
+		<NavBarTitle></NavBarTitle>
 	</AlternateRoot>
 
 	<StackPanel Orientation="Vertical" Dock="Top" Padding="24">
