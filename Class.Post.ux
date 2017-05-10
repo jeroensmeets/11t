@@ -153,7 +153,7 @@
 				<With Data="{Property pc.account}">
 
 					<Panel Alignment="Left">
-						<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrTextDimmed" />
+						<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
 					</Panel>
 					<Panel Dock="Right" Alignment="Right">
 						<Text Value="{acct}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Regular" />
@@ -171,43 +171,53 @@
 
 				<StackPanel Orientation="Horizontal" ux:Name="interactions" Dock="Left">
 
-					<Panel Alignment="CenterLeft" Padding="0,0,16,0">
+					<Panel Alignment="CenterLeft" Padding="0,0,16,0" HitTestMode="LocalBoundsAndChildren">
 						<FaReply Color="palette.clrIconDimmed" FontSize="15" />
 						<Clicked Handler="{replyToPost}" />
 					</Panel>
 
-					<!-- can't reblog when marked sensitive -->
-					<WhileString Value="{status.visibility}" Equals="public" Invert="true">
-
-						<WhileString Value="{status.visibility}" Equals="direct">
-							<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-								<FaEnvelope Color="palette.clrIconDimmed" FontSize="17" />
-							</Panel>
-						</WhileString>
-
-						<WhileString Value="{status.visibility}" Equals="direct" Invert="true">
-							<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-								<FaLock Color="palette.clrIconDimmed" FontSize="17" />
-							</Panel>
-						</WhileString>
-
-					</WhileString>
-
+					<!-- visibility: public, unlisted, private, direct -->
 					<WhileString Value="{status.visibility}" Equals="public">
-						<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
-							<FaRepost ux:Name="icoreblogged" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
+						<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0" HitTestMode="LocalBoundsAndChildren">
+							<FaRepost ux:Name="icorebloggedpublic" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
 								<WhileTrue Value="{reposting}">
 									<Spin Frequency="1" />
 								</WhileTrue>
 							</FaRepost>
 							<Clicked Handler="{rePost}" />
 							<WhileTrue Value="{userHasReposted}">
-								<Change icoreblogged.Color="palette.clrHighlight" />
+								<Change icorebloggedpublic.Color="palette.clrHighlight" />
 							</WhileTrue>
 						</StackPanel>
 					</WhileString>
 
-					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0">
+					<WhileString Value="{status.visibility}" Equals="unlisted">
+						<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0" HitTestMode="LocalBoundsAndChildren">
+							<FaUnlocked ux:Name="icorebloggedunlisted" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
+								<WhileTrue Value="{reposting}">
+									<Spin Frequency="1" />
+								</WhileTrue>
+							</FaUnlocked>
+							<Clicked Handler="{rePost}" />
+							<WhileTrue Value="{userHasReposted}">
+								<Change icorebloggedunlisted.Color="palette.clrHighlight" />
+							</WhileTrue>
+						</StackPanel>
+					</WhileString>
+
+					<WhileString Value="{status.visibility}" Equals="private">
+						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+							<FaLock Color="palette.clrIconDimmed" FontSize="17" />
+						</Panel>
+					</WhileString>
+
+					<WhileString Value="{status.visibility}" Equals="direct">
+						<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+							<FaEnvelope Color="palette.clrIconDimmed" FontSize="17" />
+						</Panel>
+					</WhileString>
+
+					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Margin="0,0,16,0" HitTestMode="LocalBoundsAndChildren">
 						<FaStar ux:Name="icostar" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0">
 							<WhileTrue Value="{favouriting}">
 								<Spin Frequency="1" />
@@ -219,7 +229,7 @@
 						</WhileTrue>
 					</StackPanel>
 
-					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Clicked="{gotoReportScreen}">
+					<StackPanel Orientation="Horizontal" Alignment="CenterLeft" Clicked="{gotoReportScreen}" HitTestMode="LocalBoundsAndChildren">
 						<FaFlag ux:Name="icoflag" Color="palette.clrIconDimmed" FontSize="20" Margin="0,0,3,0" />
 					</StackPanel>
 

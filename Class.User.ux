@@ -5,41 +5,44 @@
 	<Router ux:Dependency="router" />
 	<JavaScript File="Class.User.js" />
 
-	<Activated Handler="{getRelationship}" Bypass="Never" />
-
 	<With Data="{Property uc.useraccount}">
 
 		<Image Layer="Background" Url="{header_static}" StretchMode="UniformToFill" Opacity=".2" />
 
-		<Rectangle CornerRadius="6" Width="96" Height="96" Color="#1a9df8" Margin="16" Dock="Left" Clicked="{gotoUser}">
+		<Rectangle CornerRadius="6" Width="96" Height="96" Color="#1a9df8" Margin="16,16,16,0" Dock="Left" Clicked="{gotoUser}">
 			<ImageFill Url="{avatar_static}" StretchMode="UniformToFill" ContentAlignment="Center" />
 		</Rectangle>
 
-		<StackPanel Orientation="Vertical" Margin="0,16,0,0">
+		<DockPanel>
+			<StackPanel Orientation="Vertical" Margin="0,16,0,0" Dock="Top">
 
-			<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
-			<Text Value="@{acct}" FontSize="13" Font="Regular" TextColor="palette.clrText" />
+				<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
+				<Text Value="@{acct}" FontSize="13" Font="Regular" TextColor="palette.clrText" />
 
-			<Panel Margin="0,0,0,12">
-				<WhileTrue Value="{uFollowedBy}">
-					<WhileTrue Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="You follow each other!" />
-					</WhileTrue>
-					<WhileFalse Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="follows you, go ahead and take a leap!" />
-					</WhileFalse>
+				<WhileTrue Value="{useInfoLoaded}">
+					<Panel Margin="0,0,0,12">
+						<WhileTrue Value="{uFollowedBy}">
+							<WhileTrue Value="{uFollowing}">
+								<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="You follow each other!" />
+							</WhileTrue>
+							<WhileFalse Value="{uFollowing}">
+								<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="follows you, go ahead and take a leap!" />
+							</WhileFalse>
+						</WhileTrue>
+						<WhileFalse Value="{uFollowedBy}">
+							<WhileTrue Value="{uFollowing}">
+								<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="is not following you, maybe say something nice?" />
+							</WhileTrue>
+		<!-- 					<WhileFalse Value="{uFollowing}">
+								<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="you can start something beautiful here" />
+							</WhileFalse> -->
+						</WhileFalse>
+					</Panel>
 				</WhileTrue>
-				<WhileFalse Value="{uFollowedBy}">
-					<WhileTrue Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="is not following you, maybe say something nice?" />
-					</WhileTrue>
-<!-- 					<WhileFalse Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="you can start something beautiful here" />
-					</WhileFalse> -->
-				</WhileFalse>
-			</Panel>
 
-			<StackPanel Orientation="Horizontal" ux:Name="UserInteractions">
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" ux:Name="UserInteractions" Dock="Bottom">
 
 				<Panel Alignment="CenterLeft" Margin="0,0,16,0">
 					<FaReply Color="palette.clrIconDimmed" FontSize="23" />
@@ -77,8 +80,8 @@
 				</Panel>
 
 			</StackPanel>
-				
-		</StackPanel>
+
+		</DockPanel>
 
 	</With>
 

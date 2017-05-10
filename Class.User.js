@@ -7,10 +7,14 @@ var uBlocking = Observable( false );
 var uMuting = Observable( false );
 var uRequested = Observable( false );
 
+var userInfoLoaded = Observable( false );
+
 var userid = 0;
 var username = false;
 
 this.useraccount.onValueChanged( module, function( newValue ) {
+
+	console.log( JSON.stringify( newValue ) );
 
 	uFollowing.value = false;
 	uFollowedBy.value = false;
@@ -22,20 +26,16 @@ this.useraccount.onValueChanged( module, function( newValue ) {
 	// newValue should be an observable but sometimes is an array
 	var a = ( newValue && newValue.value ) ? newValue.value : newValue;
 
-	console.log( 'In Class.User the property act has changed to ' + JSON.stringify( a ) );
-
 	if ( !a ) {
-		console.log( 'sowwy, no account found' );
 		return;
 	}
-
-	console.log( 'wabbit found: ' + JSON.stringify( a ) );
 
 	userid = a.id;
 	username = a.acct;
 
+	console.log( '----> ' + userid );
+
 	if ( !userid ) {
-		console.log( 'sowwy, no userid found' );
 		return;
 	}
 
@@ -49,6 +49,8 @@ this.useraccount.onValueChanged( module, function( newValue ) {
 		uBlocking.value = relationship.blocking;
 		uMuting.value = relationship.muting;
 		uRequested.value = relationship.requested;
+
+		userInfoLoaded.value = true;
 
 	} )
 	.catch( function( err ) {
@@ -93,6 +95,8 @@ module.exports = {
 	uBlocking: uBlocking,
 	uMuting: uMuting,
 	uRequested: uRequested,
+
+	userInfoLoaded: userInfoLoaded,
 
 	mentionUser: mentionUser,
 	followUser: followUser,

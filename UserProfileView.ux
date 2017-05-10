@@ -18,7 +18,7 @@
 
 			<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="16,16,24,0">
 				<Each Items="{clickableBio}">
-					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2" Background="#110">
+					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
 						<WhileTrue Value="{clear}">
 							<Change word.Margin="0,0,800,8" />
 						</WhileTrue>

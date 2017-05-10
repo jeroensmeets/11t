@@ -19,6 +19,8 @@ var cb = Observable();
 
 userid.onValueChanged( module, function( newValue ) {
 
+	console.log( JSON.stringify( newValue ) );
+
 	if ( 'undefined' != typeof newValue ) {
 
 		userprofile.clear();
@@ -26,7 +28,6 @@ userid.onValueChanged( module, function( newValue ) {
 
 		api.getUserProfile( newValue )
 		.then( function( json ) {
-			// json.clickableBio = contentparser.clickableBio( json.note );
 			userprofile.value = json;
 			cb.value = contentparser.clickableBio( json.note );
 			console.log( JSON.stringify( cb.value.length ) );
