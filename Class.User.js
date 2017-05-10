@@ -10,11 +10,7 @@ var uRequested = Observable( false );
 var userid = 0;
 var username = false;
 
-var usracct = this.Parameter.map( function( param ) {
-	return param.useraccount;
-} );
-
-usracct.onValueChanged( module, function( newValue ) {
+this.useraccount.onValueChanged( module, function( newValue ) {
 
 	uFollowing.value = false;
 	uFollowedBy.value = false;

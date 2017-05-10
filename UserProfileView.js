@@ -15,6 +15,7 @@ var userid = this.Parameter.map( function( param ) {
 } );
 
 var userprofile = Observable();
+var cb = Observable();
 
 userid.onValueChanged( module, function( newValue ) {
 
@@ -25,8 +26,10 @@ userid.onValueChanged( module, function( newValue ) {
 
 		api.getUserProfile( newValue )
 		.then( function( json ) {
-			json.clickableBio = contentparser.clickableBio( json.note );
+			// json.clickableBio = contentparser.clickableBio( json.note );
 			userprofile.value = json;
+			cb.value = contentparser.clickableBio( json.note );
+			console.log( JSON.stringify( cb.value.length ) );
 		})
 		.catch( function( err ) {
 			console.log( err.message );
@@ -81,5 +84,6 @@ function blockUser() {
 
 module.exports = {
 	userprofile: userprofile,
+	clickableBio: cb,
 	posts: posts
 }

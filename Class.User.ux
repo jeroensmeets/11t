@@ -17,7 +17,7 @@
 
 		<StackPanel Orientation="Vertical" Margin="0,16,0,0">
 
-			<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrText" />
+			<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
 			<Text Value="@{acct}" FontSize="13" Font="Regular" TextColor="palette.clrText" />
 
 			<Panel Margin="0,0,0,12">
@@ -33,9 +33,9 @@
 					<WhileTrue Value="{uFollowing}">
 						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="is not following you, maybe say something nice?" />
 					</WhileTrue>
-					<WhileFalse Value="{uFollowing}">
+<!-- 					<WhileFalse Value="{uFollowing}">
 						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="you can start something beautiful here" />
-					</WhileFalse>
+					</WhileFalse> -->
 				</WhileFalse>
 			</Panel>
 

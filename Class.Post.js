@@ -50,6 +50,10 @@ var userHasFavourited = this.status.map( function( value ) {
 	return ( true == value.favourited );
 } );
 
+var timeSince = this.status.map( function( value ) {
+	return helper.timeSince( value.created_at );
+} );
+
 function replyToPost() {
 
 	router.push( "write", { postid: _this.status.value.id, mentions: _this.mentions.value, firstup: _this.account.value.acct } );
@@ -166,7 +170,7 @@ function wordClicked( args ) {
 
 module.exports = {
 
-// 	// timeSince: timeSince,
+timeSince: timeSince,
 
 isRepost: isRepost,
 gotoReblogger: gotoReblogger,

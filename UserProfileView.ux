@@ -14,7 +14,21 @@
 
 			<UserCard useraccount="{userprofile}" router="router" />
 
-			<Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear act.note}" />
+			<!-- <Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear userprofile.note}" /> -->
+
+			<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="16,16,24,0">
+				<Each Items="{clickableBio}">
+					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2" Background="#110">
+						<WhileTrue Value="{clear}">
+							<Change word.Margin="0,0,800,8" />
+						</WhileTrue>
+						<WhileTrue Value="{makeBold}">
+							<Change word.Font="Bold" />
+							<Clicked Handler="{wordClicked}" />
+						</WhileTrue>
+					</Text>
+				</Each>
+			</WrapPanel>
 
 			<Panel Margin="16,16,24,16">
 				<Text Value="{Clear act.statuses_count} posts composed." FontSize="13" TextColor="palette.clrText" Font="Regular" />
