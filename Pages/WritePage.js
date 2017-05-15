@@ -58,10 +58,14 @@ function doToot() {
 		return;
 	}
 
+	console.log( 2 );
+
 	var _spoiler = '';
 	if ( showSpoilerText.value && ( '' != spoilerText.value.replace(/\s+/g, '') ) ) {
 		_spoiler = spoilerText.value;
 	}
+
+	console.log( 3 );
 
 	var _media_ids = [];
 	// console.log( 'media_attachments has length ' + media_attachments.length );
@@ -69,6 +73,10 @@ function doToot() {
 		// console.log( 'item in media array: ' + JSON.stringify( item ) );
 		_media_ids.push( item.id );
 	});
+
+	console.log( 4 );
+
+	return;
 
 	api.sendPost(
 

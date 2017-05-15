@@ -4,7 +4,6 @@
 
 	<object ux:Property="status" />
 	<object ux:Property="account" />
-	<object ux:Property="spoilerText" />
 	<object ux:Property="cleanContent" />
 	<object ux:Property="clickableContent" />
 	<object ux:Property="mentions" />
@@ -153,25 +152,29 @@
 
 	</DockPanel>
 
-	<WhileString Value="{Property pc.spoilerText}" Test="IsNotEmpty">
-		<StackPanel Orientation="Vertical" Margin="24,8,16,0">
-			<Clicked>
-				<Set postcontent.Visibility="Visible" />
-				<Set showSpoilerButton.Visibility="Collapsed" />
-			</Clicked>
-			<Text Value="{Property pc.spoilerText}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" />
-			<StackPanel ux:Name="showSpoilerButton" Orientation="Horizontal" Margin="0,8,0,8" HitTestMode="LocalBounds">
-				<FaView Color="palette.clrIcon" FontSize="15" Margin="0,0,4,0" Alignment="Center" />
-				<Text Value="show more" Color="palette.clrText" Font="Italic" FontSize="15" Alignment="Center" />
+	<With Data="{Property pc.status}">
+		<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
+			<StackPanel Orientation="Vertical" Margin="24,8,16,0">
+				<Clicked>
+					<Set postcontent.Visibility="Visible" />
+					<Set showSpoilerButton.Visibility="Collapsed" />
+				</Clicked>
+				<Text Value="{spoiler_text}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" />
+				<StackPanel ux:Name="showSpoilerButton" Orientation="Horizontal" Margin="0,8,0,16" HitTestMode="LocalBounds">
+					<FaView Color="palette.clrText" FontSize="15" Margin="0,0,8,0" Alignment="Center" />
+					<Text Value="show more" Color="palette.clrText" Font="Italic" FontSize="15" Alignment="Center" />
+				</StackPanel>
 			</StackPanel>
-		</StackPanel>
-	</WhileString>
+		</WhileString>
+	</With>
 
 	<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="24,8,16,0">
 
-		<WhileString Value="{Property pc.spoilerText}" Test="IsNotEmpty">
-			<Change postcontent.Visibility="Collapsed" />
-		</WhileString>
+		<With Data="{Property pc.status}">
+			<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
+				<Change postcontent.Visibility="Collapsed" />
+			</WhileString>
+		</With>
 
 		<StackPanel Orientation="Vertical" Clicked="{gotoPost}">
 			<Each Items="{Property pc.cleanContent}">

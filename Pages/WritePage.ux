@@ -73,9 +73,6 @@
 
 				</DockPanel>
 
-				<!-- attachments -->
-				<ImageGallery sensitive="false" attachments="{attachments}" />
-
 				<!-- error when too many images -->
 				<WhileTrue Value="{errorTooManyImages}">
 					<Text Value="You can attach a maximum of 4 images to one post." TextWrapping="Wrap" Color="palette.clrText" Font="Italic" Margin="0,12,0,0" />
@@ -84,9 +81,14 @@
 				<DockPanel Margin="16">
 					<MastodonButton Dock="Right" text="Share" Clicked="{doToot}" />
 				</DockPanel>
+
 				<WhileTrue Value="{errorInSending}">
-					<Text Value="Could not send your toot at this time. Sorry!" TextWrapping="Wrap" Color="palette.clrText" Font="Italic" Margin="0,12,0,0" />
+					<Text Value="Could not send your toot at this time. Sorry!" TextWrapping="Wrap" Color="palette.clrText" Font="Italic" Margin="0,8,0,16" />
 				</WhileTrue>
+
+				<!-- attachments -->
+				<ImageGallery sensitive="false" attachments="{attachments}" />
+
 			</StackPanel>
 		</Panel>
 	</ScrollView>
