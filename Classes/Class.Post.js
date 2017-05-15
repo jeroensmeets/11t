@@ -147,14 +147,14 @@ function gotoPost() {
 
 function gotoUser() {
 
-	router.push( 'home', {}, 'userprofile', { userid: _this.account.value.id } );
+	router.push( 'userprofile', { userid: _this.account.value.id } );
 
 }
 
 function gotoReblogger() {
 
 	if ( _this.rebloggerId.value > 0 ) {
-		router.push( "userprofile", { userid: _this.rebloggerId.value } );
+		router.push( 'userprofile', { userid: _this.rebloggerId.value } );
 	}
 
 }
