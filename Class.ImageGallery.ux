@@ -1,8 +1,0 @@
-<Page ux:Class="ImageGallery">
-    <EnteringAnimation>
-        <Move X="-1" RelativeTo="ParentSize" />
-    </EnteringAnimation>
-    <ExitingAnimation>
-        <Move X="1" RelativeTo="ParentSize" />
-    </ExitingAnimation>
-</Page>

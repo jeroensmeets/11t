@@ -1,14 +1,8 @@
 var Observable			= require("FuseJS/Observable");
 var cameraRoll			= require("FuseJS/CameraRoll");
 
-var api					= require( 'assets/js/api' );
+var api					= require( 'Assets/js/api' );
 var media_attachments	= Observable();
-
-var isPrivate			= Observable( false );
-var hidePublic			= Observable( false );
-var isSensitive			= Observable( false );
-var useSpoilerText		= Observable( false );
-var spoilerText			= Observable( '' );
 
 var errorInSending		= Observable( false );
 var errorTooManyImages	= Observable( false );
@@ -18,7 +12,22 @@ var inReplyToPostId = this.Parameter.map( function( param ) {
 	return param.postid;
 });
 
-var txtToToot = Observable();
+var tootVisibility = this.Parameter.map( function( param ) {
+	return ( param.visibility && ( '' != param.visibility ) ) ? param.visibility : 'unlisted';
+});
+
+var isSensitive = this.Parameter.map( function( param ) {
+	return ( true === param.sensitive );
+});
+
+var spoilerText = this.Parameter.map( function( param ) {
+	return param.contentwarning;
+});
+
+var showSpoilerText = this.Parameter.map( function( param ) {
+	return ( ( 'undefined' != typeof param.contentwarning ) && ( '' != param.contentwarning ) );
+});
+
 var txtToToot = this.Parameter.map( function( param ) {
 
 	var _prefillPost = '';
@@ -50,7 +59,7 @@ function doToot() {
 	}
 
 	var _spoiler = '';
-	if ( useSpoilerText.value && ( '' != spoilerText.value.replace(/\s+/g, '') ) ) {
+	if ( showSpoilerText.value && ( '' != spoilerText.value.replace(/\s+/g, '') ) ) {
 		_spoiler = spoilerText.value;
 	}
 
@@ -63,7 +72,7 @@ function doToot() {
 
 	api.sendPost(
 
-		txtToToot.value, inReplyToPostId.value, _media_ids, isPrivate.value, hidePublic.value, isSensitive.value, _spoiler
+		txtToToot.value, inReplyToPostId.value, _media_ids, tootVisibility.value, isSensitive.value, _spoiler
 
 	).then( function( result ) {
 
@@ -84,17 +93,24 @@ function doToot() {
 
 }
 
-function clearScreen() {
+function changeContentWarning() {
+	showSpoilerText.value = !showSpoilerText.value;
+}
 
-	txtToToot.value = '';
-	media_attachments.clear();
-	inReplyToPostId.value = 0;
-	isPrivate.value = false;
-	hidePublic.value = false;
+function makePublic() {
+	tootVisibility.value = 'public';
+}
 
-	errorInSending.value = false;
-	errorTooManyImages.value = false;
+function makeUnlisted() {
+	tootVisibility.value = 'unlisted';
+}
 
+function makePrivate() {
+	tootVisibility.value = 'private';
+}
+
+function makeDirect() {
+	tootVisibility.value = 'direct';
 }
 
 function selectImage() {
@@ -140,13 +156,16 @@ module.exports = {
 	txtToToot: txtToToot,
 	attachments: media_attachments,
 	doToot: doToot,
-	clearScreen: clearScreen,
 	errorInSending: errorInSending,
 	errorTooManyImages: errorTooManyImages,
 	selectImage: selectImage,
-	isPrivate: isPrivate,
-	hidePublic: hidePublic,
+	tootVisibility: tootVisibility,
+	makeDirect: makeDirect,
+	makePrivate: makePrivate,
+	makeUnlisted: makeUnlisted,
+	makePublic: makePublic,
 	isSensitive: isSensitive,
-	useSpoilerText: useSpoilerText,
-	spoilerText: spoilerText
+	showSpoilerText: showSpoilerText,
+	spoilerText: spoilerText,
+	changeContentWarning: changeContentWarning
 }

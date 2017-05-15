@@ -1,4 +1,4 @@
-var api = require( 'assets/js/api' );
+var api = require( 'Assets/js/api' );
 var Localization = require("Localization");
 
 var currentLocale = false;

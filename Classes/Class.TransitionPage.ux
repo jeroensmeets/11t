@@ -1,0 +1,15 @@
+<Page ux:Class="TransitionPage" Transition="None" ux:Name="self">
+	<ResourceString Key="PageTitle" Value="{pagetitle}" />
+    <EnteringAnimation>
+        <Move X="1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
+    </EnteringAnimation>
+    <ExitingAnimation>
+        <Move X="1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
+    </ExitingAnimation>
+    <RemovingAnimation>
+        <Move X="-1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
+    </RemovingAnimation>
+	<WhileActive Invert="true">
+		<Change self.Visibility="Hidden" />
+	</WhileActive>
+</Page>

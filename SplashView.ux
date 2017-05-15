@@ -5,10 +5,10 @@
 
 	<Activated Handler="{startLoggedInCheck}" Bypass="Never" />
 
-	<Grid Rows="148,1*" ux:Name="loginform" Visibility="Collapsed">
+	<Grid Rows="112,1*" ux:Name="loginform" Visibility="Collapsed">
 
 		<DockPanel Margin="0,12,0,12" Alignment="Top">
-			<Image File="assets/images/logo-11t-transparent.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Left" />
+			<Image File="Assets/images/logo-11t-transparent.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Left" />
 			<TextView Font="Bold" FontSize="15" TextColor="palette.clrText" Value="Connect to Mastodon" Dock="Right" Alignment="CenterRight" Margin="0,0,32,0" />
 		</DockPanel>
 
@@ -20,23 +20,10 @@
 			</PageControl>
 		</Panel>
 
-<!-- 		<PageIndicator ux:Name="pageIndicator" Navigation="onboardControl" Alignment="TopCenter">
-			<Circle ux:Template="Dot" ux:Name="dotFac" Color="#C6C6C9" Margin="5" Width="10" Height="20">
-				<ActivatingAnimation>
-					<Scale Factor="1.1"/>
-					<Change dotFac.Color="#56C7C8" />
-				</ActivatingAnimation>
-			</Circle>
-		</PageIndicator> -->
-
 	</Grid>
 
 	<WhileTrue Value="{loginFormVisible}">
 		<Set loginform.Visibility="Visible" />
 	</WhileTrue>
-
-	<WhileKeyboardVisible>
-		<Change loginform.Rows="64,1*" Duration="1" DurationBack="1" />
-	</WhileKeyboardVisible>
 
 </TransitionPage>

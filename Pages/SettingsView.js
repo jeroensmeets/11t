@@ -1,5 +1,5 @@
-var api = require( 'assets/js/api' );
-var settings = require( 'assets/js/settings' );
+var api = require( 'Assets/js/api' );
+var settings = require( 'Assets/js/settings' );
 var Observable = require( 'FuseJS/Observable' );
 
 var useTranslations = Observable( false );

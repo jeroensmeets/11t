@@ -52,6 +52,22 @@ function getYoutubeLinkFromText( _text ) {
 
 }
 
+function compareById( a, b ) {
+
+	var aDate = ( null != a.reblog ) ? new Date( a.reblog.created_at ) : new Date( a.created_at );
+	var bDate = ( null != b.reblog ) ? new Date( b.reblog.created_at ) : new Date( b.created_at );
+
+	if ( aDate < bDate ) {
+		return -1;
+	}
+
+	if ( aDate > bDate ) {
+		return 1;
+	}
+
+	return 0;
+}
+
 function timeSince( date ) {
 
 	var minute = 6e1;
@@ -86,5 +102,6 @@ module.exports = {
 	parseUri: parseUri,
 	getUrisFromText: getUrisFromText,
 	timeSince: timeSince,
+	compareById: compareById,
 	getYoutubeLinkFromText: getYoutubeLinkFromText
 }

@@ -1,27 +1,21 @@
-var api = require("assets/js/api");
+var api = require("Assets/js/api");
 var Observable = require( 'FuseJS/Observable' );
 
 var posts = Observable();
 var max_id = false;
 var since_id = false;
 
-var tl = this.timeline;
+var timeline = 'notifications';
 
 function refreshTimeline() {
 
-	api.loadTimeline( tl.value, since_id )
+	api.loadNotifications( since_id )
 	.then( function( APIresponse ) {
 
 		if ( APIresponse.max_id && APIresponse.since_id ) {
 
 			max_id = APIresponse.max_id;
 			since_id = APIresponse.since_id;
-
-			if ( posts.value ) {
-				// merge current timeline
-				// TODO speaking of which: why doesn't Observable.refreshAll keep the current entries???
-				APIresponse.posts = APIresponse.posts.concat( posts.value );
-			}
 
 			posts.refreshAll(
 				APIresponse.posts,
@@ -30,7 +24,7 @@ function refreshTimeline() {
 				function( newItem ) { return new api.MastodonPost( newItem ); }
 			);
 
-			api.saveTimelineToCache( tl.value, posts.value );
+			api.saveTimelineToCache( timeline, posts.value );
 
 		}
 
@@ -47,7 +41,7 @@ function loadTimeline() {
 		return;
 	}
 
-	api.loadTimelineFromCache( tl.value )
+	api.loadTimelineFromCache( timeline )
 	.then( function( json ) {
 
 		// nothing in cache? then get timeline from API

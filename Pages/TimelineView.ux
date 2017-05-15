@@ -1,21 +1,26 @@
-<TransitionPage ux:Class="TimelinePage" ux:Name="tp">
+<TransitionPage ux:Class="TimelinePage">
+
 	<Router ux:Dependency="router" />
 	<string ux:Property="timeline" />
 	<string ux:Property="pagetitle" />
 
 	<JavaScript File="TimelineView.js" />
 
-	<WhileActive>
-		<Callback Handler="{loadTimeline}" />
-	</WhileActive>
+	<Activated Handler="{loadTimeline}" />
 
 	<Visual ux:Dependency="TopNavBar" />
 	<AlternateRoot ParentNode="TopNavBar">
-		<NavBarTitle>{Property tp.pagetitle}</NavBarTitle>
+		<NavBarTitle>{tlshown}</NavBarTitle>
 	</AlternateRoot>
+
 
 	<Panel>
 		<ScrollView LayoutMode="PreserveVisual" AllowedScrollDirections="Vertical">
+
+<!-- 			<WhileScrollable ScrollDirections="Down" Invert="true">
+				<Callback Handler="{getOlderPosts}" />
+			</WhileScrollable>
+ -->
 			<StackPanel Orientation="Vertical">
 
 				<ReloadPull />
@@ -23,6 +28,16 @@
 				<Each Items="{posts}">
 					<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 				</Each>
+
+				<WhileTrue Value="{loadingOlder}">
+					<Panel Padding="0,8">
+						<FaRefresh ux:Name="loadingIcon" Color="palette.clrIcon" FontSize="12" Alignment="Center">
+							<WhileActive>
+								<Spin Frequency="1" />
+							</WhileActive>
+						</FaRefresh>
+					</Panel>
+				</WhileTrue>
 
 				<WhileFalse Value="{loading}">
 					<WhileEmpty Items="{posts}">

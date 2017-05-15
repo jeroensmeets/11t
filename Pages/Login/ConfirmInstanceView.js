@@ -1,5 +1,5 @@
-var api = require( 'assets/js/api' );
-var HtmlEnt = require( 'assets/js/he/he.js' );
+var api = require( 'Assets/js/api' );
+var HtmlEnt = require( 'Assets/js/he/he.js' );
 var Observable = require( 'FuseJS/Observable' );
 
 var instanceContactEmail = Observable();
@@ -20,7 +20,7 @@ function getInstanceInfo() {
 	api.getInstanceInfo( newValue )
 	.then( function( result ) {
 
-		console.log( JSON.stringify( result ) );
+		// console.log( JSON.stringify( result ) );
 
 		instanceContactEmail.value = result.email;
 		instanceDescription.value =  

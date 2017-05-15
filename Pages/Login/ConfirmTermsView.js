@@ -1,4 +1,4 @@
-var api = require( 'assets/js/api' );
+var api = require( 'Assets/js/api' );
 
 function confirmTerms() {
 	router.push( 'login', {} );

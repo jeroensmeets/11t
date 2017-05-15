@@ -80,9 +80,11 @@
 	<Text ux:Class="FaView" Font="fa" FontSize="16">&#xf06e;</Text>
 	<Text ux:Class="FaRefresh" Font="fa" FontSize="16">&#xf021;</Text>
 	<Text ux:Class="FaLoading" Font="fa" FontSize="16">&#xf1ce;</Text>
+	<Text ux:Class="FaUpload" Font="fa" FontSize="16">&#xf03e;</Text>
 	<Text ux:Class="FaVideoPlay" Font="fa" FontSize="16">&#xf04b;</Text>
 	<Text ux:Class="FaMultipleMedia" Font="fa" FontSize="16">&#xf0fe;</Text>
 	<Text ux:Class="FaFlag" Font="fa" FontSize="16">&#xf024;</Text>
+	<Text ux:Class="FaContentWarning" Font="fa" FontSize="16">&#xf071;</Text>
 
 	<JavaScript File="MainView.js" />
 
@@ -132,66 +134,89 @@
 
 		<BottomBarBackground Dock="Bottom" />
 
-		<Navigator DefaultPath="splash" SwipeBack="Right" DeferPageSwitch="Deferring">
-			<SplashPage Name="splash" router="router" SwipeBack="None">
+		<Navigator ux:Name="manamanav" DefaultPath="splash" SwipeBack="Right" DeferPageSwitch="Deferring">
+			<SplashPage ux:Name="splash" router="router" SwipeBack="None">
 				<WhileActive Bypass="Never">
 					<Change Target="TopNavBar.Visibility" Value="Collapsed" />
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</SplashPage>
-
-			<!-- <HomePage Name="home" router="router" TopNavBar="TopNavBar" SwipeBack="None" /> -->
-			<TransitionPage Name="home" SwipeBack="None">
-				<PageControl AllowedSwipeDirections="Both">
-					<TimelinePage Name="timeline" timeline="home" pagetitle="Timeline" router="router" TopNavBar="TopNavBar">
-						<WhileActive>
-							<Change btnBottomHome.Color="palette.clrIcon" />
-						</WhileActive>
-					</TimelinePage>
-					<NotificationsPage Name="notifications" router="router" TopNavBar="TopNavBar">
-						<WhileActive>
-							<Change btnBottomNotifications.Color="palette.clrIcon" />
-						</WhileActive>
-					</NotificationsPage>
-					<TimelinePage Name="favourites" timeline="favourites" pagetitle="Favourites" router="router" TopNavBar="TopNavBar">
-						<WhileActive>
-							<Change btnBottomFavourites.Color="palette.clrIcon" />
-						</WhileActive>
-					</TimelinePage>
-					<TimelinePage Name="publictimeline" timeline="publictimeline" pagetitle="Public Timeline" router="router" TopNavBar="TopNavBar">
-						<WhileActive>
-							<Change btnBottomPublic.Color="palette.clrIcon" />
-						</WhileActive>
-					</TimelinePage>
-					<SettingsPage Name="settings" router="router" TopNavBar="TopNavBar">
-						<WhileActive>
-							<Change btnBottomSettings.Color="palette.clrIcon" />
-						</WhileActive>
-					</SettingsPage>
-				</PageControl>
-			</TransitionPage>
-
-			<WritePage Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
-				<WhileActive Bypass="Never">
-					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
-				</WhileActive>
-			</WritePage>
-
-			<HashtagPage Name="hashtag" router="router" TopNavBar="TopNavBar" />
-			<LoginPage Name="login" router="router" TopNavBar="TopNavBar">
+			<LoginPage ux:Name="login" router="router" TopNavBar="TopNavBar">
 				<WhileActive Bypass="Never">
 					<Change Target="writeIcon.Visibility" Value="Collapsed" />
 					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
 				</WhileActive>
 			</LoginPage>
+			<TimelinePage ux:Name="timeline" timeline="home" pagetitle="Timeline" router="router" TopNavBar="TopNavBar">
+				<SwipeGesture ux:Name="tlSwipeLeft" Direction="Left" Length="100" />
+				<Swiped Source="tlSwipeLeft">
+					<Callback Handler="{goNotifications}" />
+				</Swiped>
+				<WhileActive>
+					<Change btnBottomHome.Color="palette.clrIcon" />
+				</WhileActive>
+			</TimelinePage>
+			<NotificationsPage ux:Name="notifications" router="router" TopNavBar="TopNavBar">
+				<SwipeGesture ux:Name="noSwipeLeft" Direction="Left" Length="100" />
+				<Swiped Source="noSwipeLeft">
+					<Callback Handler="{goFavourites}" />
+				</Swiped>
+				<SwipeGesture ux:Name="noSwipeRight" Direction="Right" Length="100" />
+				<Swiped Source="noSwipeRight">
+					<Callback Handler="{goHome}" />
+				</Swiped>
+				<WhileActive>
+					<Change btnBottomNotifications.Color="palette.clrIcon" />
+				</WhileActive>
+			</NotificationsPage>
+			<TimelinePage ux:Name="favourites" timeline="favourites" pagetitle="Favourites" router="router" TopNavBar="TopNavBar">
+				<SwipeGesture ux:Name="faSwipeLeft" Direction="Left" Length="100" />
+				<Swiped Source="faSwipeLeft">
+					<Callback Handler="{goPublic}" />
+				</Swiped>
+				<SwipeGesture ux:Name="faSwipeRight" Direction="Right" Length="100" />
+				<Swiped Source="faSwipeRight">
+					<Callback Handler="{goNotifications}" />
+				</Swiped>
+				<WhileActive>
+					<Change btnBottomFavourites.Color="palette.clrIcon" />
+				</WhileActive>
+			</TimelinePage>
+			<TimelinePage ux:Name="publictimeline" timeline="publictimeline" pagetitle="Public Timeline" router="router" TopNavBar="TopNavBar">
+				<SwipeGesture ux:Name="puSwipeLeft" Direction="Left" Length="100" />
+				<Swiped Source="puSwipeLeft">
+					<Callback Handler="{goSettings}" />
+				</Swiped>
+				<SwipeGesture ux:Name="puSwipeRight" Direction="Right" Length="100" />
+				<Swiped Source="puSwipeRight">
+					<Callback Handler="{goFavourites}" />
+				</Swiped>
+				<WhileActive>
+					<Change btnBottomPublic.Color="palette.clrIcon" />
+				</WhileActive>
+			</TimelinePage>
+			<SettingsPage ux:Name="settings" router="router" TopNavBar="TopNavBar">
+				<SwipeGesture ux:Name="seSwipeRight" Direction="Right" Length="100" />
+				<Swiped Source="seSwipeRight">
+					<Callback Handler="{goPublic}" />
+				</Swiped>
+				<WhileActive>
+					<Change btnBottomSettings.Color="palette.clrIcon" />
+				</WhileActive>
+			</SettingsPage>
+			<WritePage ux:Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
+				<WhileActive Bypass="Never">
+					<Change Target="writeIcon.Visibility" Value="Collapsed" />
+					<Change Target="BottomNavBar.Visibility" Value="Collapsed" />
+				</WhileActive>
+			</WritePage>
 			<UserProfilePage ux:Template="userprofile" router="router" TopNavBar="TopNavBar" />
+			<HashtagPage ux:Name="hashtag" router="router" TopNavBar="TopNavBar" />
 			<PostPage ux:Template="postcontext" router="router" TopNavBar="TopNavBar" />
 			<ReportContentPage ux:Template="reportcontent" router="router" TopNavBar="TopNavBar" />
 			<FixedContentPage ux:Template="fixedcontent" router="router" TopNavBar="TopNavBar" />
-			<!-- <ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" /> -->
-			<BlockedUsersPage Name="blockedusers" router="router" TopNavBar="TopNavBar" />
-			<MutedUsersPage Name="mutedusers" router="router" TopNavBar="TopNavBar" />
-
+			<BlockedUsersPage ux:Name="blockedusers" router="router" TopNavBar="TopNavBar" />
+			<MutedUsersPage ux:Name="mutedusers" router="router" TopNavBar="TopNavBar" />
 		</Navigator>
 
 		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Color="palette.barBackground">

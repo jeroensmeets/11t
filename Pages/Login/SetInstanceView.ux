@@ -11,16 +11,16 @@
 			Value="To use Mastodon, you connect to an instance. This is the Mastodon server where you created your account." />
 		<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#1a9df8" TextWrapping="Wrap"  Height="40" Padding="16,2,2,2" Margin="0,0,36,24" TextAlignment="Left" Background="#fff" AutoCorrectHint="Disabled" AutoCapitalizationHint="None">
 			<Rectangle Layer="Background">
-				<Stroke Width="1" Color="#1a9df8" />
+				<Stroke Width="1" Color="palette.clrHighlight" />
 			</Rectangle>
 		</TextInput>
-		<Button Background="#1a9df8" Height="40" Padding="16,2,16,2" Alignment="Left">
-			<Text Value="Continue" Color="#fff" Alignment="Center" />
+		<Button Background="palette.brushHighlight" Height="40" Padding="16,2,16,2" Alignment="Left">
+			<Text Value="Continue" Color="palette.clrText" Alignment="Center" />
 			<Clicked>
 				<Callback Handler="{saveInstanceUrl}" />
 			</Clicked>
 			<Rectangle Layer="Background">
-				<Stroke Width="1" Color="#fff" />
+				<Stroke Width="1" Color="palette.clrText" />
 			</Rectangle>
 		</Button>
 

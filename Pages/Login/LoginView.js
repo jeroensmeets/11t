@@ -1,5 +1,5 @@
-var api = require( 'assets/js/api' );
-var conf = require( 'assets/js/conf' );
+var api = require( 'Assets/js/api' );
+var conf = require( 'Assets/js/conf' );
 
 var Observable = require("FuseJS/Observable");
 
@@ -93,16 +93,12 @@ function webViewUrlChanged( ) {
 	// ok, we have an auth token, now ask for the acces token
 	api.getAccessToken( code, conf.redirect_uri, ClientIdSecret.id, ClientIdSecret.secret ).then(
 		function( access_token ) {
-			// {"access_token":"0ddb922452c983a70566e30dce16e2017db335103e35d783874c448862a78168",
-			// "token_type":"bearer",
-			// "expires_in":7200,
-			// "refresh_token":"f2188c4165d912524e04c6496d10f06803cc08ed50271a0b0a73061e3ac1c06c",
-			// "scope":"public"}
-			// console.log( 'received access token data: ' + JSON.stringify( access_token ) );
+
+
 			api.saveAPIConnectionData( ClientIdSecret.baseurl, ClientIdSecret.id, ClientIdSecret.secret, access_token.access_token );
 
-			api.setActiveTimeline( 'home' );
-			router.goto( 'home' );
+			console.log( 'access token saved, now on to the show' );
+			router.goto( 'timeline' );
 
 		}).catch( function( error ) {
 
@@ -118,5 +114,6 @@ function webViewUrlChanged( ) {
 module.exports = {
 	oAuthUri: oAuthUri,
 	webViewUrlChanged: webViewUrlChanged,
-	setOAuthUri: setOAuthUri
+	setOAuthUri: setOAuthUri,
+	webviewVisible: webviewVisible
 }

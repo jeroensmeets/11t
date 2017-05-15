@@ -1,5 +1,5 @@
-var api = require( 'assets/js/api' );
-var helper = require( 'assets/js/helper' );
+var api = require( 'Assets/js/api' );
+var helper = require( 'Assets/js/helper' );
 var Observable = require("FuseJS/Observable");
 
 // used in callback functions for reposting and favouriting
@@ -56,7 +56,17 @@ var timeSince = this.status.map( function( value ) {
 
 function replyToPost() {
 
-	router.push( "write", { postid: _this.status.value.id, mentions: _this.mentions.value, firstup: _this.account.value.acct } );
+	router.push(
+		'write',
+		{
+			postid: _this.status.value.id,
+			mentions: _this.mentions.value,
+			firstup: _this.account.value.acct,
+			visibility: _this.status.value.visibility,
+			contentwarning: _this.status.value.spoiler_text,
+			sensitive: _this.status.value.sensitive
+		}
+	);
 
 }
 
@@ -137,7 +147,7 @@ function gotoPost() {
 
 function gotoUser() {
 
-	router.push( "userprofile", { userid: _this.account.value.id } );
+	router.push( 'home', {}, 'userprofile', { userid: _this.account.value.id } );
 
 }
 

@@ -1,4 +1,4 @@
-var api = require( 'assets/js/api' );
+var api = require( 'Assets/js/api' );
 var Observable = require("FuseJS/Observable");
 
 var uFollowing = Observable( false );
@@ -14,7 +14,7 @@ var username = false;
 
 this.useraccount.onValueChanged( module, function( newValue ) {
 
-	console.log( JSON.stringify( newValue ) );
+	console.log( '----------- Class.User.js useraccount has changed -------------' );
 
 	uFollowing.value = false;
 	uFollowedBy.value = false;
@@ -25,6 +25,8 @@ this.useraccount.onValueChanged( module, function( newValue ) {
 	// BUG! BUG! BUG!
 	// newValue should be an observable but sometimes is an array
 	var a = ( newValue && newValue.value ) ? newValue.value : newValue;
+
+	console.log( JSON.stringify( a ) );
 
 	if ( !a ) {
 		return;

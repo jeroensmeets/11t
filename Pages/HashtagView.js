@@ -1,4 +1,4 @@
-var api = require("assets/js/api");
+var api = require("Assets/js/api");
 var Observable = require("FuseJS/Observable");
 
 var posts = Observable();

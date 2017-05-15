@@ -33,7 +33,7 @@
 		<SettingOption t="About 11t" Clicked="{showAboutPage}" />
 		<SettingOption t="Log out" Clicked="{logOut}" />
 
-		<ImageFill File="assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" Opacity=".4" />
+		<ImageFill File="../assets/images/logo-11t-transparent.png" StretchMode="Uniform" WrapMode="ClampToEdge" ContentAlignment="BottomLeft" Opacity=".4" />
 
 	</StackPanel>
 

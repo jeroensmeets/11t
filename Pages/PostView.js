@@ -1,4 +1,4 @@
-var api = require( 'assets/js/api' );
+var api = require( 'Assets/js/api' );
 var Observable = require("FuseJS/Observable");
 
 var posts = Observable();
@@ -14,7 +14,7 @@ post.onValueChanged( module, function( newValue ) {
 
 		posts.add( new api.MastodonPost( newValue ) );
 
-		api.loadTimeline( 'postcontext', newValue.id, newValue )
+		api.loadPostcontext( newValue.id )
 		.then( function( APIresponse ) {
 
 			var np = APIresponse.ancestors.concat( newValue, APIresponse.descendants );

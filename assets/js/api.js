@@ -1,5 +1,5 @@
-var helper			= require( 'assets/js/helper.js' );
-var contentparser	= require( 'assets/js/parse.content.js' );
+var helper			= require( 'Assets/js/helper.js' );
+var contentparser	= require( 'Assets/js/parse.content.js' );
 
 var FETCH_TIMEOUT	= 6000;
 
@@ -12,7 +12,7 @@ var returntosplash	= Observable( false );
 
 var loading			= Observable( false );
 
-var HtmlEnt         = require( 'assets/js/he/he.js' );
+var HtmlEnt         = require( 'Assets/js/he/he.js' );
 
 var FILE_DATACACHE  = '.posts.cache.json';
 var BASE_URL        = false;
@@ -149,7 +149,7 @@ function getClientIdSecret() {
 
 	return new Promise( function( resolve, reject ) {
 
-		var conf = require( 'assets/js/conf' );
+		var conf = require( 'Assets/js/conf' );
 
 		if ( false === BASE_URL ) {
 			reject( Error( 'base url not set' ) );
@@ -255,13 +255,11 @@ function deleteTimelineFromCache( timeline ) {
  * load timeline (of type _type), store posts in cache and refresh the api.posts object
  * 
  * @param  {string}		type		which timeline to load
- * @param  {integer}	id			userid when _type is `user`
- *                        			postid when _type is `postcontext`
- *                        			since_id when _type is 'home'
- * @param  {object}		postObj		post shown in PostContext screen
+ * @param  {integer}	id			since_id or max_id
+ * @param  {boolean}	loadprev	go back or forth in loading
  * @return no return value
  */
-function loadTimeline( _type, _id, _postObj ) {
+function loadTimeline( _type, _id, _loadprev ) {
 
 	loadAPIConnectionData();
 
@@ -270,7 +268,11 @@ function loadTimeline( _type, _id, _postObj ) {
 		case 'home':
 			endpoint = 'api/v1/timelines/home';
 			if ( parseInt( _id ) > 0 ) {
-				endpoint += '?since_id=' + _id;
+				if ( _loadprev ) {
+					endpoint += '?max_id=' + _id;
+				} else {
+					endpoint += '?since_id=' + _id;
+				}
 			}
 			console.log( endpoint );
 			break;
@@ -282,12 +284,6 @@ function loadTimeline( _type, _id, _postObj ) {
 			break;
 		case 'hashtag':
 			endpoint = 'api/v1/timelines/tag/' + _id;
-			break;
-		case 'user':
-			endpoint = 'api/v1/accounts/' + _id + '/statuses';
-			break;
-		case 'postcontext':
-			endpoint = 'api/v1/statuses/' + _id + '/context';
 			break;
 		case 'publictimeline':
 		default:
@@ -315,12 +311,115 @@ function loadTimeline( _type, _id, _postObj ) {
 
 	} );
 
-	// // for postcontext, the Mastodon API returns two arrays with ancestors and descendants
-	// if ( 'postcontext' == _type ) {
-	// 	json.ancestors.push( _postObj );
-	// 	json = json.ancestors.concat( json.descendants );
-	// 	json[ json.length - 1 ][ 'last' ] = true;
-	// }
+}
+
+/**
+ * load notifications
+ * 
+ * @param  {integer}	id			since_id or max_id
+ * @param  {boolean}	loadprev	go back or forth in loading
+ * @return no return value
+ */
+function loadNotifications( _id, _loadprev ) {
+
+	loadAPIConnectionData();
+
+	var endpoint = 'api/v1/notifications';
+	if ( parseInt( _id ) > 0 ) {
+		if ( _loadprev ) {
+			endpoint += '?max_id=' + _id;
+		} else {
+			endpoint += '?since_id=' + _id;
+		}
+	}
+
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch(
+			endpoint, {
+			headers: { 'Authorization': 'Bearer ' + AccessToken }
+		} )
+		.then( function( json ) {
+
+			resolve( json );
+
+		}, function( err ) {
+
+			console.log( 'returned from apiFetch back in api.loadNotifications with error: ' );
+			console.log( err.message );
+			reject( err );
+
+		} );
+
+	} );
+
+}
+
+/**
+ * load user timeline, store posts in cache and refresh the api.posts object
+ * 
+ * @param  {integer}	id			userid
+ * @return no return value
+ */
+function loadUserTimeline( _id ) {
+
+	loadAPIConnectionData();
+
+	var endpoint = 'api/v1/accounts/' + _id + '/statuses';
+
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch(
+			endpoint, {
+			headers: { 'Authorization': 'Bearer ' + AccessToken }
+		} )
+		.then( function( json ) {
+
+			resolve( json );
+
+		}, function( err ) {
+
+			console.log( 'returned from apiFetch back in api.loadUserTimeline with error: ' );
+			console.log( err.message );
+			reject( err );
+
+		} );
+
+	} );
+
+}
+
+/**
+ * load post context
+ * 
+ * @param  {integer}	id			postid
+ * @return 							json
+ */
+function loadPostcontext( _id ) {
+
+	loadAPIConnectionData();
+
+	var endpoint = 'api/v1/statuses/' + _id + '/context';
+
+	return new Promise( function( resolve, reject ) {
+
+		apiFetch(
+			endpoint, {
+			headers: { 'Authorization': 'Bearer ' + AccessToken }
+		} )
+		.then( function( json ) {
+
+			resolve( json );
+
+		}, function( err ) {
+
+			console.log( 'returned from apiFetch back in api.loadPostcontext with error: ' );
+			console.log( err.message );
+			reject( err );
+
+		} );
+
+	} );
 
 }
 
@@ -379,6 +478,8 @@ function MastodonPost( jsondata ) {
 
 	this.cleanContent = contentparser.cleanContent( this.status );
 	this.clickableContent = contentparser.clickableContent( this.status );
+
+	// console.log( JSON.stringify( this.status ) );
 
 }
 
@@ -610,7 +711,7 @@ function sendReport( uid, pid, commenttxt ) {
  * 
  * @return {promise}	resolves error or json for new post
  */
-function sendPost( _txt, _inreplyto, _media_ids, _private, _hidepublic, _issensitive, _spoilertxt ) {
+function sendPost( _txt, _inreplyto, _media_ids, _visibility, _issensitive, _spoilertxt ) {
 
 	loadAPIConnectionData();
 
@@ -632,12 +733,8 @@ function sendPost( _txt, _inreplyto, _media_ids, _private, _hidepublic, _issensi
 			_bodyArgs.media_ids = _media_ids;
 		}
 
-		if ( _hidepublic ) {
-			_bodyArgs.visibility = 'unlisted';
-		}
-
-		if ( _private ) {
-			_bodyArgs.visibility = 'private';
+		if ( _visibility ) {
+			_bodyArgs.visibility = _visibility;
 		}
 
 		if ( _issensitive ) {
@@ -765,6 +862,9 @@ module.exports = {
 	muteUser: muteUser,
 	blockUser: blockUser,
 	loadTimeline: loadTimeline,
+	loadNotifications: loadNotifications,
+	loadPostcontext: loadPostcontext,
+	loadUserTimeline: loadUserTimeline,
 	getUserProfile: getUserProfile,
 	getRelationship: getRelationship,
 	loadReports: loadReports,

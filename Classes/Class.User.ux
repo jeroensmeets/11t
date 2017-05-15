@@ -1,4 +1,4 @@
-<DockPanel ux:Class="UserCard" ux:Name="uc">
+<DockPanel ux:Class="UserCard" ux:Name="uc" Padding="16">
 
 	<object ux:Property="useraccount" />
 
@@ -9,12 +9,12 @@
 
 		<Image Layer="Background" Url="{header_static}" StretchMode="UniformToFill" Opacity=".2" />
 
-		<Rectangle CornerRadius="6" Width="96" Height="96" Color="#1a9df8" Margin="16,16,16,0" Dock="Left" Clicked="{gotoUser}">
+		<Rectangle CornerRadius="6" Width="96" Height="96" Color="#1a9df8" Margin="0,0,16,0" Dock="Left" Clicked="{gotoUser}">
 			<ImageFill Url="{avatar_static}" StretchMode="UniformToFill" ContentAlignment="Center" />
 		</Rectangle>
 
 		<DockPanel>
-			<StackPanel Orientation="Vertical" Margin="0,16,0,0" Dock="Top">
+			<StackPanel Orientation="Vertical" Margin="0,4,0,0" Dock="Top">
 
 				<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
 				<Text Value="@{acct}" FontSize="13" Font="Regular" TextColor="palette.clrText" />
@@ -42,7 +42,7 @@
 
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal" ux:Name="UserInteractions" Dock="Bottom">
+			<StackPanel Orientation="Horizontal" ux:Name="UserInteractions" Dock="Bottom" Margin="0,0,0,4">
 
 				<Panel Alignment="CenterLeft" Margin="0,0,16,0">
 					<FaReply Color="palette.clrIconDimmed" FontSize="23" />

@@ -1,6 +1,6 @@
-var helper			= require( 'assets/js/helper.js' );
-var HtmlEnt         = require( 'assets/js/he/he.js' );
-var Observable      = require("FuseJS/Observable");
+var helper			= require( 'Assets/js/helper.js' );
+var HtmlEnt         = require( 'Assets/js/he/he.js' );
+var Observable      = require( "FuseJS/Observable" );
 
 function cleanContent( postdata ) {
 
@@ -78,7 +78,7 @@ function clickableBio( bio ) {
 		}
 	}
 
-	var result = Observable();
+	var result = [];
 
 	if ( !bio ) {
 		return result;
@@ -96,7 +96,7 @@ function clickableBio( bio ) {
 		if ( -1 === word.indexOf( '[[[[' ) ) {
 
 			// this is not a link, add it as a word
-			result.add( { word: word, clear: newline } );
+			result.push( { word: word, clear: newline } );
 
 		} else {
 
@@ -109,7 +109,7 @@ function clickableBio( bio ) {
 			var linkstart = uris[ linkId ].indexOf( 'href="' ) + 6;
 			var linkend = uris[ linkId ].indexOf( '"', linkstart );
 			var linkUrl = uris[ linkId ].substring( linkstart, linkend );
-			result.add( { link: true, word: linkTxt, uri: linkUrl, makeBold: true, clear: newline } );
+			result.push( { link: true, word: linkTxt, uri: linkUrl, makeBold: true, clear: newline } );
 
 		}
 

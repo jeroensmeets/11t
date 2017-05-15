@@ -1,4 +1,4 @@
-var api					= require( 'assets/js/api' );
+var api					= require( 'Assets/js/api' );
 var Observable			= require( 'FuseJS/Observable' );
 
 var loginFormVisible	= Observable( false );
@@ -6,7 +6,8 @@ var loginFormVisible	= Observable( false );
 function startLoggedInCheck() {
 
 	if ( api.loadAPIConnectionData() ) {
-		router.goto( 'home' );
+		console.log( 'splashscreen, go direct to timeline do not pass go' );
+		router.goto( 'timeline' );
 	} else {
 		showLoginForm();
 	}

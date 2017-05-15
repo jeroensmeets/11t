@@ -1,8 +1,8 @@
 var Observable	= require("FuseJS/Observable");
-var api			= require("assets/js/api");
+var api			= require("Assets/js/api");
 
 function goWrite() {
-	router.push( 'write' );
+	router.push( 'write', { firstup: '', mentions: [] } );
 }
 
 function goHome() {
@@ -28,8 +28,8 @@ function goSettings() {
 function GotoOrRefresh( desiredRoute ) {
 
 	router.getRoute( function( route ) {
-		if ( route && ( route.length > 2 ) && ( desiredRoute != route[ 2 ] ) ) {
-			router.goto( 'home', {}, desiredRoute );
+		if ( route && ( route.length > 0 ) && ( desiredRoute != route[ 0 ] ) ) {
+			router.goto( desiredRoute );
 		} else {
 			// TODO how to get the resolve of this function to the active page
 			// api.loadTimeline( desiredRoute );

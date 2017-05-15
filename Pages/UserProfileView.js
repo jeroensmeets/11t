@@ -1,5 +1,5 @@
-var api = require( 'assets/js/api' );
-var contentparser	= require( 'assets/js/parse.content.js' );
+var api = require( 'Assets/js/api' );
+var contentparser = require( 'Assets/js/parse.content.js' );
 
 var Observable = require("FuseJS/Observable");
 
@@ -15,11 +15,9 @@ var userid = this.Parameter.map( function( param ) {
 } );
 
 var userprofile = Observable();
-var cb = Observable();
+var clickableBio = Observable();
 
 userid.onValueChanged( module, function( newValue ) {
-
-	console.log( JSON.stringify( newValue ) );
 
 	if ( 'undefined' != typeof newValue ) {
 
@@ -29,14 +27,16 @@ userid.onValueChanged( module, function( newValue ) {
 		api.getUserProfile( newValue )
 		.then( function( json ) {
 			userprofile.value = json;
-			cb.value = contentparser.clickableBio( json.note );
-			console.log( JSON.stringify( cb.value.length ) );
+			var cb = contentparser.clickableBio( json.note );
+			for ( var i in cb ) {
+				clickableBio.add( cb[ i ] );
+			}
 		})
 		.catch( function( err ) {
 			console.log( err.message );
 		});
 
-		api.loadTimeline( 'user', newValue )
+		api.loadUserTimeline( newValue )
 		.then( function( APIresponse ) {
 
 			posts.refreshAll(
@@ -85,6 +85,6 @@ function blockUser() {
 
 module.exports = {
 	userprofile: userprofile,
-	clickableBio: cb,
+	clickableBio: clickableBio,
 	posts: posts
 }
