@@ -19,8 +19,8 @@
 
 <!-- 			<WhileScrollable ScrollDirections="Down" Invert="true">
 				<Callback Handler="{getOlderPosts}" />
-			</WhileScrollable>
- -->
+			</WhileScrollable> -->
+
 			<StackPanel Orientation="Vertical">
 
 				<ReloadPull />

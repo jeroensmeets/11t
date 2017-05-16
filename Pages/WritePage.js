@@ -58,14 +58,10 @@ function doToot() {
 		return;
 	}
 
-	console.log( 2 );
-
 	var _spoiler = '';
 	if ( showSpoilerText.value && ( '' != spoilerText.value.replace(/\s+/g, '') ) ) {
 		_spoiler = spoilerText.value;
 	}
-
-	console.log( 3 );
 
 	var _media_ids = [];
 	// console.log( 'media_attachments has length ' + media_attachments.length );
@@ -74,23 +70,17 @@ function doToot() {
 		_media_ids.push( item.id );
 	});
 
-	console.log( 4 );
-
-	return;
-
 	api.sendPost(
 
 		txtToToot.value, inReplyToPostId.value, _media_ids, tootVisibility.value, isSensitive.value, _spoiler
 
 	).then( function( result ) {
 
-		clearScreen();
-
 		var _goBack = ( inReplyToPostId > 0 );
 		if ( _goBack ) {
 			router.goBack();
 		} else {
-			router.goto( "home" );
+			router.goto( "timeline" );
 		}
 
 	} ).catch( function( error ) {

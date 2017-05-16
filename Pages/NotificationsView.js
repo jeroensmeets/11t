@@ -24,7 +24,13 @@ function refreshTimeline() {
 				function( newItem ) { return new api.MastodonPost( newItem ); }
 			);
 
-			api.saveTimelineToCache( timeline, posts.value );
+			var forCache = {
+				max_id: max_id,
+				since_id: since_id,
+				posts: posts.value
+			}
+
+			api.saveTimelineToCache( timeline, forCache );
 
 		}
 

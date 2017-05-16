@@ -49,7 +49,13 @@ function refreshTimeline() {
 				function( newItem ) { return new api.MastodonPost( newItem ); }
 			);
 
-			api.saveTimelineToCache( tl.value, posts.value );
+			var forCache = {
+				max_id: max_id,
+				since_id: since_id,
+				posts: posts.value
+			}
+
+			api.saveTimelineToCache( tl.value, forCache );
 
 		}
 
@@ -68,12 +74,10 @@ function getOlderPosts() {
 
 	loadingOlder.value = true;
 
-	console.log( 'refresh and get older posts' );
+	// console.log( 'refresh and get older posts' );
 
 	api.loadTimeline( tl.value, max_id, true )
 	.then( function( APIresponse ) {
-
-		loadingOlder.value = false;
 
 		if ( APIresponse.max_id ) {
 
@@ -83,16 +87,21 @@ function getOlderPosts() {
 				since_id = APIresponse.since_id;
 			}
 
-			posts.refreshAll(
-				APIresponse.posts,
-				function( oldItem, newItem ) { return oldItem.id == newItem.id; },
-				function( oldItem, newItem ) { oldItem = new api.MastodonPost( newItem ); },
-				function( newItem ) { return new api.MastodonPost( newItem ); }
-			);
+			for( var i in APIresponse.posts ) {
+				posts.add( new api.MastodonPost( APIresponse.posts[ i ] ) );
+			}
 
-			api.saveTimelineToCache( tl.value, posts.value );
+			var forCache = {
+				max_id: max_id,
+				since_id: since_id,
+				posts: posts.value
+			}
+
+			api.saveTimelineToCache( tl.value, forCache );
 
 		}
+
+		loadingOlder.value = false;
 
 	} )
 	.catch( function( err ) {
@@ -113,6 +122,8 @@ function loadTimeline() {
 
 	api.loadTimelineFromCache( tl.value )
 	.then( function( json ) {
+
+		// console.log( JSON.stringify( json ) );
 
 		// nothing in cache? then get timeline from API
 		if ( json && json.posts && ( json.posts.length > 0 ) ) {

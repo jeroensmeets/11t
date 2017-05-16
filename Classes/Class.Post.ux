@@ -20,11 +20,7 @@
 
 	<JavaScript File="Class.Post.js" />
 
-	<With Data="{Property pc.status}">
-		<ImageGallery sensitive="{sensitive}" attachments="{Property pc.mediaAttachments}" />
-	</With>
-
-	<DockPanel Padding="12,12,12,6">
+	<DockPanel Padding="8,8,12,8">
 
 		<Panel Height="54" Width="54" Margin="0,0,12,0" Clicked="{gotoUser}" Dock="Left">
 
@@ -38,7 +34,7 @@
 
 		</Panel>
 
-		<StackPanel Orientation="Vertical" Margin="0,4">
+		<StackPanel Orientation="Vertical" Margin="0,4,0,0">
 
 			<DockPanel Margin="0,0,0,4">
 
@@ -57,7 +53,7 @@
 
 			<DockPanel>
 
-				<Panel Margin="8,0,0,2" Dock="Right" Alignment="Right">
+				<Panel Margin="8,0,0,4" Dock="Right" Alignment="Right">
 					<Text Value="{timeSince}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Italic" />
 				</Panel>
 
@@ -152,6 +148,12 @@
 
 	</DockPanel>
 
+	<WhileNotEmpty Items="{Property pc.mediaAttachments}">
+		<With Data="{Property pc.status}">
+			<ImageGallery sensitive="{sensitive}" attachments="{Property pc.mediaAttachments}" Margin="0,0,0,8" />
+		</With>
+	</WhileNotEmpty>
+
 	<With Data="{Property pc.status}">
 		<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
 			<StackPanel Orientation="Vertical" Margin="24,8,16,0">
@@ -168,7 +170,7 @@
 		</WhileString>
 	</With>
 
-	<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="24,8,16,0">
+	<StackPanel ux:Name="postcontent" Orientation="Vertical" Margin="24,4,16,0">
 
 		<With Data="{Property pc.status}">
 			<WhileString Value="{spoiler_text}" Test="IsNotEmpty">
@@ -182,7 +184,7 @@
 			</Each>
 		</StackPanel>
 
-		<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12" Visibility="{spoilerVisible}">
+		<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12">
 			<Each Items="{Property pc.clickableContent}">
 				<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
 					<WhileTrue Value="{newline}">
