@@ -17,9 +17,9 @@
 	<Panel>
 		<ScrollView LayoutMode="PreserveVisual" AllowedScrollDirections="Vertical">
 
-<!-- 			<WhileScrollable ScrollDirections="Down" Invert="true">
+			<WhileScrollable ScrollDirections="Down" Invert="true">
 				<Callback Handler="{getOlderPosts}" />
-			</WhileScrollable> -->
+			</WhileScrollable>
 
 			<StackPanel Orientation="Vertical">
 

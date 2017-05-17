@@ -4,7 +4,7 @@
         <Change this.Opacity="0" Duration="0.25" Easing="CubicIn" />
     </EnteringAnimation>
     <ExitingAnimation>
-        <Move X="-50" Duration="0.35" Easing="CubicInOut" />
+        <Move X="50" Duration="0.35" Easing="CubicInOut" />
         <Change this.Opacity="0" Duration="0.25" Easing="CubicIn" />
     </ExitingAnimation>
 </HeaderText>
