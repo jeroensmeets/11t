@@ -9,10 +9,15 @@ var uRequested = Observable( false );
 
 var userInfoLoaded = Observable( false );
 
-var userid = 0;
-var username = false;
+var userid = this.Parameter.map( function( param ) {
+	return param.userid;
+} );
 
-this.useraccount.onValueChanged( module, function( newValue ) {
+var username = this.Parameter.map( function( param ) {
+	return param.useraccname;
+} );
+
+this.userid.onValueChanged( module, function( newValue ) {
 
 	console.log( '----------- Class.User.js useraccount has changed -------------' );
 
@@ -22,26 +27,7 @@ this.useraccount.onValueChanged( module, function( newValue ) {
 	uMuting.value = false;
 	uRequested.value = false;
 
-	// BUG! BUG! BUG!
-	// newValue should be an observable but sometimes is an array
-	var a = ( newValue && newValue.value ) ? newValue.value : newValue;
-
-	console.log( JSON.stringify( a ) );
-
-	if ( !a ) {
-		return;
-	}
-
-	userid = a.id;
-	username = a.acct;
-
-	console.log( '----> ' + userid );
-
-	if ( !userid ) {
-		return;
-	}
-
-	api.getRelationship( userid )
+	api.getRelationship( newValue )
 	.then( function( result ) {
 
 		var relationship = result.shift();

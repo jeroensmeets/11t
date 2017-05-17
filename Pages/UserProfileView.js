@@ -33,6 +33,7 @@ userid.onValueChanged( module, function( newValue ) {
 			}
 		})
 		.catch( function( err ) {
+			console.log( 'error loading user profile' );
 			console.log( err.message );
 		});
 

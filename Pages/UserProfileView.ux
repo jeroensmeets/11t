@@ -1,4 +1,4 @@
-<TransitionPage ux:Class="UserProfilePage">
+<TransitionPage ux:Class="UserProfilePage" ux:Name="up">
 
 	<Router ux:Dependency="router" />
 	<JavaScript File="UserProfileView.js" />
@@ -12,9 +12,9 @@
 
 		<StackPanel Orientation="Vertical">
 
-			<UserCard useraccount="{userprofile}" router="router" />
-
-			<!-- <Text TextWrapping="Wrap" FontSize="13" TextColor="palette.clrText" Font="Regular" Margin="16,16,24,0" Value="{Clear userprofile.note}" /> -->
+			<With Data="{userprofile}">
+				<UserCard userid="{id}" useraccname="{acct}" userdisplayname="{display_name}" headerstatic="{header_static}" avatarstatic="{avatar_static}" router="router" />
+			</With>
 
 			<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="16,16,24,0">
 				<Each Items="{clickableBio}">

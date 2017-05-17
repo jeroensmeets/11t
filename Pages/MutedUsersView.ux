@@ -14,7 +14,7 @@
 		<StackPanel Orientation="Vertical" Dock="Top">
 
 			<Each Items="{mutedUsers}">
-				<UserCard useraccount="{}" router="router" />
+				<UserCard userid="{id}" useraccname="{acct}" userdisplayname="{display_name}" headerstatic="{header_static}" avatarstatic="{avatar_static}" router="router" />
 			</Each>
 
 			<WhileEmpty Items="{mutedUsers}">
