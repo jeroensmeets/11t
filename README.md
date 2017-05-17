@@ -32,10 +32,8 @@ I'm [@jeroensmeets@mastodon.social](https://mastodon.social/@jeroensmeets). And 
 
 ### Screenshots ###
 
-![Splashscreen screenshot](assets/images/store/resized/screenshot_splash.png?raw=true "Splashscreen screenshot")
+![Timeline screenshot](assets/images/store/app%20store/screenshot_timeline.png?raw=true "Timeline screenshot")
 
-![Timeline screenshot](assets/images/store/resized/screenshot_timeline.png?raw=true "Timeline screenshot")
+![Notifications screenshot](assets/images/store/app%20store/screenshot_notifications.png?raw=true "Notifications screenshot")
 
-![Notifications screenshot](assets/images/store/resized/screenshot_notifications.png?raw=true "Notifications screenshot")
-
-![Favourites screenshot](assets/images/store/resized/screenshot_favourites.png?raw=true "Favourites screenshot")
+![Favourites screenshot](assets/images/store/app%20store/screenshot_favourites.png?raw=true "Favourites screenshot")
