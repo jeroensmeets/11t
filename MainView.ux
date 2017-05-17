@@ -28,7 +28,7 @@
 	<float4 ux:Global="palette.barBackground" ux:Value="#355057" />
 	<SolidColor ux:Global="palette.statusbarBackground" ux:Value="#355057" /> -->
 
-	<MemoryPolicy ux:Global="QuickUnload" UnloadInBackground="true" UnusedTimeout="10" UnpinInvisible="true"/>
+	<!-- <MemoryPolicy ux:Global="QuickUnload" UnloadInBackground="true" UnusedTimeout="10" UnpinInvisible="true"/> -->
 
 	<Font File="assets/fonts/NotoSans-Regular.ttf" ux:Global="Regular" />
 	<Font File="assets/fonts/NotoSans-Bold.ttf" ux:Global="Bold" />

@@ -24,40 +24,25 @@ function refreshTimeline() {
 		loadingNewer.value = false;
 
 		if ( APIresponse.since_id ) {
-
 			since_id = APIresponse.since_id;
-
-			if ( !max_id ) {
-				max_id = APIresponse.max_id;
-			}
-
-			if ( posts.value ) {
-				// merge current timeline
-				// TODO speaking of which: why doesn't Observable.refreshAll keep the current entries???
-				APIresponse.posts = APIresponse.posts.concat( posts.value );
-			}
-
-			posts.refreshAll(
-				APIresponse.posts,
-				function( oldItem, newItem ) { return oldItem.id == newItem.id; },
-				function( oldItem, newItem ) {
-					var mp = new api.MastodonPost( newItem );
-					for ( var i in oldItem ) {
-						oldItem[ i ] = mp[ i ];
-					}
-				},
-				function( newItem ) { return new api.MastodonPost( newItem ); }
-			);
-
-			var forCache = {
-				max_id: max_id,
-				since_id: since_id,
-				posts: posts.value
-			}
-
-			api.saveTimelineToCache( tl.value, forCache );
-
 		}
+
+		if ( !max_id ) {
+			max_id = APIresponse.max_id;
+		}
+
+		// prepend to current timeline
+		for( var i = APIresponse.posts.length -1; i >= 0; i-- ) {
+			posts.insertAt( 0, new api.MastodonPost( APIresponse.posts[ i ] ) );
+		}
+
+		var forCache = {
+			max_id: max_id,
+			since_id: since_id,
+			posts: posts.value
+		}
+
+		api.saveTimelineToCache( tl.value, forCache );
 
 	} )
 	.catch( function( err ) {
@@ -74,32 +59,25 @@ function getOlderPosts() {
 
 	loadingOlder.value = true;
 
-	// console.log( 'refresh and get older posts' );
-
 	api.loadTimeline( tl.value, max_id, true )
 	.then( function( APIresponse ) {
 
+		// remember the new max_id for successive calls to getOlderPosts()
 		if ( APIresponse.max_id ) {
-
 			max_id = APIresponse.max_id;
-
-			if ( !since_id ) {
-				since_id = APIresponse.since_id;
-			}
-
-			for( var i in APIresponse.posts ) {
-				posts.add( new api.MastodonPost( APIresponse.posts[ i ] ) );
-			}
-
-			var forCache = {
-				max_id: max_id,
-				since_id: since_id,
-				posts: posts.value
-			}
-
-			api.saveTimelineToCache( tl.value, forCache );
-
 		}
+
+		for( var i in APIresponse.posts ) {
+			posts.add( new api.MastodonPost( APIresponse.posts[ i ] ) );
+		}
+
+		var forCache = {
+			max_id: max_id,
+			since_id: since_id,
+			posts: posts.value
+		}
+
+		api.saveTimelineToCache( tl.value, forCache );
 
 		loadingOlder.value = false;
 

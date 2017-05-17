@@ -1,5 +1,5 @@
 <Page ux:Class="TransitionPage" ux:Name="self">
-	<ResourceString Key="PageTitle" Value="{pagetitle}" />
+	<ResourceString Key="PageTitle" />
 	<Transition Direction="ToActive">
 	    <Move X="1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
 	</Transition>
@@ -7,6 +7,6 @@
 	    <Move X="1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
 	</Transition>
 	<WhileActive Invert="true">
-		<Change self.Visibility="Hidden" />
+		<Change self.Visibility="Collapsed" />
 	</WhileActive>
 </Page>
