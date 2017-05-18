@@ -21,26 +21,21 @@
 			<Text Value="{Property uc.userdisplayname}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
 			<Text Value="@{Property uc.useraccname}" FontSize="13" Font="Regular" TextColor="palette.clrText" />
 
-			<WhileTrue Value="{userInfoLoaded}">
-				<Panel Margin="0,0,0,12">
-					<WhileTrue Value="{uFollowedBy}">
-						<WhileTrue Value="{uFollowing}">
-							<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="You follow each other!" />
-						</WhileTrue>
-						<WhileFalse Value="{uFollowing}">
-							<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="follows you, go ahead and take a leap!" />
-						</WhileFalse>
+			<Panel Margin="0,0,0,12">
+				<WhileTrue Value="{uFollowedBy}">
+					<WhileTrue Value="{uFollowing}">
+						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="You follow each other!" />
 					</WhileTrue>
-					<WhileFalse Value="{uFollowedBy}">
-						<WhileTrue Value="{uFollowing}">
-							<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="is not following you, maybe say something nice?" />
-						</WhileTrue>
-	<!-- 					<WhileFalse Value="{uFollowing}">
-							<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="you can start something beautiful here" />
-						</WhileFalse> -->
+					<WhileFalse Value="{uFollowing}">
+						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="follows you, go ahead and take a leap!" />
 					</WhileFalse>
-				</Panel>
-			</WhileTrue>
+				</WhileTrue>
+				<WhileFalse Value="{uFollowedBy}">
+					<WhileTrue Value="{uFollowing}">
+						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="is not following you, maybe say something nice?" />
+					</WhileTrue>
+				</WhileFalse>
+			</Panel>
 
 		</StackPanel>
 

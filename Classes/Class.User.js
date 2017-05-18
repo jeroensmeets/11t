@@ -7,8 +7,6 @@ var uBlocking = Observable( false );
 var uMuting = Observable( false );
 var uRequested = Observable( false );
 
-var userInfoLoaded = Observable( false );
-
 var userid = this.Parameter.map( function( param ) {
 	return param.userid;
 } );
@@ -18,8 +16,6 @@ var username = this.Parameter.map( function( param ) {
 } );
 
 this.userid.onValueChanged( module, function( newValue ) {
-
-	console.log( '----------- Class.User.js useraccount has changed -------------' );
 
 	uFollowing.value = false;
 	uFollowedBy.value = false;
@@ -31,14 +27,12 @@ this.userid.onValueChanged( module, function( newValue ) {
 	.then( function( result ) {
 
 		var relationship = result.shift();
-		console.log( JSON.stringify( relationship ) );
+
 		uFollowing.value = relationship.following;
 		uFollowedBy.value = relationship.followed_by;
 		uBlocking.value = relationship.blocking;
 		uMuting.value = relationship.muting;
 		uRequested.value = relationship.requested;
-
-		userInfoLoaded.value = true;
 
 	} )
 	.catch( function( err ) {
@@ -83,8 +77,6 @@ module.exports = {
 	uBlocking: uBlocking,
 	uMuting: uMuting,
 	uRequested: uRequested,
-
-	userInfoLoaded: userInfoLoaded,
 
 	mentionUser: mentionUser,
 	followUser: followUser,

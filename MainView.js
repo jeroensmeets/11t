@@ -1,5 +1,26 @@
 var Observable	= require("FuseJS/Observable");
+// var push		= require("FuseJS/Push");
 var api			= require("Assets/js/api");
+
+//
+// notifications
+//
+ 
+// push.on( "registrationSucceeded", function( regID ) {
+// 	console.log( "Reg Succeeded: " + regID );
+// } );
+
+// push.on( "error", function( reason ) {
+// 	console.log( "Reg Failed: " + reason );
+// } );
+
+// push.on( "receivedMessage", function( payload ) {
+// 	console.log( "Recieved Push Notification: " + payload );
+// } );
+
+//
+// callbacks from interface
+// 
 
 function goWrite() {
 	router.push( 'write', { firstup: '', mentions: [] } );
@@ -25,6 +46,10 @@ function goSettings() {
 	GotoOrRefresh( 'settings' );
 }
 
+//
+// internal functions, not exported
+// 
+
 function GotoOrRefresh( desiredRoute ) {
 
 	router.getRoute( function( route ) {
@@ -38,13 +63,16 @@ function GotoOrRefresh( desiredRoute ) {
 
 }
 
-// setting this value to true is enough to make the app logout and go back to the splash screen
+//
+// setting this value to true triggers a logout, router goes back to the splash screen
+// 
+
 api.returntosplash.addSubscriber( function( newValue ) {
 
 	if ( true === newValue.value ) {
 		api.logOut();
-		api.setError( 'You are not logged in' );
-		router.goto( 'splash' );
+		api.setError( 'You are logged out' );
+		router.goto( 'splash', {}, 'setinstance' );
 	}
 
 })

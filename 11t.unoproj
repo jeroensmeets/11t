@@ -4,7 +4,8 @@
 		"Fuse",
 		"FuseJS",
 		"Fuse.Launcher",
-		"Fuse.CameraRoll"
+		"Fuse.CameraRoll",
+		"Fuse.PushNotifications"
 	],
 	"Includes": [
 		"*",
@@ -45,6 +46,9 @@
 			"AliasPassword": "CMn4HoppGNffxWR6f92oQ\\$HG",
 			"Store": "release.keystore",
 			"StorePassword": "CMn4HoppGNffxWR6f92oQ\\$HG"
+		},
+		"GooglePlay": {
+			// "SenderID": "65424464795" // change this id you build this app yourself
 		},
 		"Icons": {
 			"LDPI": "assets/images/android/ldpi/ic_launcher.png",
