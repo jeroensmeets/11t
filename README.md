@@ -2,7 +2,7 @@
 
 11t is an iOS and Android app for connecting to [Mastodon](https://github.com/tootsuite/mastodon), written in FuseTools. In beta for both Android and iOS.
 
-I connect to Mastodon on [mastodon.social](https://mastodon.social/), but everyone can start her own server. 11t lets you use any Mastodon instance.
+I connect to Mastodon on [mastodon.social](https://mastodon.social/), but everyone can start their own server. 11t lets you use any Mastodon instance.
 
 ## Android ##
 The app is [in the Play Store](https://play.google.com/store/apps/details?id=com.jeroensmeets.mastodon) and minor versions (as in major.minor.build) are [on F-Droid](https://apt.izzysoft.de/fdroid/index/apk/com.jeroensmeets.mastodon).
