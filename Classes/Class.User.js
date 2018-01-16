@@ -1,4 +1,5 @@
 var api = require( 'Assets/js/api' );
+var parseContent = require( 'Assets/js/parse.content.js' );
 var Observable = require("FuseJS/Observable");
 
 var uFollowing = Observable( false );
@@ -7,32 +8,29 @@ var uBlocking = Observable( false );
 var uMuting = Observable( false );
 var uRequested = Observable( false );
 
-var userid = this.Parameter.map( function( param ) {
-	return param.userid;
-} );
+var userObject = this.user.inner();
+var userBio = Observable();
+userObject.onValueChanged( module, function( newValue  ) {
 
-var username = this.Parameter.map( function( param ) {
-	return param.useraccname;
-} );
+	if ( ! newValue ) {
+		return;
+	}
 
-this.userid.onValueChanged( module, function( newValue ) {
+	userBio = parseContent.clickableBio( newValue.note );
+	console.dir( userBio.value );
 
-	uFollowing.value = false;
-	uFollowedBy.value = false;
-	uBlocking.value = false;
-	uMuting.value = false;
-	uRequested.value = false;
-
-	api.getRelationship( newValue )
+	api.getRelationship( newValue.id )
 	.then( function( result ) {
 
 		var relationship = result.shift();
 
-		uFollowing.value = relationship.following;
-		uFollowedBy.value = relationship.followed_by;
-		uBlocking.value = relationship.blocking;
-		uMuting.value = relationship.muting;
-		uRequested.value = relationship.requested;
+		if ( relationship ) {
+			uFollowing.value = relationship.following;
+			uFollowedBy.value = relationship.followed_by;
+			uBlocking.value = relationship.blocking;
+			uMuting.value = relationship.muting;
+			uRequested.value = relationship.requested;
+		}
 
 	} )
 	.catch( function( err ) {
@@ -42,11 +40,11 @@ this.userid.onValueChanged( module, function( newValue ) {
 } );
 
 function mentionUser() {
-	router.push( "write", { firstup: username } );
+	router.push( "write", { firstup: userObject.acct } );
 }
 
 function followUser() {
-	api.followUser( userid, uFollowing.value ).then( function() {
+	api.followUser( userObject.id, uFollowing.value ).then( function() {
 		uFollowing.value = !uFollowing.value;
 	}).catch( function( err ) {
 		console.log( JSON.stringify( err ) );
@@ -54,7 +52,7 @@ function followUser() {
 }
 
 function muteUser() {
-	api.muteUser( userid, uMuting.value ).then( function() {
+	api.muteUser( userObject.id, uMuting.value ).then( function() {
 		uMuting.value = !uMuting.value;
 	}).catch( function( err ) {
 		console.log( JSON.stringify( err ) );
@@ -62,7 +60,7 @@ function muteUser() {
 }
 
 function blockUser() {
-	api.blockUser( userid, uBlocking.value ).then( function() {
+	api.blockUser( userObject.id, uBlocking.value ).then( function() {
 		uBlocking.value = !uBlocking.value;
 		loadBlockedUsers();
 	}).catch( function( err ) {
@@ -81,6 +79,8 @@ module.exports = {
 	mentionUser: mentionUser,
 	followUser: followUser,
 	muteUser: muteUser,
-	blockUser: blockUser
+	blockUser: blockUser,
+
+	userBio: userBio
 
 }

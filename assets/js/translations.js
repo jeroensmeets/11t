@@ -1,5 +1,5 @@
 var api = require( 'Assets/js/api' );
-var Localization = require("Localization");
+// var Localization = require("Localization");
 
 var currentLocale = false;
 
@@ -13,8 +13,8 @@ var APIKEY = 'AIzaSyCObC4z6HLK2pfBlRK_uNH3d_56d9TM8J4';
 
 function setCurrentLocale() {
 
-	var deviceLocale = Localization.getCurrentLocale().split('-');
-	currentLocale = deviceLocale.slice( 0, deviceLocale.length === 3 ? 2 : 1 ).join('-');
+	// var deviceLocale = Localization.getCurrentLocale().split('-');
+	// currentLocale = deviceLocale.slice( 0, deviceLocale.length === 3 ? 2 : 1 ).join('-');
 
 }
 

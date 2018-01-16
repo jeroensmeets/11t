@@ -1,77 +1,62 @@
-<DockPanel ux:Class="UserCard" ux:Name="uc" Padding="16">
+<StackPanel ux:Class="UserCard" ux:Name="uc">
 
-	<int ux:Property="userid" />
-	<string ux:Property="useraccname" />
-	<string ux:Property="userdisplayname" />
-	<string ux:Property="headerstatic" />
-	<string ux:Property="avatarstatic" />
+	<object ux:Property="user" />
 
 	<Router ux:Dependency="router" />
 	<JavaScript File="Class.User.js" />
 
-	<Image Layer="Background" Url="{Property uc.headerstatic}" StretchMode="UniformToFill" Opacity=".2" />
+	<With Data="{Property uc.user}">
+		<DockPanel Height="200">
+			<Circle Width="160" Height="160" Dock="Bottom">
+				<ImageFill Url="{avatar_static}" />
+			</Circle>
+			<Image Url="{header_static}" StretchMode="UniformToFill" Height="180" Dock="Top" ContentAlignment="Center" />
+		</DockPanel>
+	</With>
 
-	<Rectangle CornerRadius="6" Width="96" Height="96" Color="#1a9df8" Margin="0,0,16,0" Dock="Left" Clicked="{gotoUser}">
-		<ImageFill Url="{Property uc.avatarstatic}" StretchMode="UniformToFill" ContentAlignment="Center" />
-	</Rectangle>
+	<DockPanel Padding="16,0">
+		<StackPanel Orientation="Vertical" Dock="Top">
 
-	<DockPanel>
-		<StackPanel Orientation="Vertical" Margin="0,4,0,0" Dock="Top">
-
-			<Text Value="{Property uc.userdisplayname}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
-			<Text Value="@{Property uc.useraccname}" FontSize="13" Font="Regular" TextColor="palette.clrText" />
-
-			<Panel Margin="0,0,0,12">
-				<WhileTrue Value="{uFollowedBy}">
-					<WhileTrue Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="You follow each other!" />
-					</WhileTrue>
-					<WhileFalse Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="follows you, go ahead and take a leap!" />
-					</WhileFalse>
-				</WhileTrue>
-				<WhileFalse Value="{uFollowedBy}">
-					<WhileTrue Value="{uFollowing}">
-						<Text FontSize="13" TextColor="palette.clrText" TextWrapping="Wrap" Font="Italic" Value="is not following you, maybe say something nice?" />
-					</WhileTrue>
-				</WhileFalse>
-			</Panel>
+			<With Data="{Property uc.user}">
+				<Text Value="{display_name}" FontSize="24" Font="Bold" TextColor="palette.clrHighlight" />
+				<Text Value="@{acct}" FontSize="20" Font="Regular" TextColor="palette.clrText" />
+			</With>
 
 		</StackPanel>
 
-		<StackPanel Orientation="Horizontal" ux:Name="UserInteractions" Dock="Bottom" Margin="0,0,0,4">
+		<StackPanel Orientation="Horizontal" ux:Name="UserInteractions" Dock="Bottom" Margin="0,16,0,4">
 
-			<Panel Alignment="CenterLeft" Margin="0,0,16,0">
-				<FaReply Color="palette.clrIconDimmed" FontSize="23" />
+			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
+				<FaReply Color="palette.clrIconDimmed" FontSize="32" />
 				<Clicked Handler="{mentionUser}" />
 			</Panel>
 
-			<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
 				<WhileTrue Value="{uFollowing}">
-					<FaAmFollowing Color="palette.clrNavigation" FontSize="23" />
+					<FaAmFollowing Color="palette.clrNavigation" FontSize="32" />
 				</WhileTrue>
 				<WhileFalse Value="{uFollowing}">
-					<FaAmNotFollowing Color="palette.clrIconDimmed" FontSize="23" />
+					<FaAmNotFollowing Color="palette.clrIconDimmed" FontSize="32" />
 				</WhileFalse>
 				<Clicked Handler="{followUser}" />
 			</Panel>
 
-			<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
 				<WhileTrue Value="{uMuting}">
-					<FaIsMuted Color="palette.clrNavigation" FontSize="23" />
+					<FaIsMuted Color="palette.clrNavigation" FontSize="32" />
 				</WhileTrue>
 				<WhileFalse Value="{uMuting}">
-					<FaIsNotMuted Color="palette.clrIconDimmed" FontSize="23" />
+					<FaIsNotMuted Color="palette.clrIconDimmed" FontSize="32" />
 				</WhileFalse>
 				<Clicked Handler="{muteUser}" />
 			</Panel>
 
-			<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
 				<WhileTrue Value="{uBlocking}">
-					<FaIsBlocked Color="palette.clrNavigation" FontSize="23" />
+					<FaIsBlocked Color="palette.clrNavigation" FontSize="32" />
 				</WhileTrue>
 				<WhileFalse Value="{uBlocking}">
-					<FaIsBlocked Color="palette.clrIconDimmed" FontSize="23" />
+					<FaIsBlocked Color="palette.clrIconDimmed" FontSize="32" />
 				</WhileFalse>
 				<Clicked Handler="{blockUser}" />
 			</Panel>
@@ -80,4 +65,4 @@
 
 	</DockPanel>
 
-</DockPanel>
+</StackPanel>

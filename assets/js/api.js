@@ -19,7 +19,11 @@ var BASE_URL        = false;
 var AccessToken     = false;
 var at_file         = "APIconnect.json";
 
+var pushSubscriptionUrl = 'https://us-central1-t-notifications.cloudfunctions.net/app/';
+var pushCacheFile		= "PUSHid.json";
+
 function setError( message ) {
+	console.log( 'showing message >>> ' + message );
 	error.value = message;
 }
 
@@ -140,6 +144,110 @@ function getInstanceInfo() {
 	});
 
 }
+
+
+function saveDeviceTokenForPush( token ) {
+	var data = {
+		devicetoken: token
+	};
+	return Storage.writeSync( pushCacheFile, JSON.stringify( data ) );
+}
+
+function getDeviceTokenForPush() {
+
+	try {
+		var data = Storage.readSync( pushCacheFile );
+		data = JSON.parse( data );
+
+		return data.devicetoken;
+	}
+	catch( e ) {
+		return false;
+	}
+
+	return false;
+
+}
+
+function subscribeToNotifications() {
+
+	loadAPIConnectionData();
+
+	var deviceToken = getDeviceTokenForPush();
+	if ( !deviceToken ) {
+		setError( 'could not register for notifications' );
+		return;
+	}
+
+	var options = {
+		method: 'POST',
+		body: {
+			instance_url	: BASE_URL,
+			access_token	: AccessToken,
+			device_token	: deviceToken
+		}
+	};
+
+	options = Object.assign( {}, options, {
+		body: JSON.stringify( options.body ),
+		headers: Object.assign( {}, options.headers, {
+			"Content-Type": "application/json"
+		} )
+	} );
+
+	return new Promise( function( resolve, reject ) {
+
+		fetch( pushSubscriptionUrl + 'register', options )
+		.then( function( json ) {
+			console.log( ':: registered successfully' );
+			resolve();
+		} )
+		.catch( function( err ) {
+			console.log( ':: registering error: ' + err.message );
+			reject( err );
+		} );
+
+	} );
+
+}
+
+function unsubscribeFromNotifications() {
+
+	var deviceToken = getDeviceTokenForPush();
+	if ( !deviceToken ) {
+		setError( 'could not unregister for notifications' );
+		return;
+	}
+
+	var options = {
+		method: 'POST',
+		body: {
+			device_token	: deviceToken
+		}
+	};
+
+	options = Object.assign( {}, options, {
+		body: JSON.stringify( options.body ),
+		headers: Object.assign( {}, options.headers, {
+			"Content-Type": "application/json"
+		} )
+	} );
+
+	return new Promise( function( resolve, reject ) {
+
+		fetch( pushSubscriptionUrl + 'unregister', options )
+		.then( function() {
+			console.log( ':: registered successfully' );
+			resolve();
+		} )
+		.catch( function( err ) {
+			console.log( ':: registering error: ' + err.message );
+			reject( err );
+		} );
+
+	} );
+}
+
 
 /**
  * @param  {string}		baseurl		url to Mastodon site
@@ -442,8 +550,7 @@ function MastodonPost( jsondata ) {
 	// in status is the core post itself
 	this.status = jsondata;
 	this.account = jsondata.account;
-	this.rebloggerId = 0;
-	this.rebloggerName = '';
+	this.reblogger = {};
 
 	if ( 'undefined' != typeof jsondata.type ) {
 
@@ -468,8 +575,7 @@ function MastodonPost( jsondata ) {
 		this.status = jsondata.reblog;
 		this.account = jsondata.reblog.account;
 
-		this.rebloggerId = jsondata.account.id;
-		this.rebloggerName = jsondata.account.display_name;
+		this.reblogger = jsondata.account;
 
 	}
 
@@ -755,7 +861,8 @@ function sendPost( _txt, _inreplyto, _media_ids, _visibility, _issensitive, _spo
 		})
 		.then( function( resp ) {
 
-			if ( 200 == resp.status ) {
+			var resultcode = parseInt( resp.status );
+			if ( ( resultcode >= 200 ) && ( resultcode < 300 ) ) {
 				return resp.json();
 			} else {
 				reject( Error( 'Netwerk error: cannot fetch posts (1003)' ) );
@@ -776,12 +883,13 @@ function sendImage( _imgObj ) {
 
 	loadAPIConnectionData();
 
-	var Uploader = require("Uploader");
-	return Uploader.send(
-		_imgObj.path,
-		BASE_URL + 'api/v1/media',
-		AccessToken
-	);
+	console.dir( _imgObj );
+	// var Uploader = require("Uploader");
+	// return Uploader.send(
+	// 	_imgObj.path,
+	// 	BASE_URL + 'api/v1/media',
+	// 	AccessToken
+	// );
 
 }
 
@@ -882,6 +990,12 @@ module.exports = {
 	loadAPIConnectionData: loadAPIConnectionData,
 	loadAPIConnectionDataAsync: loadAPIConnectionDataAsync,
 	saveAPIConnectionData: saveAPIConnectionData,
+
+	getDeviceTokenForPush: getDeviceTokenForPush,
+	saveDeviceTokenForPush: saveDeviceTokenForPush,
+	subscribeToNotifications: subscribeToNotifications,
+	unsubscribeFromNotifications: unsubscribeFromNotifications,
+
 	getAccessToken: getAccessToken,
 	getInstanceInfo: getInstanceInfo,
 	sendImage: sendImage,
@@ -898,7 +1012,12 @@ module.exports = {
 // https://www.fusetools.com/docs/backend/rest-apis
 function apiFetch( path, options ) {
 
-	var url = encodeURI( BASE_URL + path );
+	var url;
+	if ( 0 === path.indexOf( 'https' ) ) {
+		var url = encodeURI( path );
+	} else {
+		var url = encodeURI( BASE_URL + path );
+	}
 
 	if ( options === undefined ) {
 		options = {};
@@ -935,35 +1054,39 @@ function apiFetch( path, options ) {
 			.then( function( response ) {
 
 				clearTimeout( timeout );
-				if ( response && 200 == response.status ) {
+				if ( response ) {
 
-					// ["<https://mastodon.social/api/v1/timelines/home?max_id=4899975>; rel=\"next\", <https://mastodon.social/api/v1/timelines/home?since_id=4902190>; rel=\"prev\""]
-					if ( 'object' == typeof response.headers.map.link ) {
-						var linkheader = response.headers.map.link.shift();
-						if ( 'string' == typeof linkheader ) {
-							linkheader = linkheader.split( /[<>]/ );
-							if ( linkheader.length > 3 ) {
-								max_id = linkheader[ 1 ].split( 'max_id=' ).pop();
-								since_id = linkheader[ 3 ].split( 'since_id=' ).pop();
+					var resultcode = parseInt( response.status );
+					if ( ( resultcode >= 200 ) && ( resultcode < 300 ) ) {
+
+						if ( 'object' == typeof response.headers.map.link ) {
+
+							var linkheader = response.headers.map.link.shift();
+							if ( 'string' == typeof linkheader ) {
+								linkheader = linkheader.split( /[<>]/ );
+								if ( linkheader.length > 3 ) {
+									max_id = linkheader[ 1 ].split( 'max_id=' ).pop();
+									since_id = linkheader[ 3 ].split( 'since_id=' ).pop();
+								}
 							}
+
 						}
 
+						loading.value = false;
+
+						return response.json();
+
+					} else if ( resultcode == 401 ) {
+						console.log( 'received a 401 from API' );
+						loading.value = false;
+						logOut();
+						reject( '401 not authorized' );
+					} else {
+						console.log( 'apiFetch error for path ' + path );
+						console.log( JSON.stringify( response ) );
+						loading.value = false;
+						reject( 'API error: status ' + response.status );
 					}
-
-					loading.value = false;
-
-					return response.json();
-
-				} else if ( 401 == response.status ) {
-					console.log( 'received a 401 from API' );
-					loading.value = false;
-					logOut();
-					reject( '401 not authorized' );
-				} else {
-					console.log( 'apiFetch error for path ' + path );
-					console.log( JSON.stringify( response ) );
-					loading.value = false;
-					reject( 'API error: status ' + response.status );
 				}
 			} )
 			.then( function( responseObject ) {

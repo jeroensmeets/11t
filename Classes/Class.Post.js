@@ -34,8 +34,8 @@ var mentions = this.Parameter.map( function( param ) {
 	return param.mentions;
 } );
 
-var rebloggerId = this.Parameter.map( function( param ) {
-	return param.rebloggerId;
+var reblogger = this.Parameter.map( function( param ) {
+	return param.reblogger;
 } );
 
 var isRepost = this.Parameter.map( function( param ) {
@@ -147,14 +147,14 @@ function gotoPost() {
 
 function gotoUser() {
 
-	router.push( 'userprofile', { userid: _this.account.value.id } );
+	router.push( 'userprofile', { user: _this.account.value } );
 
 }
 
 function gotoReblogger() {
 
-	if ( _this.rebloggerId.value > 0 ) {
-		router.push( 'userprofile', { userid: _this.rebloggerId.value } );
+	if ( _this.reblogger.value ) {
+		router.push( 'userprofile', { user: _this.reblogger.value } );
 	}
 
 }
@@ -163,7 +163,8 @@ function wordClicked( args ) {
 
 	if ( args.data.mention ) {
 
-		router.push( "userprofile", { userid: userid } );
+		// TODO fix data to pass
+		router.push( "userprofile", { user: {} } );
 
 	} else if ( args.data.hashtag ) {
 
@@ -180,33 +181,33 @@ function wordClicked( args ) {
 
 module.exports = {
 
-timeSince: timeSince,
+	timeSince: timeSince,
 
-isRepost: isRepost,
-gotoReblogger: gotoReblogger,
+	isRepost: isRepost,
+	gotoReblogger: gotoReblogger,
 
-replyToPost: replyToPost,
+	replyToPost: replyToPost,
 
-rePost: rePost,
-reposting: reposting,
-userHasReposted: userHasReposted,
+	rePost: rePost,
+	reposting: reposting,
+	userHasReposted: userHasReposted,
 
-favouritePost: favouritePost,
-favouriting: favouriting,
-userHasFavourited: userHasFavourited,
+	favouritePost: favouritePost,
+	favouriting: favouriting,
+	userHasFavourited: userHasFavourited,
 
-gotoReportScreen: gotoReportScreen,
+	gotoReportScreen: gotoReportScreen,
 
-// 	// translating: translating,
-// 	// isTranslated: isTranslated,
-// 	// showTranslation: showTranslation,
-// 	// translatePost: translatePost,
+	// 	// translating: translating,
+	// 	// isTranslated: isTranslated,
+	// 	// showTranslation: showTranslation,
+	// 	// translatePost: translatePost,
 
-gotoUser: gotoUser,
-gotoPost: gotoPost,
+	gotoUser: gotoUser,
+	gotoPost: gotoPost,
 
-wordClicked: wordClicked,
+	wordClicked: wordClicked,
 
-// youtubeLink: youtubeLink
+	// youtubeLink: youtubeLink
 
 };

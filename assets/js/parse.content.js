@@ -78,7 +78,7 @@ function clickableBio( bio ) {
 		}
 	}
 
-	var result = [];
+	var result = Observable();
 
 	if ( !bio ) {
 		return result;
@@ -96,7 +96,7 @@ function clickableBio( bio ) {
 		if ( -1 === word.indexOf( '[[[[' ) ) {
 
 			// this is not a link, add it as a word
-			result.push( { word: word, clear: newline } );
+			result.add( { word: word, clear: newline } );
 
 		} else {
 
@@ -109,7 +109,7 @@ function clickableBio( bio ) {
 			var linkstart = uris[ linkId ].indexOf( 'href="' ) + 6;
 			var linkend = uris[ linkId ].indexOf( '"', linkstart );
 			var linkUrl = uris[ linkId ].substring( linkstart, linkend );
-			result.push( { link: true, word: linkTxt, uri: linkUrl, makeBold: true, clear: newline } );
+			result.add( { link: true, word: linkTxt, uri: linkUrl, makeBold: true, clear: newline } );
 
 		}
 

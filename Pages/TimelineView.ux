@@ -17,15 +17,14 @@
 	<Panel>
 		<ScrollView LayoutMode="PreserveVisual" AllowedScrollDirections="Vertical">
 
-			<WhileScrollable ScrollDirections="Down" Invert="true">
-				<Callback Handler="{getOlderPosts}" />
-			</WhileScrollable>
+			<Scrolled To="Start" Within="200" Handler="{decreaseOffset}" />
+			<Scrolled ux:Name="atEnd" To="End" Within="200" Handler="{increaseOffset}" />
 
 			<StackPanel Orientation="Vertical">
 
 				<ReloadPull />
 
-				<Each Items="{posts}">
+				<Each Items="{posts}" Offset="{offset}" Limit="{limit}">
 					<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 				</Each>
 

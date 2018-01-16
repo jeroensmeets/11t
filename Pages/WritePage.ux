@@ -3,7 +3,6 @@
 		<Change wp.Visibility="Hidden" />
 	</WhileActive>
 	<Router ux:Dependency="router" />
-	<Uploader ux:Global="Uploader" />
 	<JavaScript File="WritePage.js" />
 
 	<Visual ux:Dependency="TopNavBar" />

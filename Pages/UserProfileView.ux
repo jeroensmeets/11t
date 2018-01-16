@@ -12,13 +12,11 @@
 
 		<StackPanel Orientation="Vertical">
 
-			<With Data="{userprofile}">
-				<UserCard userid="{id}" useraccname="{acct}" userdisplayname="{display_name}" headerstatic="{header_static}" avatarstatic="{avatar_static}" router="router" />
-			</With>
+			<UserCard user="{userprofile}" router="router" />
 
 			<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="16,16,24,0">
 				<Each Items="{clickableBio}">
-					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
+					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="16" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
 						<WhileTrue Value="{clear}">
 							<Change word.Margin="0,0,800,8" />
 						</WhileTrue>
@@ -30,9 +28,9 @@
 				</Each>
 			</WrapPanel>
 
-			<Panel Margin="16,16,24,16">
+			<!-- <Panel Margin="16,16,24,16">
 				<Text Value="{Clear act.statuses_count} posts composed." FontSize="13" TextColor="palette.clrText" Font="Regular" />
-			</Panel>
+			</Panel> -->
 
 			<Each Items="{Clear posts}">
 				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />

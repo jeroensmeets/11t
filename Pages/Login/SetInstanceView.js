@@ -22,7 +22,7 @@ function saveInstanceUrl() {
 
 	var bu = "https://" + urlparts.host + path;
 
-	console.log( 'setting baseurl to ' + bu );
+	// console.log( 'setting baseurl to ' + bu );
 
 	api.saveAPIConnectionData( bu, false, false, false );
 

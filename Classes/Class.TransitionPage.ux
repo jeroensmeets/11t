@@ -4,7 +4,7 @@
 	    <Move X="1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
 	</Transition>
 	<Transition Direction="ToInactive">
-	    <Move X="1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
+	    <Move X="-1" RelativeTo="Size" Duration="0.2" Easing="CubicInOut" />
 	</Transition>
 	<WhileActive Invert="true">
 		<Change self.Visibility="Collapsed" />

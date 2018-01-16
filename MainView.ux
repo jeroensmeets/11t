@@ -1,6 +1,6 @@
 <App Background="#eaeaea">
 
-	<Localization ux:Global="Localization" />
+	<!-- <Localization ux:Global="Localization" /> -->
 
 	<float4 ux:Global="palette.clrText" ux:Value="#282b37" />
 	<float4 ux:Global="palette.clrIcon" ux:Value="#e3e3e3" />

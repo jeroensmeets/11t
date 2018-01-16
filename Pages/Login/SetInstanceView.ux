@@ -7,9 +7,8 @@
 
 	<StackPanel Orientation="Vertical">
 
-		<Text Font="Regular" FontSize="15" Margin="4,16,32,16" TextColor="palette.clrText" TextWrapping="Wrap"
-			Value="To use Mastodon, you connect to an instance. This is the Mastodon server where you created your account." />
-		<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#1a9df8" TextWrapping="Wrap"  Height="40" Padding="16,2,2,2" Margin="0,0,36,24" TextAlignment="Left" Background="#fff" AutoCorrectHint="Disabled" AutoCapitalizationHint="None">
+		<Text Font="Regular" FontSize="15" Margin="0, 16, 0, 16" TextColor="palette.clrText" TextWrapping="Wrap" Value="To use Mastodon, you connect to an instance. This is the Mastodon server where you created your account." />
+		<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#1a9df8" TextWrapping="Wrap" Height="40" Padding="8, 2, 2, 2" Margin="0, 0, 0, 24" TextAlignment="Left" Background="#fff" AutoCorrectHint="Disabled" AutoCapitalizationHint="None">
 			<Rectangle Layer="Background">
 				<Stroke Width="1" Color="palette.clrHighlight" />
 			</Rectangle>

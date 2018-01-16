@@ -17,7 +17,7 @@ var instanceName = Observable( 'this instance' );
 function getInstanceInfo() {
 
 	loadingInfo.value = true;
-	api.getInstanceInfo( newValue )
+	api.getInstanceInfo()
 	.then( function( result ) {
 
 		// console.log( JSON.stringify( result ) );
@@ -63,7 +63,8 @@ module.exports = {
 	instanceName: instanceName,
 	confirmInstance: confirmInstance,
 	loadingInfo: loadingInfo,
-	tryAgain: tryAgain
+	tryAgain: tryAgain,
+	getInstanceInfo: getInstanceInfo
 }
 
 // instanceInfo = {

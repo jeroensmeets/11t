@@ -8,6 +8,7 @@ var api			= require("Assets/js/api");
  
 // push.on( "registrationSucceeded", function( regID ) {
 // 	console.log( "Reg Succeeded: " + regID );
+// 	api.saveDeviceTokenForPush( regID );
 // } );
 
 // push.on( "error", function( reason ) {
@@ -53,12 +54,13 @@ function goSettings() {
 function GotoOrRefresh( desiredRoute ) {
 
 	router.getRoute( function( route ) {
+
 		if ( route && ( route.length > 0 ) && ( desiredRoute != route[ 0 ] ) ) {
 			router.goto( desiredRoute );
 		} else {
-			// TODO how to get the resolve of this function to the active page
-			// api.loadTimeline( desiredRoute );
+			// TODO how to reach the active scrollview
 		}
+
 	} );
 
 }

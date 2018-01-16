@@ -1,22 +1,25 @@
 {
-	"RootNamespace": "com.jeroensmeets",
+
 	"Packages": [
 		"Fuse",
 		"FuseJS",
 		"Fuse.Launcher",
 		"Fuse.CameraRoll",
-		"Fuse.PushNotifications"
+		// "Fuse.PushNotifications"
 	],
+
 	"Includes": [
 		"*",
 		"*.js:Bundle",
 		"*.Uno"
 	],
+
+	"RootNamespace": "com.jeroensmeets",
 	"Title": "11t",
 	"Description": "An app to connect to Mastodon",
 	"Copyright": "This code has an MIT license. Run with it!",
-	"Version": "1.3",
-	"VersionCode": 31,
+	"Version": "1.6",
+	"VersionCode": 34,
 	"Mobile": {
 		"Orientations": "Portrait"
 	},
@@ -48,7 +51,7 @@
 			"StorePassword": "CMn4HoppGNffxWR6f92oQ\\$HG"
 		},
 		"GooglePlay": {
-			// "SenderID": "65424464795" // change this id you build this app yourself
+			"SenderID": "65424464795" // change this id you build this app yourself
 		},
 		"Icons": {
 			"LDPI": "assets/images/android/ldpi/ic_launcher.png",
