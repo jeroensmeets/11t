@@ -3,10 +3,16 @@ var settings = require( 'Assets/js/settings' );
 var Observable = require( 'FuseJS/Observable' );
 
 var useTranslations = Observable( false );
+var darkTheme = Observable( false );
 var useNotifications = Observable( false );
 
 useTranslations.onValueChanged( module, function( newValue ) {
 	settings.saveSetting( 'showTranslationsButton', newValue );
+} );
+
+darkTheme.onValueChanged( module, function( newValue ) {
+	console.log(newValue);
+	settings.saveSetting( 'darkTheme', newValue );
 } );
 
 useNotifications.onValueChanged( module, function( newValue ) {
@@ -34,6 +40,7 @@ useNotifications.onValueChanged( module, function( newValue ) {
 function loadSettings() {
 	settings.loadSettings();
 	useTranslations = settings.loadSetting( 'showTranslationsButton' );
+	darkTheme = settings.loadSetting( 'darkTheme' );
 }
 
 function showAboutPage() {
@@ -69,6 +76,7 @@ module.exports = {
 	showMutedUsers: showMutedUsers,
 	logOut: logOut,
 	useTranslations: useTranslations,
+	darkTheme: darkTheme,
 	useNotifications: useNotifications,
 	loadSettings: loadSettings
 }

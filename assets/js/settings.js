@@ -2,7 +2,8 @@ var Storage = require("FuseJS/Storage");
 var STORAGEFILE = 'user.settings.json';
 
 var settings = {
-	showTranslationsButton: false
+	showTranslationsButton: false,
+	darkTheme: false
 }
 
 function loadSettings( ) {

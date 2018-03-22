@@ -14,7 +14,7 @@
 				<PostCard status="{status}" clickableContent="{clickableContent}" account="{account}" drawlines="false" clickable="true" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
 			<WhileTrue Value="{loading}">
-				<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="#ffffff">Loading post context...</Text>
+				<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.PrimaryColor">Loading post context...</Text>
 			</WhileTrue>
 		</StackPanel>
 	</ScrollView>

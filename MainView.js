@@ -2,10 +2,21 @@ var Observable	= require("FuseJS/Observable");
 // var push		= require("FuseJS/Push");
 var api			= require("Assets/js/api");
 
+var settings 	= require("Assets/js/settings");
+
+var darkTheme = Observable( false );
+
+var primaryColor = parseInt("#fff");
+var secondColor = "";
+
+darkTheme = settings.loadSetting( 'darkTheme' );
+
+console.log(primaryColor);
+
 //
 // notifications
 //
- 
+
 // push.on( "registrationSucceeded", function( regID ) {
 // 	console.log( "Reg Succeeded: " + regID );
 // 	api.saveDeviceTokenForPush( regID );
@@ -87,5 +98,7 @@ module.exports = {
 	goPublic: goPublic,
 	goSettings: goSettings,
 	loading: api.loading,
-	error: api.error
+	error: api.error,
+	primaryColor: primaryColor,
+	secondColor: secondColor
 }

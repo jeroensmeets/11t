@@ -12,7 +12,7 @@
 
 	<ScrollView>
 		<Panel>
-			<StackPanel Orientation="Vertical" Margin="0,0,0,32">
+			<StackPanel Orientation="Vertical" Margin="10">
 
 				<!-- spoiler -->
 				<TextView ux:Name="spoilertext" Value="{spoilerText}" Height="0" Background="#ddd" TextWrapping="Wrap" Margin="0,8" Padding="4" AutoCapitalizationHint="Sentences">
@@ -26,10 +26,14 @@
 				</TextView>
 
 				<!-- main text -->
-				<TextView Value="{txtToToot}" Height="120" Background="#ddd" TextWrapping="Wrap" Padding="4" AutoCapitalizationHint="Sentences">
+				<TextView Value="{txtToToot}" Height="120" TextWrapping="Wrap" Padding="4" AutoCapitalizationHint="Sentences">
 					<WhileString Test="IsEmpty">
-						<Text TextWrapping="Wrap" Margin="4" Font="Italic">What's on your mind?</Text>
+						<Text TextWrapping="Wrap" Margin="4" Font="Italic" Color="palette.PrimaryColor">What's on your mind?</Text>
 					</WhileString>
+
+					<Rectangle Layer="Background" CornerRadius="5">
+						<Stroke Width="1" Color="palette.clrText" />
+					</Rectangle>
 				</TextView>
 
 				<DockPanel Margin="16">
@@ -78,7 +82,7 @@
 				</WhileTrue>
 
 				<DockPanel Margin="16">
-					<MastodonButton Dock="Right" text="Share" Clicked="{doToot}" />
+					<MastodonButton Width="100" Height="30" Dock="Right" text="Share" Clicked="{doToot}" />
 				</DockPanel>
 
 				<WhileTrue Value="{errorInSending}">
@@ -91,4 +95,6 @@
 			</StackPanel>
 		</Panel>
 	</ScrollView>
+
+	<Image File="../Assets/icons/elephant_ui.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Top" Alignment="BottomLeft" Color="#ffffff60" />
 </TransitionPage>

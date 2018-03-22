@@ -13,12 +13,16 @@
 			<Each Items="{posts}">
 				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
 			</Each>
-			<WhileFalse Value="{loading}">
-				<WhileEmpty Items="{posts}">
-					<Text Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText">No posts found.</Text>
-				</WhileEmpty>
-			</WhileFalse>
 		</StackPanel>
 	</ScrollView>
+
+	<WhileFalse Value="{loading}">
+		<WhileEmpty Items="{posts}">
+			<StackPanel Alignment="Center">
+				<Image File="../Assets/images/circus_elephant.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Top" Width="100" Alignment="Center" Color="palette.clrText" />
+				<Text Value="No posts found." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText"></Text>
+			</StackPanel>
+		</WhileEmpty>
+	</WhileFalse>
 
 </TransitionPage>

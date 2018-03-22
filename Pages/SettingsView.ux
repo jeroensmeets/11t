@@ -16,6 +16,14 @@
 			<Rectangle Alignment="Bottom" Height="1" Background="#787b87" />
 		</Panel>
 
+		<Panel ux:Name="pushnotifs" Margin="8,0">
+			<Grid Columns="4*,1*" Margin="0,8">
+				<Text Margin="12" ux:Name="darkTheme" Value="DarkTheme" TextWrapping="Wrap" Color="palette.clrText" Font="Bold" Alignment="CenterLeft"></Text>
+				<Switch Value="{darkTheme}"></Switch>
+			</Grid>
+			<Rectangle Alignment="Bottom" Height="1" Background="#787b87" />
+		</Panel>
+
 <!-- 		<Panel ux:Name="pushnotifs" Margin="8,0">
 			<Grid Columns="4*,1*" Margin="0,8">
 				<Text Margin="12" ux:Name="useNotifs" Value="Send notifications" TextWrapping="Wrap" Color="palette.clrText" Font="Italic" Alignment="CenterLeft"></Text>

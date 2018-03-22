@@ -5,7 +5,7 @@
 
 	<Activated Handler="{getInstanceInfo}" Bypass="Never" />
 
-	<DockPanel>
+	<DockPanel Alignment="Center">
 
 		<Panel ux:Name="infoIsLoading" Visibility="Collapsed" Dock="Top">
 			<FaLoading Color="palette.clrIconDimmed" FontSize="24" Alignment="Center">
