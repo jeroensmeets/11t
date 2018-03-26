@@ -20,7 +20,7 @@
 
 	<JavaScript File="Class.Post.js" />
 
-	<DockPanel Padding="8,8,12,8">
+	<DockPanel Padding="8,16,12,8">
 
 		<Panel Height="54" Width="54" Margin="0,0,12,0" Clicked="{gotoUser}" Dock="Left">
 

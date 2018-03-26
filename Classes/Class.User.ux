@@ -6,63 +6,59 @@
 	<JavaScript File="Class.User.js" />
 
 	<With Data="{Property uc.user}">
-		<DockPanel Height="200">
-			<Circle Width="160" Height="160" Dock="Bottom">
+
+		<StackPanel Padding="16,8" Orientation="Horizontal">
+
+			<Circle Width="100" Height="100" Margin="0,0,16,0">
 				<ImageFill Url="{avatar_static}" />
 			</Circle>
-			<Image Url="{header_static}" StretchMode="UniformToFill" Height="180" Dock="Top" ContentAlignment="Center" />
-		</DockPanel>
+
+			<StackPanel Orientation="Vertical" Dock="Top" Padding="10">
+				<Text Value="{display_name}" FontSize="20" Font="Bold" TextColor="palette.clrHighlight" />
+				<Text Value="@{acct}" FontSize="16" Font="Regular" TextColor="palette.clrText" />
+				<StackPanel Orientation="Horizontal" ux:Name="UserInteractions" Dock="Bottom" Margin="0,12,0,4">
+
+					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+						<FaReply Color="palette.clrIconDimmed" FontSize="24" />
+						<Clicked Handler="{mentionUser}" />
+					</Panel>
+
+					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+						<WhileTrue Value="{uFollowing}">
+							<FaAmFollowing Color="palette.clrNavigation" FontSize="24" />
+						</WhileTrue>
+						<WhileFalse Value="{uFollowing}">
+							<FaAmNotFollowing Color="palette.clrIconDimmed" FontSize="24" />
+						</WhileFalse>
+						<Clicked Handler="{followUser}" />
+					</Panel>
+
+					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+						<WhileTrue Value="{uMuting}">
+							<FaIsMuted Color="palette.clrNavigation" FontSize="24" />
+						</WhileTrue>
+						<WhileFalse Value="{uMuting}">
+							<FaIsNotMuted Color="palette.clrIconDimmed" FontSize="24" />
+						</WhileFalse>
+						<Clicked Handler="{muteUser}" />
+					</Panel>
+
+					<Panel Alignment="CenterLeft" Margin="0,0,16,0">
+						<WhileTrue Value="{uBlocking}">
+							<FaIsBlocked Color="palette.clrNavigation" FontSize="24" />
+						</WhileTrue>
+						<WhileFalse Value="{uBlocking}">
+							<FaIsBlocked Color="palette.clrIconDimmed" FontSize="24" />
+						</WhileFalse>
+						<Clicked Handler="{blockUser}" />
+					</Panel>
+
+				</StackPanel>
+
+			</StackPanel>
+
+		</StackPanel>
+
 	</With>
-
-	<DockPanel Padding="16,0">
-		<StackPanel Orientation="Vertical" Dock="Top">
-
-			<With Data="{Property uc.user}">
-				<Text Value="{display_name}" FontSize="24" Font="Bold" TextColor="palette.clrHighlight" />
-				<Text Value="@{acct}" FontSize="20" Font="Regular" TextColor="palette.clrText" />
-			</With>
-
-		</StackPanel>
-
-		<StackPanel Orientation="Horizontal" ux:Name="UserInteractions" Dock="Bottom" Margin="0,16,0,4">
-
-			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
-				<FaReply Color="palette.clrIconDimmed" FontSize="32" />
-				<Clicked Handler="{mentionUser}" />
-			</Panel>
-
-			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
-				<WhileTrue Value="{uFollowing}">
-					<FaAmFollowing Color="palette.clrNavigation" FontSize="32" />
-				</WhileTrue>
-				<WhileFalse Value="{uFollowing}">
-					<FaAmNotFollowing Color="palette.clrIconDimmed" FontSize="32" />
-				</WhileFalse>
-				<Clicked Handler="{followUser}" />
-			</Panel>
-
-			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
-				<WhileTrue Value="{uMuting}">
-					<FaIsMuted Color="palette.clrNavigation" FontSize="32" />
-				</WhileTrue>
-				<WhileFalse Value="{uMuting}">
-					<FaIsNotMuted Color="palette.clrIconDimmed" FontSize="32" />
-				</WhileFalse>
-				<Clicked Handler="{muteUser}" />
-			</Panel>
-
-			<Panel Alignment="CenterLeft" Margin="0,0,32,0">
-				<WhileTrue Value="{uBlocking}">
-					<FaIsBlocked Color="palette.clrNavigation" FontSize="32" />
-				</WhileTrue>
-				<WhileFalse Value="{uBlocking}">
-					<FaIsBlocked Color="palette.clrIconDimmed" FontSize="32" />
-				</WhileFalse>
-				<Clicked Handler="{blockUser}" />
-			</Panel>
-
-		</StackPanel>
-
-	</DockPanel>
 
 </StackPanel>

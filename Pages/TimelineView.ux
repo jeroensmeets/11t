@@ -15,7 +15,7 @@
 
 
 	<Panel>
-		<ScrollView LayoutMode="PreserveVisual" AllowedScrollDirections="Vertical">
+		<ScrollView AllowedScrollDirections="Vertical">
 
 			<Scrolled To="Start" Within="200" Handler="{decreaseOffset}" />
 			<Scrolled ux:Name="atEnd" To="End" Within="200" Handler="{increaseOffset}" />
@@ -25,7 +25,10 @@
 				<ReloadPull />
 
 				<Each Items="{posts}" Offset="{offset}" Limit="{limit}">
-					<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" rebloggerId="{rebloggerId}" rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" />
+					<PostCard status="{status}" cleanContent="{cleanContent}" 
+						account="{account}" clickable="false" rebloggerId="{rebloggerId}" 
+						rebloggerName="{rebloggerName}" mediaAttachments="{media_attachments}" 
+						mentions="{mentions}" router="router" />
 				</Each>
 
 				<WhileTrue Value="{loadingOlder}">
