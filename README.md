@@ -26,16 +26,22 @@ Font: [Noto](https://www.google.com/get/noto/).
 
 Drawing of blue elephant: [Tineke Meirink](https://www.tinekemeirink.nl/).
 
+Icons made by [Freepik](https://www.freepik.com/) from www.flaticon.com/.
+
+Mastodon images: [DOPATWO](https://mastodon.social/@dopatwo/).
+
 ### Contact ###
 
 I'm [@jeroensmeets@mastodon.social](https://mastodon.social/@jeroensmeets). And also on that dinosaur called Twitter.
 
 ### Screenshots ###
 
-![Splashscreen screenshot](Assets/images/store/appstore/screenshot_setinstance.png?raw=true "Select Mastodon instance")
+![Splashscreen screenshot](Assets/screenshots/instance_page.jpeg?raw=true "Select Mastodon instance")
 
-![Timeline screenshot](Assets/images/store/appstore/screenshot_timeline.png?raw=true "Timeline screenshot")
+![Timeline screenshot](Assets/screenshots/timeline_page.jpeg?raw=true "Timeline screenshot")
 
-![Notifications screenshot](Assets/images/store/appstore/screenshot_notifications.png?raw=true "Notifications screenshot")
+![Notifications screenshot](Assets/screenshots/notifications_page.jpeg?raw=true "Notifications screenshot")
 
-![Favourites screenshot](Assets/images/store/appstore/screenshot_favourites.png?raw=true "Favourites screenshot")
+![Favourites screenshot](Assets/screenshots/favourites.jpeg?raw=true "Favourites screenshot")
+
+![Write screenshot](Assets/screenshots/write_page.jpeg?raw=true "Write screenshot")
