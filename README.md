@@ -36,12 +36,12 @@ I'm [@jeroensmeets@mastodon.social](https://mastodon.social/@jeroensmeets). And 
 
 ### Screenshots ###
 
-![Splashscreen screenshot](Assets/screenshots/instance_page.jpeg?raw=true "Select Mastodon instance")
+![Splashscreen screenshot](Assets/screenshots/instance_page.jpg?raw=true "Select Mastodon instance")
 
-![Timeline screenshot](Assets/screenshots/timeline_page.jpeg?raw=true "Timeline screenshot")
+![Timeline screenshot](Assets/screenshots/timeline_page.jpg?raw=true "Timeline screenshot")
 
-![Notifications screenshot](Assets/screenshots/notifications_page.jpeg?raw=true "Notifications screenshot")
+![Notifications screenshot](Assets/screenshots/notifications_page.jpg?raw=true "Notifications screenshot")
 
-![Favourites screenshot](Assets/screenshots/favourites.jpeg?raw=true "Favourites screenshot")
+![Favourites screenshot](Assets/screenshots/favourites.jpg?raw=true "Favourites screenshot")
 
-![Write screenshot](Assets/screenshots/write_page.jpeg?raw=true "Write screenshot")
+![Write screenshot](Assets/screenshots/write_page.jpg?raw=true "Write screenshot")
