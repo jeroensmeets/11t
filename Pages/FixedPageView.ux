@@ -11,8 +11,8 @@
 
 		<WhileString Value="{contentId}" Equals="about">
 			<StackPanel Orientation="Vertical">
-				<Text Value="11t" TextColor="palette.clrText" FontSize="17" Font="Bold" Margin="0,0,0,16" />
-				<Text Value="This app is open source software, published under MIT license. Specific rules about what you can and cannot do are determined by the instance you connect to. Please use this app for our common good." TextColor="palette.clrText" TextWrapping="Wrap" FontSize="17" Font="Regular" Margin="0,0,0,16" />
+				<Text Value="11t" TextColor="{Resource palette.SecondColor}" FontSize="17" Font="Bold" Margin="0,0,0,16" />
+				<Text Value="This app is open source software, published under MIT license. Specific rules about what you can and cannot do are determined by the instance you connect to. Please use this app for our common good." TextColor="{Resource palette.SecondColor}" TextWrapping="Wrap" FontSize="17" Font="Regular" Margin="0,0,0,16" />
 			</StackPanel>
 		</WhileString>
 

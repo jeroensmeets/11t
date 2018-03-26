@@ -1,4 +1,4 @@
-<Rectangle ux:Class="PostCard" ux:Name="pc" Color="palette.PrimaryColor" CornerRadius="20" Margin="5,5">
+<Rectangle ux:Class="PostCard" ux:Name="pc" Color="{Resource palette.PrimaryColor}" CornerRadius="20" Margin="5,5">
 
 	<Router ux:Dependency="router" />
 
@@ -27,7 +27,7 @@
 
 				<With Data="{Property pc.account}">
 
-					<Rectangle CornerRadius="6" Width="54" Height="54" Color="palette.clrHighlight">
+					<Rectangle CornerRadius="50" Width="54" Height="54" Color="#fff">
 						<ImageFill Url="{avatar_static}" StretchMode="UniformToFill" ContentAlignment="Center" />
 					</Rectangle>
 
@@ -42,7 +42,7 @@
 					<With Data="{Property pc.account}">
 
 						<Panel Alignment="Left">
-							<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="palette.clrHighlight" />
+							<Text Value="{display_name}" FontSize="13" Font="Bold" TextColor="{Resource palette.SecondColor}" />
 						</Panel>
 						<Panel Dock="Right" Alignment="Right">
 							<Text Value="{acct}" FontSize="13" TextColor="palette.clrTextDimmed" Font="Regular" />
@@ -75,7 +75,7 @@
 								</FaRepost>
 								<Clicked Handler="{rePost}" />
 								<WhileTrue Value="{userHasReposted}">
-									<Change icorebloggedpublic.Color="palette.clrHighlight" />
+									<Change icorebloggedpublic.Color="{Resource palette.SecondColor}" />
 								</WhileTrue>
 							</StackPanel>
 						</WhileString>
@@ -89,7 +89,7 @@
 								</FaUnlocked>
 								<Clicked Handler="{rePost}" />
 								<WhileTrue Value="{userHasReposted}">
-									<Change icorebloggedunlisted.Color="palette.clrHighlight" />
+									<Change icorebloggedunlisted.Color="{Resource palette.SecondColor}" />
 								</WhileTrue>
 							</StackPanel>
 						</WhileString>
@@ -114,7 +114,7 @@
 							</FaStar>
 							<Clicked Handler="{favouritePost}" />
 							<WhileTrue Value="{userHasFavourited}">
-								<Change icostar.Color="palette.clrHighlight" />
+								<Change icostar.Color="{Resource palette.SecondColor}" />
 							</WhileTrue>
 						</StackPanel>
 
@@ -132,7 +132,7 @@
 								</FaGlobe>
 								<Clicked Handler="{translatePost}" />
 								<WhileTrue Value="{isTranslated}">
-									<Change icotranslate.Color="palette.clrHighlight" />
+									<Change icotranslate.Color="{Resource palette.SecondColor}" />
 								</WhileTrue>
 							</StackPanel>
 						</WhileTrue>
@@ -162,10 +162,10 @@
 						<Set postcontent.Visibility="Visible" />
 						<Set showSpoilerButton.Visibility="Collapsed" />
 					</Clicked>
-					<Text Value="{spoiler_text}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" />
+					<Text Value="{spoiler_text}" TextWrapping="Wrap" FontSize="14" TextColor="{Resource palette.SecondColor}" Font="Regular" />
 					<StackPanel ux:Name="showSpoilerButton" Orientation="Horizontal" Margin="0,8,0,16" HitTestMode="LocalBounds">
-						<FaView Color="palette.clrText" FontSize="15" Margin="0,0,8,0" Alignment="Center" />
-						<Text Value="show more" Color="palette.clrText" Font="Italic" FontSize="15" Alignment="Center" />
+						<FaView Color="{Resource palette.SecondColor}" FontSize="15" Margin="0,0,8,0" Alignment="Center" />
+						<Text Value="show more" Color="{Resource palette.SecondColor}" Font="Italic" FontSize="15" Alignment="Center" />
 					</StackPanel>
 				</StackPanel>
 			</WhileString>
@@ -181,13 +181,13 @@
 
 			<StackPanel Orientation="Vertical" Clicked="{gotoPost}">
 				<Each Items="{Property pc.cleanContent}">
-					<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,8,8" />
+					<Text Value="{paragraph}" TextWrapping="Wrap" FontSize="14" TextColor="{Resource palette.SecondColor}" Font="Regular" Margin="0,0,8,8" />
 				</Each>
 			</StackPanel>
 
 			<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" Margin="0,0,8,12">
 				<Each Items="{Property pc.clickableContent}">
-					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="palette.clrText" Font="Regular" Margin="0,0,2,2">
+					<Text ux:Name="word" Value="{word}" TextWrapping="Wrap" FontSize="14" TextColor="{Resource palette.SecondColor}" Font="Regular" Margin="0,0,2,2">
 						<WhileTrue Value="{newline}">
 							<Change word.Margin="0,0,800,4" />
 						</WhileTrue>
@@ -212,9 +212,9 @@
 
 		<WhileFloat Value="{rebloggerId}" GreaterThan="0">
 			<Panel Clicked="{gotoReblogger}" Margin="16,8,16,8">
-				<Text Value="reblogged by {rebloggerName}" TextColor="palette.clrText" Font="Italic" FontSize="13" Alignment="Right" />
+				<Text Value="reblogged by {rebloggerName}" TextColor="{Resource palette.SecondColor}" Font="Italic" FontSize="13" Alignment="Right" />
 			</Panel>
 		</WhileFloat>
 	</StackPanel>
-	<Stroke Color="palette.clrDivider" />
+	<Stroke Color="{Resource palette.SecondColor}" />
 </Rectangle>

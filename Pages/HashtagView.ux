@@ -19,8 +19,8 @@
 	<WhileFalse Value="{loading}">
 		<WhileEmpty Items="{posts}">
 			<StackPanel Alignment="Center">
-				<Image File="../Assets/images/circus_elephant.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Top" Width="100" Alignment="Center" Color="palette.clrText" />
-				<Text Value="No posts found." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText"></Text>
+				<Image File="../Assets/images/circus_elephant.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Top" Width="100" Alignment="Center" Color="{Resource palette.SecondColor}" />
+				<Text Value="No posts found." Margin="0,64,0,0" Alignment="Center" Font="Italic" TextColor="{Resource palette.SecondColor}"></Text>
 			</StackPanel>
 		</WhileEmpty>
 	</WhileFalse>

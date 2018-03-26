@@ -7,7 +7,7 @@
 		<PageControl AllowedSwipeDirections="Both">
 			<TimelinePage ux:Name="timeline" timeline="home" pagetitle="Timeline" router="router" TopNavBar="TopNavBar">
 				<WhileActive>
-					<Change btnBottomHome.Color="palette.clrIcon" />
+					<Change btnBottomHome.Color="{Resource palette.SecondColor}" />
 				</WhileActive>
 				<WhileInactive>
 					<Change timeline.Visibility="Hidden" />
@@ -15,22 +15,22 @@
 			</TimelinePage>
 			<NotificationsPage ux:Name="notifications" router="router" TopNavBar="TopNavBar">
 				<WhileActive>
-					<Change btnBottomNotifications.Color="palette.clrIcon" />
+					<Change btnBottomNotifications.Color="{Resource palette.SecondColor}" />
 				</WhileActive>
 			</NotificationsPage>
 			<TimelinePage ux:Name="favourites" timeline="favourites" pagetitle="Favourites" router="router" TopNavBar="TopNavBar">
 				<WhileActive>
-					<Change btnBottomFavourites.Color="palette.clrIcon" />
+					<Change btnBottomFavourites.Color="{Resource palette.SecondColor}" />
 				</WhileActive>
 			</TimelinePage>
 			<TimelinePage ux:Name="publictimeline" timeline="publictimeline" pagetitle="Public Timeline" router="router" TopNavBar="TopNavBar">
 				<WhileActive>
-					<Change btnBottomPublic.Color="palette.clrIcon" />
+					<Change btnBottomPublic.Color="{Resource palette.SecondColor}" />
 				</WhileActive>
 			</TimelinePage>
 			<SettingsPage ux:Name="settings" router="router" TopNavBar="TopNavBar">
 				<WhileActive>
-					<Change btnBottomSettings.Color="palette.clrIcon" />
+					<Change btnBottomSettings.Color="{Resource palette.SecondColor}" />
 				</WhileActive>
 			</SettingsPage>
 		</PageControl>
@@ -52,7 +52,7 @@
 
 			<!-- <ReportsPage Name="reportslist" router="router" TopNavBar="TopNavBar" /> -->
 
-		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Color="palette.barBackground">
+		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Color="{Resource palette.PrimaryColor}">
 			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goHome}">
 				<FaHome ux:Name="btnBottomHome" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
 			</Panel>

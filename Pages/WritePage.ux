@@ -15,24 +15,28 @@
 			<StackPanel Orientation="Vertical" Margin="10">
 
 				<!-- spoiler -->
-				<TextView ux:Name="spoilertext" Value="{spoilerText}" Height="0" Background="#ddd" TextWrapping="Wrap" Margin="0,8" Padding="4" AutoCapitalizationHint="Sentences">
+				<TextView ux:Name="spoilertext" Value="{spoilerText}" Height="0" TextWrapping="Wrap" Margin="0,8" Padding="4" AutoCapitalizationHint="Sentences" TextColor="{Resource palette.SecondColor}">
 					<WhileString Test="IsEmpty">
-						<Text ux:Name="csisempty" TextWrapping="Wrap" Margin="4" Font="Italic" Value="" />
+						<Text ux:Name="csisempty" TextWrapping="Wrap" Margin="4" Font="Italic" Value="" TextColor="{Resource palette.SecondColor}"/>
 					</WhileString>
 					<WhileTrue Value="{showSpoilerText}">
 						<Change csisempty.Value="Content warning" Delay=".2" DelayBack=".2" Duration=".3" Easing="QuadraticInOut" />
 						<Change spoilertext.Height="64" Duration=".3" Easing="QuadraticInOut" />
 					</WhileTrue>
+
+					<Rectangle Layer="Background" CornerRadius="5">
+						<Stroke Width="1" Color="{Resource palette.SecondColor}" />
+					</Rectangle>
 				</TextView>
 
 				<!-- main text -->
-				<TextView Value="{txtToToot}" Height="120" TextWrapping="Wrap" Padding="4" AutoCapitalizationHint="Sentences">
+				<TextView Value="{txtToToot}" Height="120" TextWrapping="Wrap" Padding="4" AutoCapitalizationHint="Sentences" TextColor="{Resource palette.SecondColor}">
 					<WhileString Test="IsEmpty">
-						<Text TextWrapping="Wrap" Margin="4" Font="Italic" Color="palette.PrimaryColor">What's on your mind?</Text>
+						<Text TextWrapping="Wrap" Margin="4" Font="Italic" Color="{Resource palette.SecondColor}">What's on your mind?</Text>
 					</WhileString>
 
 					<Rectangle Layer="Background" CornerRadius="5">
-						<Stroke Width="1" Color="palette.clrText" />
+						<Stroke Width="1" Color="{Resource palette.SecondColor}" />
 					</Rectangle>
 				</TextView>
 
@@ -41,7 +45,7 @@
 					<StackPanel Orientation="Horizontal" Dock="Left">
 						<FaContentWarning FontSize="24" ux:Name="contentwarning" Margin="0,0,16,0" Color="palette.clrIconDimmed" Clicked="{changeContentWarning}">
 							<WhileTrue Value="{showSpoilerText}">
-								<Change contentwarning.Color="palette.clrHighlight" />
+								<Change contentwarning.Color="{Resource palette.SecondColor}" />
 							</WhileTrue>
 						</FaContentWarning>
 
@@ -51,25 +55,29 @@
 					<StackPanel Orientation="Horizontal" Dock="Right">
 						<FaGlobe FontSize="24" ux:Name="publicvisibility" Margin="0,0,16,0" Color="palette.clrIconDimmed" Clicked="{makePublic}">
 							<WhileString Value="{tootVisibility}" Equals="public">
-								<Change publicvisibility.Color="palette.clrHighlight" />
+								<Change publicvisibility.Color="{Resource palette.SecondColor}" />
+								<Scale Target="publicvisibility" Factor="1.2" Easing="CubicIn" /> 
 							</WhileString>
 						</FaGlobe>
 
 						<FaUnlocked FontSize="24" ux:Name="unlistedvisibility" Margin="0,0,16,0" Color="palette.clrIconDimmed" Clicked="{makeUnlisted}">
 							<WhileString Value="{tootVisibility}" Equals="unlisted">
-								<Change unlistedvisibility.Color="palette.clrHighlight" />
+								<Change unlistedvisibility.Color="{Resource palette.SecondColor}" />
+								<Scale Target="unlistedvisibility" Factor="1.2" Easing="CubicIn" /> 
 							</WhileString>
 						</FaUnlocked>
 
 						<FaLock FontSize="24" ux:Name="privatevisibility" Margin="0,0,16,0" Color="palette.clrIconDimmed" Clicked="{makePrivate}">
 							<WhileString Value="{tootVisibility}" Equals="private">
-								<Change privatevisibility.Color="palette.clrHighlight" />
+								<Change privatevisibility.Color="{Resource palette.SecondColor}" />
+								<Scale Target="privatevisibility" Factor="1.2" Easing="CubicIn" /> 
 							</WhileString>
 						</FaLock>
 
 						<FaEnvelope FontSize="24" ux:Name="directvisibility" Color="palette.clrIconDimmed" Clicked="{makeDirect}">
 							<WhileString Value="{tootVisibility}" Equals="direct">
-								<Change directvisibility.Color="palette.clrHighlight" />
+								<Change directvisibility.Color="{Resource palette.SecondColor}" />
+								<Scale Target="directvisibility" Factor="1.2" Easing="CubicIn" /> 
 							</WhileString>
 						</FaEnvelope>
 					</StackPanel>
@@ -78,7 +86,7 @@
 
 				<!-- error when too many images -->
 				<WhileTrue Value="{errorTooManyImages}">
-					<Text Value="You can attach a maximum of 4 images to one post." TextWrapping="Wrap" Color="palette.clrText" Font="Italic" Margin="0,12,0,0" />
+					<Text Value="You can attach a maximum of 4 images to one post." TextWrapping="Wrap" Color="{Resource palette.SecondColor}" Font="Italic" Margin="0,12,0,0" />
 				</WhileTrue>
 
 				<DockPanel Margin="16">
@@ -86,7 +94,7 @@
 				</DockPanel>
 
 				<WhileTrue Value="{errorInSending}">
-					<Text Value="Could not send your toot at this time. Sorry!" TextWrapping="Wrap" Color="palette.clrText" Font="Italic" Margin="0,8,0,16" />
+					<Text Value="Could not send your toot at this time. Sorry!" TextWrapping="Wrap" Color="{Resource palette.SecondColor}" Font="Italic" Margin="0,8,0,16" />
 				</WhileTrue>
 
 				<!-- attachments -->

@@ -21,10 +21,10 @@
 	<WhileFalse Value="{loading}">
 		<WhileEmpty Items="{posts}">
 			<StackPanel ux:Name="empty" Alignment="Center" Opacity="1">
-				<Text Value="No notifications found." Margin="0,0,0,0" Alignment="Center" Font="Italic" TextColor="palette.clrText"></Text>
+				<Text Value="No notifications found." Margin="0,0,0,0" Alignment="Center" Font="Italic" TextColor="{Resource palette.SecondColor}"></Text>
 			</StackPanel>
 
-			<Image File="../Assets/icons/elephant_ui.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Top" Alignment="BottomLeft" Color="#ffffff60" />
+			<Image File="../Assets/icons/elephant_not_found.png" Width="250" ux:Name="headerlogo" StretchMode="Uniform" Dock="Top" Alignment="BottomLeft" Color="#ffffff60" />
 		</WhileEmpty>
 	</WhileFalse>
 </TransitionPage>

@@ -30,7 +30,7 @@
 	<Panel ux:Name="galleryinner">
 
 		<WhileCount Items="{Property mc.attachments}" GreaterThan="1">
-			<FaMultipleMedia FontSize="24" Color="palette.clrHighlight" Layer="Overlay" Alignment="BottomRight" Margin="0,0,16,16" />
+			<FaMultipleMedia FontSize="24" Color="{Resource palette.SecondColor}" Layer="Overlay" Alignment="BottomRight" Margin="0,0,16,16" />
 		</WhileCount>
 		<LinearNavigation>
 			<NavigationMotion GotoEasing="CircularOut" GotoDuration="0.3" />
@@ -76,7 +76,7 @@
 						<!-- play button -->
 						<Panel Alignment="Center" ux:Name="videoPlayButton" HitTestMode="LocalBoundsAndChildren" Layer="Overlay">
 
-							<FaVideoPlay Color="palette.clrNavigation" FontSize="36" />
+							<FaVideoPlay Color="{Resource palette.SecondColor}" FontSize="36" />
 							<Clicked>
 								<Set videoPreview.Visibility="Collapsed" />
 								<Set videoPlayer.Visibility="Visible" />
@@ -110,7 +110,7 @@
 							</WhileFailed>
 						</Video>
 
-						<Rectangle ux:Name="progressBar" Dock="Bottom" Fill="palette.brushHighlight" Alignment="Left" Width="0%" Height="2" />
+						<Rectangle ux:Name="progressBar" Dock="Bottom" Fill="{Resource palette.SecondColor}" Alignment="Left" Width="0%" Height="2" />
 					</DockPanel>
 				</WhileString>
 			</ImageGalleryItem>
