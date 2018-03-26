@@ -1,3 +1,4 @@
+
 <Page ux:Class="SetInstancePage">
 
 	<Router ux:Dependency="router" />
@@ -5,24 +6,22 @@
 
 	<Activated Handler="{startLoggedInCheck}" Bypass="Never" />
 
-	<StackPanel Orientation="Vertical">
-
-		<Text Font="Regular" FontSize="15" Margin="0, 16, 0, 16" TextColor="palette.clrText" TextWrapping="Wrap" Value="To use Mastodon, you connect to an instance. This is the Mastodon server where you created your account." />
-		<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="#1a9df8" TextWrapping="Wrap" Height="40" Padding="8, 2, 2, 2" Margin="0, 0, 0, 24" TextAlignment="Left" Background="#fff" AutoCorrectHint="Disabled" AutoCapitalizationHint="None">
-			<Rectangle Layer="Background">
-				<Stroke Width="1" Color="palette.clrHighlight" />
+	<StackPanel Orientation="Vertical" Alignment="Center" Height="100%">
+		<Text Font="Bold" FontSize="15" Margin="0, 0, 0, 16" TextColor="{Resource palette.SecondColor}" TextWrapping="Wrap" TextAlignment="Center" Value="To use Mastodon, you connect to an instance. This is the Mastodon server where you created your account." />
+		<TextInput ux:Name="inputbaseurl" Value="{baseurl}" TextColor="{Resource palette.SecondColor}" TextWrapping="Wrap" Height="40" Padding="18, 2, 2, 2" Margin="0, 0, 0, 24" TextAlignment="Left" AutoCorrectHint="Disabled" AutoCapitalizationHint="None" Font="Italic">
+			<Rectangle Layer="Background" CornerRadius="20" Height="1" Alignment="Bottom">
+				<Stroke Width="1" Color="{Resource palette.SecondColor}" />
 			</Rectangle>
 		</TextInput>
-		<Button Background="palette.brushHighlight" Height="40" Padding="16,2,16,2" Alignment="Left">
-			<Text Value="Continue" Color="palette.clrText" Alignment="Center" />
+		<Button Height="35" Padding="16,2,16,2" Alignment="Center">
+			<Text Value="Continue" Color="{Resource palette.SecondColor}" Alignment="Center" />
 			<Clicked>
 				<Callback Handler="{saveInstanceUrl}" />
 			</Clicked>
-			<Rectangle Layer="Background">
-				<Stroke Width="1" Color="palette.clrText" />
+			<Rectangle Layer="Background" CornerRadius="5">
+				<Stroke Width="1" Color="{Resource palette.SecondColor}" />
 			</Rectangle>
 		</Button>
-
 	</StackPanel>
 
 </Page>

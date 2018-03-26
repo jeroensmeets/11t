@@ -1,11 +1,12 @@
-var Observable	= require("FuseJS/Observable");
-// var push		= require("FuseJS/Push");
-var api			= require("Assets/js/api");
+var Observable		= require("FuseJS/Observable");
+// var push			= require("FuseJS/Push");
+var api				= require("Assets/js/api");
+//}
 
 //
 // notifications
 //
- 
+
 // push.on( "registrationSucceeded", function( regID ) {
 // 	console.log( "Reg Succeeded: " + regID );
 // 	api.saveDeviceTokenForPush( regID );

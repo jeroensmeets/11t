@@ -5,10 +5,6 @@ var Observable = require( 'FuseJS/Observable' );
 var useTranslations = Observable( false );
 var useNotifications = Observable( false );
 
-useTranslations.onValueChanged( module, function( newValue ) {
-	settings.saveSetting( 'showTranslationsButton', newValue );
-} );
-
 useNotifications.onValueChanged( module, function( newValue ) {
 
 	if ( newValue === useNotifications.value ) {
@@ -69,6 +65,5 @@ module.exports = {
 	showMutedUsers: showMutedUsers,
 	logOut: logOut,
 	useTranslations: useTranslations,
-	useNotifications: useNotifications,
-	loadSettings: loadSettings
+	useNotifications: useNotifications
 }

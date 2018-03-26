@@ -5,7 +5,7 @@
 
 	<Activated Handler="{getInstanceInfo}" Bypass="Never" />
 
-	<DockPanel>
+	<DockPanel Alignment="Center">
 
 		<Panel ux:Name="infoIsLoading" Visibility="Collapsed" Dock="Top">
 			<FaLoading Color="palette.clrIconDimmed" FontSize="24" Alignment="Center">
@@ -16,33 +16,33 @@
 		</Panel>
 
 		<StackPanel Orientation="Vertical" Height="280" ux:Name="errorLoading" Padding="16" Visibility="Collapsed" Dock="Top">
-			<Text Font="Italic" FontSize="15" TextColor="palette.clrText" Value="Could not connect to instance. Please go back and try again." TextWrapping="Wrap" Alignment="Center" TextAlignment="Center" />
+			<Text Font="Italic" FontSize="15" TextColor="{Resource palette.SecondColor}" Value="Could not connect to instance. Please go back and try again." TextWrapping="Wrap" Alignment="Center" TextAlignment="Center" />
 			<StackPanel Orientation="Horizontal" Margin="0,16,0,0" Alignment="Center" Clicked="{tryAgain}">
-				<FaHistory TextColor="palette.clrNavigation" Margin="0,8,16,0" />
-				<Text Font="Regular" FontSize="21" TextColor="palette.clrNavigation" Value="Let me try again!" />
+				<FaHistory TextColor="{Resource palette.SecondColor}" Margin="0,8,16,0" />
+				<Text Font="Regular" FontSize="21" TextColor="{Resource palette.SecondColor}" Value="Let me try again!" />
 			</StackPanel>
 		</StackPanel>
 
 		<StackPanel Orientation="Vertical" ux:Name="instanceinfo" Visibility="Visible" Dock="Top">
 
-			<TextView Font="Bold" FontSize="15" Margin="0,0,0,6" TextColor="palette.clrText" TextWrapping="Wrap" Value="Info about {instanceName}" />
+			<TextView Font="Bold" FontSize="15" Margin="0,0,0,6" TextColor="{Resource palette.SecondColor}" TextWrapping="Wrap" Value="Info about {instanceName}" />
 
 			<WhileString Value="{instanceContactEmail}" Test="IsNotEmpty">
 				<StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-					<TextView Font="Italic" FontSize="15" Margin="0,0,8,0" TextColor="palette.clrText" Value="Admin:" />
-					<TextView Font="Regular" FontSize="15" TextColor="palette.clrText" Value="{instanceContactEmail}" />
+					<TextView Font="Italic" FontSize="15" Margin="0,0,8,0" TextColor="{Resource palette.SecondColor}" Value="Admin:" />
+					<TextView Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Value="{instanceContactEmail}" />
 				</StackPanel>
 			</WhileString>
 
 			<WhileString Value="{instanceDescription}" Test="IsEmpty">
-				<TextView Font="Italic" FontSize="15" Margin="0,0,8,32" TextColor="palette.clrText" Value="There is no further information available about this instance. Please ask the admin to specify a description!" TextWrapping="Wrap" />
+				<TextView Font="Italic" FontSize="15" Margin="0,0,8,32" TextColor="{Resource palette.SecondColor}" Value="There is no further information available about this instance. Please ask the admin to specify a description!" TextWrapping="Wrap" />
 			</WhileString>
 
 			<WhileString Value="{instanceDescription}" Test="IsNotEmpty">
-				<TextView Font="Italic" FontSize="15" Margin="0,0,8,16" TextColor="palette.clrText" Value="The instance describes itself as:" />
+				<TextView Font="Italic" FontSize="15" Margin="0,0,8,16" TextColor="{Resource palette.SecondColor}" Value="The instance describes itself as:" />
 				<Panel Padding="1" Margin="0,0,0,32">
 					<Rectangle Layer="Background">
-						<Stroke Color="palette.clrNavigation"/>
+						<Stroke Color="{Resource palette.SecondColor}"/>
 					</Rectangle>
 					<ScrollView>
 						<NativeViewHost Padding="3">
@@ -56,7 +56,7 @@
 
 			<StackPanel Orientation="Horizontal" Alignment="Center">
 				<FaCancel Color="palette.clrTextDimmed" FontSize="48" Clicked="{tryAgain}" Margin="0,0,32,0" />
-				<FaCheck Color="palette.clrNavigation" FontSize="48" Clicked="{confirmInstance}" />
+				<FaCheck Color="{Resource palette.SecondColor}" FontSize="48" Clicked="{confirmInstance}" />
 			</StackPanel>
 
 			<WhileTrue Value="{loadingInfo}">

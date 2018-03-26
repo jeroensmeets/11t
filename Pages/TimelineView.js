@@ -175,5 +175,8 @@ module.exports = {
 	loadingOlder: loadingOlder,
 	limit: limit,
 	increaseOffset: increaseOffset,
-	decreaseOffset: decreaseOffset
+	decreaseOffset: decreaseOffset,
+	offset: offset,
+	limit: limit,
+	refreshTimeline: refreshTimeline
 }

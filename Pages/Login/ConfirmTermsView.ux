@@ -3,63 +3,65 @@
 	<Router ux:Dependency="router" />
 	<JavaScript File="ConfirmTermsView.js" />
 
-	<ScrollView>
-		<StackPanel Orientation="Vertical" Padding="0,8">
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,32" TextWrapping="Wrap">
-				To use the app 11t to connect to Mastodon, you must agree to this agreement.
-			</Text>
+	<Panel Margin="0, 50,0,0">
+		<ScrollView>
+			<StackPanel Orientation="Vertical" Padding="0,8">
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,32" TextWrapping="Wrap">
+					To use the app 11t to connect to Mastodon, you must agree to this agreement.
+				</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Kindness</Text>
-			<Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				I [say your name here] will be kind to others, and expect everyone else to be kind too. I will help others, but only if they ask me to.
-			</Text>
+				<Text Font="Bold" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,2">Kindness</Text>
+				<Text Font="Italic" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,24" TextWrapping="Wrap">
+					I [say your name here] will be kind to others, and expect everyone else to be kind too. I will help others, but only if they ask me to.
+				</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Copyright</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				When uploading information to Mastodon through 11t, I will only upload text and images I own, or have been given permission for.
-			</Text>
+				<Text Font="Bold" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,2">Copyright</Text>
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,24" TextWrapping="Wrap">
+					When uploading information to Mastodon through 11t, I will only upload text and images I own, or have been given permission for.
+				</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Privacy</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
-				In 11t, I know or will find out how I can set the visibility of my content: how to write it for one or more users, visible to my followers or visible to all.
-			</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
-				Mastodon is federated and has many servers. I know that, even though I can limit the visibility of my content, there is no guarantee the content will remain invisible to others.
-			</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				I will not share private content of others publicly. 
-			</Text>
+				<Text Font="Bold" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,2">Privacy</Text>
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,12" TextWrapping="Wrap">
+					In 11t, I know or will find out how I can set the visibility of my content: how to write it for one or more users, visible to my followers or visible to all.
+				</Text>
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,12" TextWrapping="Wrap">
+					Mastodon is federated and has many servers. I know that, even though I can limit the visibility of my content, there is no guarantee the content will remain invisible to others.
+				</Text>
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,24" TextWrapping="Wrap">
+					I will not share private content of others publicly. 
+				</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">NSFW content</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
-				I will mark NSFW images and videos as sensitive, and hide text that could be offensive to others behind a warning text. I will expect others to do the same.
-			</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
-				On Mastodon I can read and see what other people have shared. When I see or read content I think is offensive, I will notify the owner of my Mastodon instance, by flagging the offensive content, or reporting the user.
-			</Text>
-			<Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
-				Each post on Mastodon has a flag in 11t, pressing this icon will send a notification to the owner of the Mastodon administrator.
-			</Text>
+				<Text Font="Bold" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,2">NSFW content</Text>
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,12" TextWrapping="Wrap">
+					I will mark NSFW images and videos as sensitive, and hide text that could be offensive to others behind a warning text. I will expect others to do the same.
+				</Text>
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,12" TextWrapping="Wrap">
+					On Mastodon I can read and see what other people have shared. When I see or read content I think is offensive, I will notify the owner of my Mastodon instance, by flagging the offensive content, or reporting the user.
+				</Text>
+				<Text Font="Italic" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,24" TextWrapping="Wrap">
+					Each post on Mastodon has a flag in 11t, pressing this icon will send a notification to the owner of the Mastodon administrator.
+				</Text>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,2">Blocking or muting a user</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,12" TextWrapping="Wrap">
-				If I am offended or uncomfortable with content on Mastodon, I will use the options to block or mute a user on her/his/their profile page.
-			</Text>
+				<Text Font="Bold" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,2">Blocking or muting a user</Text>
+				<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,12" TextWrapping="Wrap">
+					If I am offended or uncomfortable with content on Mastodon, I will use the options to block or mute a user on her/his/their profile page.
+				</Text>
 
-			<!-- <Text Font="Italic" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
+			<!-- <Text Font="Italic" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,24" TextWrapping="Wrap">
 				And I promise to buy the new Randy Newman record, if it should ever be released.
 			</Text> -->
 
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="0,0,0,24" TextWrapping="Wrap">
+			<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="0,0,0,24" TextWrapping="Wrap">
 				By clicking ✓ I accept this user agreement fully and without reservation.
 			</Text>
 
 			<StackPanel Orientation="Horizontal" Alignment="Center" Margin="0,0,0,24">
-				<FaCancel Color="palette.clrTextDimmed" FontSize="48" Clicked="{tryAgain}" Margin="0,0,32,0" />
-				<FaCheck ux:Name="acceptGotoLogin" Color="palette.clrNavigation" FontSize="48" Clicked="{confirmTerms}" />
+				<FaCancel Color="palette.clrTextDimmed" FontSize="40" Clicked="{tryAgain}" Margin="0,0,32,0" />
+				<FaCheck ux:Name="acceptGotoLogin" Color="{Resource palette.SecondColor}" FontSize="40" Clicked="{confirmTerms}" />
 			</StackPanel>
 
 		</StackPanel>
 	</ScrollView>
+</Panel>
 
 </Page>

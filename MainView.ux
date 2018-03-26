@@ -1,31 +1,33 @@
-<App Background="#eaeaea">
+ <App>
 
-	<!-- <Localization ux:Global="Localization" /> -->
+ 	<!-- <Localization ux:Global="Localization" /> -->
 
-	<float4 ux:Global="palette.clrText" ux:Value="#282b37" />
-	<float4 ux:Global="palette.clrIcon" ux:Value="#e3e3e3" />
-	<float4 ux:Global="palette.clrTextDimmed" ux:Value="#787b87" />
-	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#c3c3c3" />
-	<float4 ux:Global="palette.clrLines" ux:Value="#282b37" />
-	<float4 ux:Global="palette.clrDivider" ux:Value="#fff" />
-	<float4 ux:Global="palette.clrHighlight" ux:Value="#1a9df8" />
-	<SolidColor ux:Global="palette.brushHighlight" ux:Value="#1a9df8" />
-	<float4 ux:Global="palette.clrNavigation" ux:Value="#1a9df8" />
-	<float4 ux:Global="palette.barBackground" ux:Value="#1a9df8" />
+ 	<!-- <float4 ux:Global="{Resource palette.SecondColor}" ux:Value="{Resource palette.SecondColor}" /> -->
+ 	<!-- <float4 ux:Global="{Resource palette.SecondColor}" ux:Value="{Resource palette.SecondColor}" /> -->
+ 	<float4 ux:Global="palette.clrTextDimmed" ux:Value="#787b87" />
+ 	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#c3c3c375" />
+ 	<!-- <float4 ux:Global="{Resource palette.SecondColor}" ux:Value="{Resource palette.SecondColor}" /> -->
+ 	<!-- <float4 ux:Global="{Resource palette.SecondColor}" ux:Value="{Resource palette.SecondColor}" /> -->
+ 	<!-- <SolidColor ux:Global="{Resource palette.SecondColor}" ux:Value="{Resource palette.SecondColor}" /> -->
+ 	<!-- <float4 ux:Global="{Resource palette.SecondColor}" ux:Value="{Resource palette.SecondColor}" /> -->
+ 	<!-- <float4 ux:Global="{Resource palette.PrimaryColor}" ux:Value="{Resource palette.PrimaryColor}" /> -->
 
-	<!-- http://www.colourlovers.com/palette/4403442/LittleGeorgiou_LLP -->
+ 	<float4 ux:Global="palette.PrimaryColor" ux:Value="#272932" />
+ 	<float4 ux:Global="palette.SecondColor" ux:Value="#fff" />
+
+ 	<!-- http://www.colourlovers.com/palette/4403442/LittleGeorgiou_LLP -->
 
 <!-- 	<float4 ux:Global="palette.backgroundColor" ux:Value="#eaeaea" />
-	<float4 ux:Global="palette.clrText" ux:Value="#464646" />
-	<float4 ux:Global="palette.clrIcon" ux:Value="#E3E3E3" />
+	<float4 ux:Global="{Resource palette.SecondColor}" ux:Value="#464646" />
+	<float4 ux:Global="{Resource palette.SecondColor}" ux:Value="#E3E3E3" />
 	<float4 ux:Global="palette.clrTextDimmed" ux:Value="#464646" />
 	<float4 ux:Global="palette.clrIconDimmed" ux:Value="#464646" />
 	<float4 ux:Global="palette.clrLines" ux:Value="#075064" />
-	<float4 ux:Global="palette.clrDivider" ux:Value="#ddd" />
-	<float4 ux:Global="palette.clrHighlight" ux:Value="#075064" />
-	<SolidColor ux:Global="palette.brushHighlight" ux:Value="#075064" />
-	<float4 ux:Global="palette.clrNavigation" ux:Value="#075064" />
-	<float4 ux:Global="palette.barBackground" ux:Value="#355057" />
+	<float4 ux:Global="{Resource palette.SecondColor}" ux:Value="#ddd" />
+	<float4 ux:Global="{Resource palette.SecondColor}" ux:Value="#075064" />
+	<SolidColor ux:Global="{Resource palette.SecondColor}" ux:Value="#075064" />
+	<float4 ux:Global="{Resource palette.SecondColor}" ux:Value="#075064" />
+	<float4 ux:Global="{Resource palette.PrimaryColor}" ux:Value="#355057" />
 	<SolidColor ux:Global="palette.statusbarBackground" ux:Value="#355057" /> -->
 
 	<!-- <MemoryPolicy ux:Global="QuickUnload" UnloadInBackground="true" UnusedTimeout="10" UnpinInvisible="true"/> -->
@@ -88,21 +90,20 @@
 
 	<JavaScript File="MainView.js" />
 
-	<DockPanel>
-
+	<DockPanel Color="{Resource palette.PrimaryColor}">
 		<!-- <GlobalImageViewer ux:Global="ImageViewer" ViewerVisible="false" Layer="Overlay" /> -->
 
 		<Toast toastText="{error}" Alignment="BottomCenter" Margin="24,0,24,76" />
 
-		<StackPanel Dock="Top" Color="palette.barBackground">
+		<StackPanel Dock="Top" Color="{Resource palette.PrimaryColor}">
 			<Android.StatusBarConfig IsVisible="True" />
 			<iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
 			<StatusBarBackground />
-			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Color="palette.barBackground">
+			<DockPanel ux:Name="TopNavBar" Dock="Top" Height="40" Color="{Resource palette.PrimaryColor}">
 
 				<WhileCanGoBack>
 					<Panel ux:Name="backButton" Padding="8,0,0,0" Alignment="Left">
-						<FaGoBack Color="palette.clrIcon" FontSize="20" Dock="Left" Margin="4,8,0,0" />
+						<FaGoBack Color="{Resource palette.SecondColor}" FontSize="20" Dock="Left" Margin="4,8,0,0" />
 						<AddingAnimation>
 							<Change backButton.Opacity="0" Duration=".3" />
 						</AddingAnimation>
@@ -117,15 +118,15 @@
 
 				<StackPanel Orientation="Horizontal" Layer="Background" Alignment="Right">
 					<Panel Padding="0,0,16,0" Dock="Right">
-						<FaRefresh ux:Name="loadingIcon" Color="palette.barBackground" FontSize="16" Alignment="Center">
+						<FaRefresh ux:Name="loadingIcon" Color="{Resource palette.PrimaryColor}" FontSize="16" Alignment="Center">
 							<WhileTrue Value="{loading}">
 								<Spin Frequency="1" />
-								<Change loadingIcon.Color="palette.clrIcon" />
+								<Change loadingIcon.Color="{Resource palette.SecondColor}" />
 							</WhileTrue>
 						</FaRefresh>
 					</Panel>
 					<Panel ux:Name="writeIcon" HitTestMode="LocalBounds" Clicked="{goWrite}" Padding="0,0,12,0" Visibility="Visible">
-						<FaWrite Color="palette.clrIcon" FontSize="20" Alignment="Center" />
+						<FaWrite Color="{Resource palette.SecondColor}" FontSize="20" Alignment="Center" />
 					</Panel>
 				</StackPanel>
 
@@ -153,7 +154,7 @@
 					<Callback Handler="{goNotifications}" />
 				</Swiped>
 				<WhileActive>
-					<Change btnBottomHome.Color="palette.clrIcon" />
+					<Scale Target="btnBottomHome" Factor="1.2" Duration=".3" />
 				</WhileActive>
 			</TimelinePage>
 			<NotificationsPage ux:Name="notifications" router="router" TopNavBar="TopNavBar">
@@ -166,7 +167,7 @@
 					<Callback Handler="{goHome}" />
 				</Swiped>
 				<WhileActive>
-					<Change btnBottomNotifications.Color="palette.clrIcon" />
+					<Scale Target="btnBottomNotifications" Factor="1.2" Duration=".3" />
 				</WhileActive>
 			</NotificationsPage>
 			<TimelinePage ux:Name="favourites" timeline="favourites" pagetitle="Favourites" router="router" TopNavBar="TopNavBar">
@@ -179,7 +180,7 @@
 					<Callback Handler="{goNotifications}" />
 				</Swiped>
 				<WhileActive>
-					<Change btnBottomFavourites.Color="palette.clrIcon" />
+					<Scale Target="btnBottomFavourites" Factor="1.2" Duration=".3" />
 				</WhileActive>
 			</TimelinePage>
 			<TimelinePage ux:Name="publictimeline" timeline="publictimeline" pagetitle="Public Timeline" router="router" TopNavBar="TopNavBar">
@@ -192,7 +193,7 @@
 					<Callback Handler="{goFavourites}" />
 				</Swiped>
 				<WhileActive>
-					<Change btnBottomPublic.Color="palette.clrIcon" />
+					<Scale Target="btnBottomPublic" Factor="1.2" Duration=".3" />
 				</WhileActive>
 			</TimelinePage>
 			<SettingsPage ux:Name="settings" router="router" TopNavBar="TopNavBar">
@@ -201,7 +202,7 @@
 					<Callback Handler="{goPublic}" />
 				</Swiped>
 				<WhileActive>
-					<Change btnBottomSettings.Color="palette.clrIcon" />
+					<Scale Target="btnBottomSettings" Factor="1.2" Duration=".3" />
 				</WhileActive>
 			</SettingsPage>
 			<WritePage ux:Name="write" Title="Write" router="router" TopNavBar="TopNavBar">
@@ -219,24 +220,28 @@
 			<MutedUsersPage ux:Name="mutedusers" router="router" TopNavBar="TopNavBar" />
 		</Navigator>
 
-		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Color="palette.barBackground">
+		<Grid ux:Name="BottomNavBar" Columns="1*,1*,1*,1*,1*" Dock="Bottom" Padding="0,12,0,12" ContentAlignment="Center" Color="{Resource palette.PrimaryColor}">
 			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goHome}">
-				<FaHome ux:Name="btnBottomHome" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
+				<!--<FaHome ux:Name="btnBottomHome" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />-->
+				<Image ux:Name="btnBottomHome" File="Assets/icons/home.png" StretchMode="Uniform" Dock="Top" Width="25" Alignment="Center" Color="{Resource palette.SecondColor}" />
 			</Panel>
 			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goNotifications}">
-				<FaReplyAll ux:Name="btnBottomNotifications" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
+				<!--<FaReplyAll ux:Name="btnBottomNotifications" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />-->
+				<Image ux:Name="btnBottomNotifications" File="Assets/icons/notification.png" StretchMode="Uniform" Dock="Top" Width="25" Alignment="Center" Color="{Resource palette.SecondColor}" />
 			</Panel>
 			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goFavourites}">
-				<FaStar ux:Name="btnBottomFavourites" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
+				<!--<FaStar ux:Name="btnBottomFavourites" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />-->
+				<Image ux:Name="btnBottomFavourites" File="Assets/icons/favorites.png" StretchMode="Uniform" Dock="Top" Width="25" Alignment="Center" Color="{Resource palette.SecondColor}" />
 			</Panel>
 			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goPublic}">
-				<FaUsers ux:Name="btnBottomPublic" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
+				<!--<FaUsers ux:Name="btnBottomPublic" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />-->
+				<Image ux:Name="btnBottomPublic" File="Assets/icons/global.png" StretchMode="Uniform" Dock="Top" Width="25" Alignment="Center" Color="{Resource palette.SecondColor}" />
 			</Panel>
 			<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goSettings}">
-				<FaSettings ux:Name="btnBottomSettings" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />
+				<!--<FaSettings ux:Name="btnBottomSettings" Color="palette.clrIconDimmed" FontSize="24" Alignment="Center" />-->
+				<Image ux:Name="btnBottomSettings" File="Assets/icons/settings.png" StretchMode="Uniform" Dock="Top" Width="25" Alignment="Center" Color="{Resource palette.SecondColor}" />
 			</Panel>
 		</Grid>
 
 	</DockPanel>
-
 </App>

@@ -10,20 +10,20 @@
 
 	<ScrollView>
 		<StackPanel Orientation="Vertical">
-			<FaFlag Color="palette.clrHighlight" FontSize="48" Alignment="Center" Margin="0,24,0,24" />
+			<FaFlag Color="{Resource palette.SecondColor}" FontSize="48" Alignment="Center" Margin="0,24,0,24" />
 
 			<Each Items="{singlepost}">
 				<PostCard status="{status}" cleanContent="{cleanContent}" account="{account}" clickable="false" mediaAttachments="{media_attachments}" mentions="{mentions}" router="router" hideicons="true" />
 			</Each>
 
-			<Text Font="Bold" FontSize="15" TextColor="palette.clrText" Margin="16,24,16,4">Report this post</Text>
-			<Text Font="Regular" FontSize="15" TextColor="palette.clrText" Margin="16,0,16,24" TextWrapping="Wrap">
+			<Text Font="Bold" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="16,24,16,4">Report this post</Text>
+			<Text Font="Regular" FontSize="15" TextColor="{Resource palette.SecondColor}" Margin="16,0,16,24" TextWrapping="Wrap">
 				By flagging this post, a notification will be sent to the administrator of the Mastodon instance it was published on.
 			</Text>
 
 			<TextView Value="{comment}" Height="84" Background="#fff" TextWrapping="Wrap" Padding="4" AutoCapitalizationHint="Sentences" Margin="16,0,16,24">
 				<Rectangle Layer="Background">
-					<Stroke Color="palette.clrNavigation"/>
+					<Stroke Color="{Resource palette.SecondColor}"/>
 				</Rectangle>
 				<WhileString Test="IsEmpty">
 					<Text TextWrapping="Wrap" Margin="4" Color="#333" Font="Italic" FontSize="13">Please add the reason for your report</Text>
@@ -32,7 +32,7 @@
 
 			<StackPanel Orientation="Horizontal" Alignment="Center" Margin="0,0,0,24">
 				<FaCancel Color="palette.clrTextDimmed" FontSize="48" Clicked="{goBack}" Margin="0,0,32,0" />
-				<FaCheck ux:Name="acceptGotoLogin" Color="palette.clrNavigation" FontSize="48" Clicked="{sendReport}" />
+				<FaCheck ux:Name="acceptGotoLogin" Color="{Resource palette.SecondColor}" FontSize="48" Clicked="{sendReport}" />
 			</StackPanel>
 
 		</StackPanel>

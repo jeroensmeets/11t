@@ -26,8 +26,10 @@
 
 	</JavaScript>
 
-	<Text Value="{Property toast.toastText}" FontSize="17" TextColor="#fff" TextWrapping="Wrap" TextAlignment="Center" Font="Regular" Alignment="Center" Margin="0,4,0,4" />
-	<Rectangle ux:Name="toastbg" Background="#222" Layer="Background" Opacity="0" />
+	<Text Value="{Property toast.toastText}" FontSize="17" TextColor="{Resource palette.PrimaryColor}" TextWrapping="Wrap" TextAlignment="Center" Font="Regular" Alignment="Center" Margin="0,4,0,4" />
+	<Rectangle ux:Name="toastbg" Background="#fff" Layer="Background" Opacity="0">
+		<Stroke Color="{Resource palette.PrimaryColor}" />
+	</Rectangle>
 
 	<WhileTrue Value="{v}">
 		<Change toast.Visibility="Visible" />

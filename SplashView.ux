@@ -7,9 +7,9 @@
 
 	<Grid Rows="112,1*" ux:Name="loginform" Visibility="Collapsed">
 
-		<DockPanel Margin="0,12,0,12" Alignment="Top">
-			<Image File="Assets/images/logo-11t-transparent.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Left" />
-			<TextView Font="Bold" FontSize="15" TextColor="palette.clrText" Value="Connect to Mastodon" Dock="Right" Alignment="CenterRight" Margin="0,0,32,0" />
+		<DockPanel Margin="0,30,0,12" Alignment="Top">
+			<Image File="Assets/images/logo.png" ux:Name="headerlogo" StretchMode="Uniform" Dock="Top" Width="100" Alignment="Center" Color="{Resource palette.SecondColor}" />
+			<TextView Font="Bold" FontSize="15" TextColor="{Resource palette.SecondColor}" Value="Connect to Mastodon" Dock="Top" Alignment="Center" />
 		</DockPanel>
 
 		<Panel Padding="32,0,32,0">
