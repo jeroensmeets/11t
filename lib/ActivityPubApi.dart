@@ -9,7 +9,7 @@ class ActivityPubApi {
 
   final String _clientName = '11t';
   final String _clientWebsite = 'https://11t.nl/';
-  final String _redirectUri = 'llt://11t.nl/';
+  final String _redirectUri = 'elevent://11t.nl/';
   final String _scope = 'read write follow push';
 
   String _baseUrl = '';
@@ -35,11 +35,10 @@ class ActivityPubApi {
 
   void redirectToOAuthScreen() async {
     final clientId = await getPrefValue('clientId');
-    final scopeParams = Uri.encodeComponent(_scope);
     final redirect =
-        '${_baseUrl}oauth/authorize?client_id=$clientId&redirect_uri=$_redirectUri&response_type=code&scope=$scopeParams';
-
-    if (await canLaunch(redirect)) {
+        '${_baseUrl}oauth/authorize?client_id=$clientId&redirect_uri=$_redirectUri&response_type=code&scope=$_scope';
+    final redirectEncode = Uri.encodeFull(redirect);
+    if (await canLaunch(redirectEncode)) {
       await launch(redirect);
     } else {
       throw Exception('Cannot show login screen');

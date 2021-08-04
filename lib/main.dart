@@ -1,14 +1,75 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uni_links/uni_links.dart';
 
-import 'ActivityPubApi.dart';
 import 'AppTheme.dart';
+import 'pages/loginpage.dart';
 
 void main() {
   runApp(ProviderScope(child: EleventApp()));
 }
 
-class EleventApp extends StatelessWidget {
+class EleventApp extends StatefulWidget {
+  @override
+  _EleventAppState createState() => _EleventAppState();
+}
+
+class _EleventAppState extends State<EleventApp> {
+  StreamSubscription? _sub;
+  bool _initialUriIsHandled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _handleIncomingLinks();
+    _handleInitialUri();
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  // Handle incoming links while the app is already started.
+  void _handleIncomingLinks() {
+    _sub = uriLinkStream.listen((Uri? uri) {
+      if (!mounted) return;
+      print('got uri: $uri');
+      // TODO handle url
+    }, onError: (Object err) {
+      if (!mounted) return;
+      print('got err: $err');
+      // TODO handle error
+    });
+  }
+
+  // Handle the initial Uri - the one the app was started with.
+  Future<void> _handleInitialUri() async {
+    if (!_initialUriIsHandled) {
+      _initialUriIsHandled = true;
+      try {
+        final uri = await getInitialUri();
+        if (uri == null) {
+          print('no initial uri');
+        } else {
+          print('got initial uri: $uri');
+          if (!mounted) return;
+          // TODO handle uri
+        }
+      } on FormatException catch (err) {
+        if (!mounted) return;
+        print('malformed initial uri');
+        print(err.message);
+        // TODO handle error.
+      } catch (err) {
+        // Platform messages may fail but we ignore the exception
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,76 +77,5 @@ class EleventApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.lightTheme,
         home: LoginPage());
-  }
-}
-
-class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
-
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  bool error = false;
-  String url = '';
-  late ActivityPubApi api;
-
-  void prepareLogin() {
-    api = ActivityPubApi();
-    api.setBaseUrl(url);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('11t'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xff7c94b6),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/logo-11t.jpg'),
-                  fit: BoxFit.fill,
-                ),
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(75.0),
-              ),
-              height: 150.0,
-              width: 150.0,
-            ),
-            SizedBox(height: 16),
-            Container(
-              margin: EdgeInsets.only(left: 50.0, right: 50.0),
-              child: TextField(
-                onChanged: (value) {
-                  url = value;
-                },
-                textInputAction: TextInputAction.go,
-                autocorrect: false,
-                textCapitalization: TextCapitalization.none,
-                decoration: InputDecoration(
-                  labelText: 'URL of Mastodon server',
-                ),
-              ),
-            ),
-            SizedBox(height: 32),
-            ElevatedButton(
-                onPressed: () {
-                  prepareLogin();
-                },
-                child: Text('Connect to server'))
-          ],
-        ),
-      ),
-    );
   }
 }
