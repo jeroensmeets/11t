@@ -75,7 +75,7 @@ class _EleventAppState extends State<EleventApp> {
     return MaterialApp(
         title: '11t',
         theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
         home: LoginPage());
   }
 }

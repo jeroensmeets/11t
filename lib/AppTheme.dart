@@ -3,53 +3,57 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
+  static final Color? primaryColorLight = Colors.blue[800];
+  static final Color? accentColorLight = Colors.blueGrey[700];
+  static final Color? iconColorLight = Colors.white54;
+  static final Color? inputFieldFillColorLight = Color(0xffF8F9FF);
+
+  static final Color? primaryColorDark = Colors.blue[800];
+  static final Color? accentColorDark = Colors.blueGrey[700];
+  static final Color? iconColorDark = Colors.white54;
+  static final Color? inputFieldFillColorDark = Color(0xffF8F9FF);
+
   static final ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.white,
-    primaryColor: Colors.blue[800],
-    accentColor: Colors.blueGrey[700],
+    primaryColor: primaryColorLight,
+    accentColor: accentColorLight,
     appBarTheme: AppBarTheme(
       color: Colors.blue,
       iconTheme: IconThemeData(
         color: Colors.white,
       ),
     ),
-    colorScheme: ColorScheme.light(
-      primary: Colors.white,
-      onPrimary: Colors.white,
-      primaryVariant: Colors.white38,
-      secondary: Colors.red,
-    ),
     cardTheme: CardTheme(
       color: Colors.blue,
     ),
     iconTheme: IconThemeData(
-      color: Colors.white54,
+      color: iconColorLight,
     ),
-    buttonColor: Colors.blueGrey[700],
+    buttonTheme: ButtonThemeData(
+      buttonColor: accentColorLight,
+      textTheme: ButtonTextTheme.primary,
+    ),
   );
 
   static final ThemeData darkTheme = ThemeData(
     scaffoldBackgroundColor: Colors.black,
-    primaryColor: Colors.blue[800],
-    accentColor: Colors.blueGrey[100],
+    primaryColor: primaryColorDark,
+    accentColor: accentColorDark,
     appBarTheme: AppBarTheme(
       color: Colors.grey[800],
       iconTheme: IconThemeData(
         color: Colors.white,
       ),
     ),
-    colorScheme: ColorScheme.light(
-      primary: Colors.black,
-      onPrimary: Colors.black,
-      primaryVariant: Colors.black,
-      secondary: Colors.red,
-    ),
     cardTheme: CardTheme(
       color: Colors.black,
     ),
     iconTheme: IconThemeData(
-      color: Colors.white54,
+      color: iconColorDark,
     ),
-    buttonColor: Colors.blueGrey[200],
+    buttonTheme: ButtonThemeData(
+      buttonColor: accentColorDark,
+      textTheme: ButtonTextTheme.primary,
+    ),
   );
 }
