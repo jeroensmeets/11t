@@ -18,9 +18,16 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLSchemes</key>
+	<key>CFBundleURLTypes</key>
 	<array>
-		<string>elevent</string>
+    <dict>
+    	<key>CFBundleURLName</key>
+    	<string>11t.dev</string>
+    	<key>CFBundleURLSchemes</key>
+    	<array>
+    		<string>elevent</string>
+    	</array>
+    </dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>

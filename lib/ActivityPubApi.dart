@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// TDO store values more safely.
+
 class ActivityPubApi {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   SharedPreferences? prefs;
@@ -13,6 +15,14 @@ class ActivityPubApi {
   final String _scope = 'read write follow push';
 
   String _baseUrl = '';
+
+  ActivityPubApi() {
+    loadBaseUrl();
+  }
+
+  void loadBaseUrl() async {
+    _baseUrl = await getPrefValue('baseUrl') ?? '';
+  }
 
   Future<String?> getPrefValue(String key) async {
     final prefs = await _prefs;
@@ -39,7 +49,7 @@ class ActivityPubApi {
         '${_baseUrl}oauth/authorize?client_id=$clientId&redirect_uri=$_redirectUri&response_type=code&scope=$_scope';
     final redirectEncode = Uri.encodeFull(redirect);
     if (await canLaunch(redirectEncode)) {
-      await launch(redirect);
+      await launch(redirectEncode);
     } else {
       throw Exception('Cannot show login screen');
     }
@@ -67,6 +77,29 @@ class ActivityPubApi {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to load client id and secret');
+    }
+  }
+
+  // Exchange oauth code for tokens.
+  Future<void> exchangeCodeForTokens(String code) async {
+    final clientId = await getPrefValue('clientId');
+    final clientSecret = await getPrefValue('clientSecret');
+
+    final response =
+        await http.post(Uri.parse('${_baseUrl}oauth/token'), body: {
+      'grant_type': 'authorization_code',
+      'redirect_uri': _redirectUri,
+      'code': code,
+      'client_id': clientId,
+      'client_secret': clientSecret,
+    });
+
+    if (200 == response.statusCode) {
+      final result = json.decode(response.body);
+      print(result);
+      // TODO store tokens.
+    } else {
+      // TODO handle error
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uni_links/uni_links.dart';
 
+import 'ActivityPubApi.dart';
 import 'AppTheme.dart';
 import 'pages/loginpage.dart';
 
@@ -19,6 +20,7 @@ class EleventApp extends StatefulWidget {
 class _EleventAppState extends State<EleventApp> {
   StreamSubscription? _sub;
   bool _initialUriIsHandled = false;
+  late ActivityPubApi api;
 
   @override
   void initState() {
@@ -33,12 +35,26 @@ class _EleventAppState extends State<EleventApp> {
     super.dispose();
   }
 
+  String? extractCodeFromUri(Uri uri) {
+    var parameters = Uri.splitQueryString(uri.query);
+    return parameters.keys.contains('code') ? parameters['code'] : null;
+  }
+
+  void loadTokens(Uri? uri) {
+    if (uri == null) return;
+    var code = extractCodeFromUri(uri);
+    print(code);
+    if (code != null) {
+      api = ActivityPubApi();
+      api.exchangeCodeForTokens(code);
+    }
+  }
+
   // Handle incoming links while the app is already started.
   void _handleIncomingLinks() {
     _sub = uriLinkStream.listen((Uri? uri) {
       if (!mounted) return;
-      print('got uri: $uri');
-      // TODO handle url
+      loadTokens(uri);
     }, onError: (Object err) {
       if (!mounted) return;
       print('got err: $err');
@@ -57,7 +73,7 @@ class _EleventAppState extends State<EleventApp> {
         } else {
           print('got initial uri: $uri');
           if (!mounted) return;
-          // TODO handle uri
+          loadTokens(uri);
         }
       } on FormatException catch (err) {
         if (!mounted) return;

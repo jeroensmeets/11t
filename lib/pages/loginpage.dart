@@ -12,10 +12,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool error = false;
   String url = '';
-  late ActivityPubApi api;
+  ActivityPubApi api = ActivityPubApi();
 
   void prepareLogin() {
-    api = ActivityPubApi();
     api.setBaseUrl(url);
   }
 
@@ -56,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 autocorrect: false,
                 textCapitalization: TextCapitalization.none,
                 decoration: InputDecoration(
-                  labelText: 'URL of Mastodon server',
+                  labelText: 'URL of Pixelfed server',
                 ),
               ),
             ),
