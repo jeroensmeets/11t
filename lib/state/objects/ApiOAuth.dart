@@ -29,6 +29,8 @@ class ApiOAuth {
 
   Future<void> setBaseUrl(String baseUrl) async {
     baseUrl = baseUrl.toLowerCase();
+    // TODO be more helpful by adding the protocol and/or a slash at the end
+    // maybe just check if the url is a working base url and then activating the button?
     if ('https://' != baseUrl.substring(0, 8) || ('' == baseUrl)) {
       throw Exception('Base url not valid');
     }

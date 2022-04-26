@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void checkLoginStatus() async {
     var access_token = await api.maybeRefreshAccessToken();
-    if (access_token != null) {
+    if (access_token == null) {
       setState(() {
         showLoginFields = true;
       });
