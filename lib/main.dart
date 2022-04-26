@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:uni_links/uni_links.dart';
 
-import 'ActivityPubApi.dart';
+import 'state/objects/ApiOAuth.dart';
 import 'AppTheme.dart';
+import 'pages/homepage.dart';
 import 'pages/loginpage.dart';
 
 void main() {
@@ -20,7 +22,7 @@ class EleventApp extends StatefulWidget {
 class _EleventAppState extends State<EleventApp> {
   StreamSubscription? _sub;
   bool _initialUriIsHandled = false;
-  late ActivityPubApi api;
+  bool _userIsLoggedIn = false;
 
   @override
   void initState() {
@@ -40,14 +42,19 @@ class _EleventAppState extends State<EleventApp> {
     return parameters.keys.contains('code') ? parameters['code'] : null;
   }
 
-  void loadTokens(Uri? uri) {
+  Future<void> loadTokens(Uri? uri) async {
     if (uri == null) return;
+    print(uri.toString());
     var code = extractCodeFromUri(uri);
-    print(code);
     if (code != null) {
-      api = ActivityPubApi();
-      api.exchangeCodeForTokens(code);
+      var api = ApiOAuth();
+      await api.exchangeCodeForTokens(code);
     }
+    // Close browser
+    await FlutterWebBrowser.close();
+    setState(() {
+      _userIsLoggedIn = true;
+    });
   }
 
   // Handle incoming links while the app is already started.
@@ -68,13 +75,8 @@ class _EleventAppState extends State<EleventApp> {
       _initialUriIsHandled = true;
       try {
         final uri = await getInitialUri();
-        if (uri == null) {
-          print('no initial uri');
-        } else {
-          print('got initial uri: $uri');
-          if (!mounted) return;
-          loadTokens(uri);
-        }
+        if (!mounted) return;
+        await loadTokens(uri);
       } on FormatException catch (err) {
         if (!mounted) return;
         print('malformed initial uri');
@@ -92,6 +94,7 @@ class _EleventAppState extends State<EleventApp> {
         title: '11t',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        home: LoginPage());
+        // home: HomePage());
+        home: _userIsLoggedIn ? HomePage() : LoginPage());
   }
 }

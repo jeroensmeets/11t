@@ -15,13 +15,15 @@ dependencies:
   dio_http_cache: ^0.3.0
   json_annotation: ^4.0.1
   cached_network_image: ^3.1.0
-  flutter_riverpod: ^0.14.0+3
+  flutter_riverpod: ^1.0.3
   package_info: ^2.0.2
   shared_preferences: ^2.0.6
   url_launcher: ^6.0.9
+  flutter_web_browser: ^0.17.1
   uni_links: ^0.5.1
 
 dev_dependencies:
+  json_serializable: ^4.1.4
   flutter_launcher_icons: ^0.9.1
   flutter_test:
     sdk: flutter

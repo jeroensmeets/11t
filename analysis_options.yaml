@@ -2,3 +2,6 @@ include: package:pedantic/analysis_options.yaml
 analyzer:
   exclude:
     - "lib/model/*.g.dart"
+linter:
+  rules:
+    - prefer_const_declarations
