@@ -44,7 +44,7 @@ class Status {
   late final bool sensitive;
   late final String spoilerText;
   late final String visibility;
-  late final String language;
+  late final String? language;
   late final String uri;
   late final String url;
   late final int repliesCount;

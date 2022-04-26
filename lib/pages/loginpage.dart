@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     FlutterWebBrowser.openWebPage(
       url: url,
       customTabsOptions: CustomTabsOptions(
-        addDefaultShareMenuItem: false,
+        shareState: CustomTabsShareState.on,
         instantAppsEnabled: true,
         showTitle: true,
         urlBarHidingEnabled: true,

@@ -20,8 +20,9 @@ class ApiActivityPub {
         response.data.forEach((v) {
           try {
             result.add(Status.fromJson(v));
-          } catch (_, __) {
+          } catch (error, __) {
             // do not rethrow, status isn't added
+            print(error.toString());
           }
         });
       }
